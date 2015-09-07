@@ -13,6 +13,7 @@
 #include "regionfree.h"
 #include "boot.h"
 #include "titles.h"
+#include "folders.h"
 
 bool brewMode = false;
 u8 sdmcCurrent = 0;
@@ -24,6 +25,7 @@ u8 batteryLevel = 5;
 u8 charging = 0;
 int rebootCounter;
 titleBrowser_s titleBrowser;
+hbfolder Folders;
 
 static enum
 {
@@ -135,6 +137,20 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 	}else{
 		//got SD
 		drawMenu(&menu);
+		if (Folders.max > 0){
+			char bof2[1024*3+64];
+			sprintf(bof2,
+				"Previous folder:    %s                                                                                        \n"
+				"Next folder:           %s                                                                                        ",
+				(Folders.current-1<0?Folders.dir[Folders.max]:Folders.dir[Folders.current-1]),
+				(Folders.current+1>Folders.max?Folders.dir[0]:Folders.dir[Folders.current+1]) );
+			char bof3[1024+64];
+			sprintf(bof3, "Current folder: %s", Folders.dir[Folders.current]);
+			drawFolders(
+				bof3,
+				bof2,
+				-175);
+		}
 	}
 }
 
@@ -211,12 +227,30 @@ int main()
 	initErrors();
 	initMenu(&menu);
 	initTitleBrowser(&titleBrowser, NULL);
+	
+	//Defaults
+	strcpy(Folders.dir[0], "/3ds/");
+	Folders.current = 0;
+	Folders.max = 0;
+	loadFolders(&Folders);
+
+//Change with xml loading code
+/*
+	strcpy(Folders.dir[1], "/3ut/");
+	strcpy(Folders.dir[2], "/3hg/");
+	strcpy(Folders.dir[3], "/3em/");
+	Folders.max = 1;
+*/
+//Change with xml loading code
+
+	if (Folders.max >= MAX_FOLDER) Folders.max = MAX_FOLDER-1;
 
 	u8 sdmcPrevious = 0;
 	FSUSER_IsSdmcDetected(NULL, &sdmcCurrent);
 	if(sdmcCurrent == 1)
 	{
-		scanHomebrewDirectory(&menu, "/3ds/");
+		scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
+		
 	}
 	sdmcPrevious = sdmcCurrent;
 	nextSdCheck = osGetTime()+250;
@@ -237,7 +271,7 @@ int main()
 			{
 				closeSDArchive();
 				openSDArchive();
-				scanHomebrewDirectory(&menu, "/3ds/");
+				scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
 			}
 			else if(sdmcCurrent < 1 && sdmcPrevious == 1)
 			{
@@ -332,6 +366,37 @@ int main()
 			{
 				if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 				else if(isNinjhax2()) hbmenu_state = HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2;
+			}
+			if(hidKeysDown()&KEY_SELECT)//Reload current folder
+			{
+				clearMenuEntries(&menu);
+				menu.selectedEntry=0;
+				menu.scrollLocation=0;
+				closeSDArchive();
+				openSDArchive();
+				scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
+			}
+			if(hidKeysDown()&KEY_R)//Next folder
+			{
+				Folders.current++;
+				if (Folders.current > Folders.max) Folders.current = 0;
+				clearMenuEntries(&menu);
+				menu.selectedEntry=0;
+				menu.scrollLocation=0;
+				closeSDArchive();
+				openSDArchive();
+				scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
+			}
+			if(hidKeysDown()&KEY_L)//Previous folder
+			{
+				Folders.current--;
+				if (Folders.current < 0) Folders.current = Folders.max;
+				clearMenuEntries(&menu);
+				menu.selectedEntry=0;
+				menu.scrollLocation=0;
+				closeSDArchive();
+				openSDArchive();
+				scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
 			}
 			if(secretCode())brewMode = true;
 			else if(updateMenu(&menu))

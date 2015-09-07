@@ -37,3 +37,23 @@ void drawError(gfxScreen_t screen, char* title, char* body, int offset)
 	gfxDrawText(screen, GFX_LEFT, &fontTitle, title, x+width-6-16, y+6);
 	gfxDrawText(screen, GFX_LEFT, &fontDescription, body, x+width-5-16-13, y+8);
 }
+
+void drawFolders(char* title, char* body, int offset)
+{
+	int i;
+
+	int numLines=countLines(body);
+
+	int width=numLines*8+32;
+	int height=300;
+	int x=240-width-12+offset, y=4;
+
+	//main frame
+	for(i=0; i<9; i++)gfxDrawRectangle(GFX_TOP, GFX_LEFT, ENTRY_BGCOLOR, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
+	gfxDrawRectangle(GFX_TOP, GFX_LEFT, ENTRY_BGCOLOR, x, y+9, width, height-9*2);
+	for(i=0; i<9; i++)gfxDrawRectangle(GFX_TOP, GFX_LEFT, ENTRY_BGCOLOR, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
+
+	//content
+	gfxDrawText(GFX_TOP, GFX_LEFT, &fontTitle, title, x+width-6-16, y+6);
+	gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, body, x+width-5-16-13, y+8);
+}

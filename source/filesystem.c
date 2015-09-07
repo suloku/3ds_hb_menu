@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include <3ds.h>
 
 #include "installerIcon_bin.h"
