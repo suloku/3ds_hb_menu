@@ -145,6 +145,10 @@ void addDirectoryToMenu(menu_s* m, char* path)
 	addMenuEntryCopy(m, &tmpEntry);
 }
 
+int cmp(const void *a, const void *b) { 
+    return strcmp(a, b); 
+}
+
 void scanHomebrewDirectory(menu_s* m, char* path)
 {
 	if(!path)return;
@@ -153,8 +157,9 @@ void scanHomebrewDirectory(menu_s* m, char* path)
 	FS_path dirPath=FS_makePath(PATH_CHAR, path);
 	FSUSER_OpenDirectory(NULL, &dirHandle, sdmcArchive, dirPath);
 	
-	static char fullPath[1024];
+	static char fullPath[1024][1024];
 	u32 entriesRead;
+	int totalentries = 0;
 	do
 	{
 		static FS_dirent entry;
@@ -163,18 +168,35 @@ void scanHomebrewDirectory(menu_s* m, char* path)
 		FSDIR_Read(dirHandle, &entriesRead, 1, &entry);
 		if(entriesRead)
 		{
-			strncpy(fullPath, path, 1024);
-			int n=strlen(fullPath);
-			unicodeToChar(&fullPath[n], entry.name, 1024-n);
+			strncpy(fullPath[totalentries], path, 1024);
+			int n=strlen(fullPath[totalentries]);
+			unicodeToChar(&fullPath[totalentries][n], entry.name, 1024-n);
 			if(entry.isDirectory) //directories
 			{
-				addDirectoryToMenu(m, fullPath);
+				//addDirectoryToMenu(m, fullPath[totalentries]);
+				totalentries++;
 			}else{ //stray executables
-				n=strlen(fullPath);
-				if(n>5 && !strcmp(".3dsx", &fullPath[n-5]))addFileToMenu(m, fullPath);
+				n=strlen(fullPath[totalentries]);
+				if(n>5 && !strcmp(".3dsx", &fullPath[totalentries][n-5])){
+					//addFileToMenu(m, fullPath[totalentries]);
+					totalentries++;
+				}
 			}
 		}
 	}while(entriesRead);
+
+    int i;
+    qsort (fullPath, totalentries, 1024, cmp);
+    for (i = 0; i < totalentries; i++) {
+		int n=strlen(fullPath[i]);
+		if(n>5 && !strcmp(".3dsx", &fullPath[i][n-5])){
+			addFileToMenu(m, fullPath[i]);
+		}else{
+			if (strncmp(".", fullPath[i], 1) != 0){
+				addDirectoryToMenu(m, fullPath[i]);
+			}
+		}
+    }
 
 	FSDIR_Close(dirHandle);
 }
