@@ -26,6 +26,8 @@ u8 charging = 0;
 int rebootCounter;
 titleBrowser_s titleBrowser;
 hbfolder Folders;
+char updatefolder = 0;
+char favActive = 0;
 
 static enum
 {
@@ -137,7 +139,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 	}else{
 		//got SD
 		drawMenu(&menu);
-		if (Folders.max > 0){
+		if (Folders.max > 0 && !favActive){
 			char bof2[1024*3+64];
 			sprintf(bof2,
 				"Previous folder:    %s                                                                                        \n"
@@ -225,26 +227,17 @@ int main()
 
 	initBackground();
 	initErrors();
-	initMenu(&menu);
-	initTitleBrowser(&titleBrowser, NULL);
-	
-	//Defaults
+
+	//Set defaults and try to load config
 	strcpy(Folders.dir[0], "/3ds/");
 	Folders.current = 0;
 	Folders.max = 0;
-	loadFolders(&Folders);
-
-//Change with xml loading code
-/*
-	strcpy(Folders.dir[1], "/3ut/");
-	strcpy(Folders.dir[2], "/3hg/");
-	strcpy(Folders.dir[3], "/3em/");
-	Folders.max = 1;
-*/
-//Change with xml loading code
-
+	loadFolders(&Folders); //Needs to be before initMenu to disable regionfree entry if configured
 	if (Folders.max >= MAX_FOLDER) Folders.max = MAX_FOLDER-1;
 
+	initMenu(&menu);
+	initTitleBrowser(&titleBrowser, NULL);
+	
 	u8 sdmcPrevious = 0;
 	FSUSER_IsSdmcDetected(NULL, &sdmcCurrent);
 	if(sdmcCurrent == 1)
@@ -367,36 +360,55 @@ int main()
 				if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 				else if(isNinjhax2()) hbmenu_state = HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2;
 			}
-			if(hidKeysDown()&KEY_SELECT)//Reload current folder
+			if(hidKeysDown()&KEY_X)//Toogle Favorites
 			{
-				clearMenuEntries(&menu);
-				menu.selectedEntry=0;
-				menu.scrollLocation=0;
-				closeSDArchive();
-				openSDArchive();
-				scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
+				if (!favActive){
+					updatefolder = 2;
+				}else{
+					updatefolder = 1;
+				}
+				favActive ^= 1;
 			}
-			if(hidKeysDown()&KEY_R)//Next folder
+			if(hidKeysDown()&KEY_R && !favActive && !(hidKeysHeld()&KEY_UP))//Next folder
 			{
 				Folders.current++;
 				if (Folders.current > Folders.max) Folders.current = 0;
-				clearMenuEntries(&menu);
-				menu.selectedEntry=0;
-				menu.scrollLocation=0;
-				closeSDArchive();
-				openSDArchive();
-				scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
+				updatefolder = 1;
 			}
-			if(hidKeysDown()&KEY_L)//Previous folder
+			if(hidKeysDown()&KEY_L && !favActive)//Previous folder
 			{
 				Folders.current--;
 				if (Folders.current < 0) Folders.current = Folders.max;
+				updatefolder = 1;
+			}
+			if(hidKeysDown()&KEY_SELECT)//Add or de-add favorite
+			{
+				//TODO
+				if (!favActive)
+				{
+				}else{
+				}
+			}
+			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_R) //toogle region free
+			{
+				disableRF ^= 1;
+				updatefolder = 1;
+			}
+			if (updatefolder)
+			{
 				clearMenuEntries(&menu);
 				menu.selectedEntry=0;
 				menu.scrollLocation=0;
 				closeSDArchive();
 				openSDArchive();
-				scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
+				if(updatefolder == 1)
+				{
+					scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
+				}else if (updatefolder == 2)
+				{
+					addFavorites(&menu);
+				}
+				updatefolder = 0;
 			}
 			if(secretCode())brewMode = true;
 			else if(updateMenu(&menu))

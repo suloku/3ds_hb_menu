@@ -3,6 +3,11 @@
 
 using namespace tinyxml2;
 
+int caseSetting = 0;
+int mixSetting = 0;
+int totalfavs = 0;
+char favorites[MAX_FAVS][1024];
+
 void loadFolders(hbfolder* folder){
 
 	if(!folder)return;
@@ -13,38 +18,34 @@ void loadFolders(hbfolder* folder){
 	XMLNode * pRoot = doc.FirstChild();
 	if (pRoot == NULL)return;
 
-	XMLElement * pElement = pRoot->FirstChildElement("path");
 	int i;
+
+	XMLElement * pElement = pRoot->FirstChildElement("folders");
+	XMLElement * subElement = pElement->FirstChildElement("path");
 	for (i=1; i < MAX_FOLDER; i++){
-		if (pElement == nullptr) break;
-		const char* str = pElement->GetText();
+		if (subElement == nullptr) break;
+		const char* str = subElement->GetText();
 		sprintf(folder->dir[i], "%s", str);
 		folder->max = i;
-		pElement = pElement->NextSiblingElement("path");
+		subElement = subElement->NextSiblingElement("path");
 	}
-/*
-	XMLElement * pElement = pRoot->FirstChildElement("path");
-	if (pElement == nullptr) return;
-	const char* str = pElement->GetText();
-	sprintf(folder->dir[1], "%s", str);
-	folder->max = 1;
-*/
-/*	
-	int i = 1;
+	subElement = pElement->FirstChildElement("mix_files");
+	subElement->QueryIntText(&mixSetting);
+	
+	subElement = pElement->FirstChildElement("case_sensitive");
+	subElement->QueryIntText(&caseSetting);
 
-	XMLElement* folderpath = doc.FirstChildElement( "FOLDERS" )->FirstChildElement( "path" );
-	sprintf(folder->dir[1], "%s", folderpath->GetText());
-	folder->max = 1;
-
-	if (folderpath)
-	{
-		for(i=1; i < MAX_FOLDER; i++){
-			folderpath = folderpath->NextSiblingElement();
-			if (!folderpath) break;
-			strncpy(folder->dir[i], folderpath->GetText(), 1023);
-			folder->dir[i][1023-1]='\0';
-		}
-		folder->max = i;
+	subElement = pElement->FirstChildElement("disable_RF");
+	subElement->QueryIntText(&disableRF);
+	
+	pElement = pRoot->FirstChildElement("favorites");
+	subElement = pElement->FirstChildElement("fav");
+	for (i=0; i < MAX_FAVS; i++){
+		if (subElement == nullptr) break;
+		const char* str = subElement->GetText();
+		sprintf(favorites[i], "%s", str);
+		totalfavs = i;
+		subElement = subElement->NextSiblingElement("fav");
 	}
-*/
+
 }

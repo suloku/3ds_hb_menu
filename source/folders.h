@@ -9,7 +9,15 @@ extern "C" {
 
 
 #define MAX_FOLDER 21
-#define FOLDER_FILE "sdmc:/3ds/folders.xml"
+#define FOLDER_FILE "sdmc:/3ds/config.xml"
+
+#define MAX_FAVS 20
+
+extern int caseSetting;
+extern int mixSetting;
+extern int totalfavs;
+extern int disableRF;
+extern char favorites[MAX_FAVS][1024];
 
 typedef struct
 {

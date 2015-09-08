@@ -18,6 +18,9 @@ u8 roundLut3[]={0, 1, 2};
 extern int debugValues[100]; //TEMP
 
 menuEntry_s regionfreeEntry;
+int disableRF = 0;
+extern char favActive;
+
 
 void initMenu(menu_s* m)
 {
@@ -37,7 +40,8 @@ void initMenu(menu_s* m)
 	{
 		extractSmdhData((smdh_s*)regionfree_bin, regionfreeEntry.name, regionfreeEntry.description, regionfreeEntry.author, regionfreeEntry.iconData);
 		strcpy(regionfreeEntry.executablePath, REGIONFREE_PATH);
-		addMenuEntryCopy(m, &regionfreeEntry);
+		if (!disableRF)
+			addMenuEntryCopy(m, &regionfreeEntry);
 	}
 }
 
@@ -153,9 +157,9 @@ void clearMenuEntries(menu_s* m)
 	m->numEntries = 0;
 	m->entries = NULL;
 
-	if(regionFreeAvailable)
+	if(regionFreeAvailable && !favActive && !disableRF)
 	{
-		// should always be available
+		// should always be available //Well, not anymore
 		addMenuEntryCopy(m, &regionfreeEntry);
 	}
 }

@@ -147,7 +147,15 @@ void addDirectoryToMenu(menu_s* m, char* path)
 }
 
 int cmp(const void *a, const void *b) { 
-    return strcmp(a, b); 
+	if (!caseSetting){
+		int r = strcasecmp(a, b);
+		if (r) return r;
+		/* if equal ignoring case, use opposite of strcmp() result to get
+		 * lower before upper */
+		return -strcmp(a, b); /* aka: return strcmp(b, a); */
+	}else{
+		return strcmp(a, b);
+	}
 }
 
 void scanHomebrewDirectory(menu_s* m, char* path)
@@ -186,18 +194,43 @@ void scanHomebrewDirectory(menu_s* m, char* path)
 		}
 	}while(entriesRead);
 
-    int i;
+    int i, j;
     qsort (fullPath, totalentries, 1024, cmp);
-    for (i = 0; i < totalentries; i++) {
-		int n=strlen(fullPath[i]);
-		if(n>5 && !strcmp(".3dsx", &fullPath[i][n-5])){
-			addFileToMenu(m, fullPath[i]);
-		}else{
-			if (strncmp(".", fullPath[i], 1) != 0){
-				addDirectoryToMenu(m, fullPath[i]);
+	for (j=0; j<2; j++){
+		for (i = 0; i < totalentries; i++) {
+			int n=strlen(fullPath[i]);
+			if(n>5 && !strcmp(".3dsx", &fullPath[i][n-5])){
+				if (!j && !mixSetting){
+					//skip stray files in first pass
+				}else {
+					addFileToMenu(m, fullPath[i]);
+				}
+			}else{
+				if (strncmp(".", fullPath[i], 1) != 0){
+					if (!j){
+						addDirectoryToMenu(m, fullPath[i]);
+					}else{
+						//Skip dirs in second pass
+					}
+				}
 			}
 		}
-    }
+		if (mixSetting) break;
+	}
 
 	FSDIR_Close(dirHandle);
+}
+
+void addFavorites(menu_s* m)
+{
+	int i;
+	for (i = 0; i < totalfavs; i++)
+	{
+		int n=strlen(favorites[i]);
+		if(n>5 && !strcmp(".3dsx", &favorites[i][n-5]))	{
+			addFileToMenu(m, favorites[i]);
+		} else {
+			addDirectoryToMenu(m, favorites[i]);
+		}
+	}
 }

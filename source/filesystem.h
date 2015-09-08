@@ -1,6 +1,7 @@
 #pragma once
 #include <3ds.h>
 #include "menu.h"
+#include "folders.h"
 
 extern FS_archive sdmcArchive;
 
@@ -18,3 +19,4 @@ bool fileExists(char* path, FS_archive* archive);
 //menu fs stuff
 void addDirectoryToMenu(menu_s* m, char* path);
 void scanHomebrewDirectory(menu_s* m, char* path);
+void addFavorites(menu_s* m);
