@@ -6,6 +6,9 @@ using namespace tinyxml2;
 int caseSetting = 0;
 int mixSetting = 0;
 int totalfavs = 0;
+int remembermenu = 0;
+int lastFolder = 0;
+int lastEntry = 0;
 char favorites[MAX_FAVS][1024];
 
 void loadFolders(hbfolder* folder){
@@ -40,7 +43,16 @@ void loadFolders(hbfolder* folder){
 
 	subElement = pElement->FirstChildElement("disable_RF");
 	subElement->QueryIntText(&disableRF);
-	
+
+	subElement = pElement->FirstChildElement("menu_pos");
+	if (subElement != nullptr)
+	{
+		//Values
+		subElement->QueryIntAttribute("remember_menu", &remembermenu);
+		subElement->QueryIntAttribute("folder", &lastFolder);
+		subElement->QueryIntAttribute("entry", &lastEntry);
+	}
+
 	pElement = pRoot->FirstChildElement("favorites");
 	subElement = pElement->FirstChildElement("fav");
 	for (i=0; i < MAX_FAVS; i++){
@@ -75,22 +87,33 @@ void writeFolders(hbfolder* folder){
 		char str[1024];
 		sprintf (str, "%s", folder->dir[i]);
 		subElement->SetText(str);
-		pElement->InsertEndChild(subElement);
+		pElement->InsertEndChild(subElement);//close each
 	}
 
 	subElement = xmlDoc.NewElement("mix_files");
 	subElement->SetText(mixSetting);
-	pElement->InsertEndChild(subElement);
+	pElement->InsertEndChild(subElement);//close
 	
 	subElement = xmlDoc.NewElement("case_sensitive");
 	subElement->SetText(caseSetting);
-	pElement->InsertEndChild(subElement);
+	pElement->InsertEndChild(subElement);//close
 
 	subElement = xmlDoc.NewElement("disable_RF");
 	subElement->SetText(disableRF);
-	pElement->InsertEndChild(subElement);
+	pElement->InsertEndChild(subElement);//close
 
-	pRoot->InsertEndChild(pElement);
+	subElement = xmlDoc.NewElement("remember_menu");
+	subElement->SetText(remembermenu);
+	pElement->InsertEndChild(subElement);//close
+
+//Remember menu
+	subElement = xmlDoc.NewElement("menu_pos");
+		subElement->SetAttribute("remember_menu", remembermenu);
+		subElement->SetAttribute("folder", lastFolder);
+		subElement->SetAttribute("entry", lastEntry);
+	pElement->InsertEndChild(subElement);//close menu_pos
+
+	pRoot->InsertEndChild(pElement);//close folders
 //End folders
 //Favs
 	pElement = xmlDoc.NewElement("favorites");
@@ -99,7 +122,7 @@ void writeFolders(hbfolder* folder){
 		subElement->SetText(favorites[i]);
 		pElement->InsertEndChild(subElement);
 	}
-	pRoot->InsertEndChild(pElement);
+	pRoot->InsertEndChild(pElement);//close favorites
 //End favs
 
 	xmlDoc.SaveFile(FOLDER_FILE);

@@ -16,6 +16,9 @@ extern "C" {
 extern int caseSetting;
 extern int mixSetting;
 extern int totalfavs;
+extern int remembermenu;
+extern int lastFolder;
+extern int lastEntry;
 extern int disableRF;
 extern char favorites[MAX_FAVS][1024];
 

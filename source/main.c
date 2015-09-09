@@ -243,8 +243,13 @@ int main()
 	FSUSER_IsSdmcDetected(NULL, &sdmcCurrent);
 	if(sdmcCurrent == 1)
 	{
-		scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
-		
+		if(remembermenu){
+			if (lastFolder <= Folders.max) Folders.current = lastFolder;
+			scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
+			if (lastEntry <= menu.numEntries) menu.selectedEntry = lastEntry;
+		}else{
+			scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
+		}
 	}
 	sdmcPrevious = sdmcCurrent;
 	nextSdCheck = osGetTime()+250;
@@ -508,7 +513,11 @@ int main()
 		gspWaitForVBlank();
 	}
 
-	if (confUpdate) writeFolders(&Folders);
+	if (confUpdate || remembermenu ){
+		lastFolder = Folders.current;
+		lastEntry = menu.selectedEntry;
+		writeFolders(&Folders);
+	}
 
 	menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
 
