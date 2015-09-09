@@ -224,13 +224,15 @@ void scanHomebrewDirectory(menu_s* m, char* path)
 void addFavorites(menu_s* m)
 {
 	int i;
-	for (i = 0; i < totalfavs; i++)
-	{
-		int n=strlen(favorites[i]);
-		if(n>5 && !strcmp(".3dsx", &favorites[i][n-5]))	{
-			addFileToMenu(m, favorites[i]);
-		} else {
-			addDirectoryToMenu(m, favorites[i]);
+	if (totalfavs>0){
+		for (i = 0; i < totalfavs; i++)
+		{
+			int n=strlen(favorites[i]);
+			if(n>5 && !strcmp(".3dsx", &favorites[i][n-5]))	{
+				addFileToMenu(m, favorites[i]);
+			} else {
+				addDirectoryToMenu(m, favorites[i]);
+			}
 		}
 	}
 }

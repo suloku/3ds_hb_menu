@@ -28,6 +28,7 @@ titleBrowser_s titleBrowser;
 hbfolder Folders;
 char updatefolder = 0;
 char favActive = 0;
+char confUpdate = 0;
 
 static enum
 {
@@ -360,7 +361,7 @@ int main()
 				if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 				else if(isNinjhax2()) hbmenu_state = HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2;
 			}
-			if(hidKeysDown()&KEY_X)//Toogle Favorites
+			if(hidKeysDown()&KEY_X && totalfavs >0)//Toogle Favorites
 			{
 				if (!favActive){
 					updatefolder = 2;
@@ -381,13 +382,62 @@ int main()
 				if (Folders.current < 0) Folders.current = Folders.max;
 				updatefolder = 1;
 			}
-			if(hidKeysDown()&KEY_SELECT)//Add or de-add favorite
+			if(hidKeysDown()&KEY_SELECT)//Add or remove favorite
 			{
-				//TODO
-				if (!favActive)
+				if (!favActive && totalfavs < MAX_FAVS)
 				{
-				}else{
+					menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
+					//Is it a stray 3dsx?
+					char stray = 0;
+					if (strcmp(me->author, "Unknown publisher") == 0) stray = 1;
+					if (totalfavs < MAX_FAVS-1){ //If there's room
+						//Is it a stray 3dsx?
+						if (stray){
+							strcpy(favorites[totalfavs], me->executablePath);
+						}else{
+						//Full folder entry
+							strcpy(favorites[totalfavs], me->executablePath);
+							char * pch;
+							pch=strrchr(favorites[totalfavs],'/');
+							favorites[totalfavs][pch-favorites[totalfavs]]='\0';
+						}
+						totalfavs++;
+					}
+					updatefolder = 1;
+				}else if (favActive){
+				
+					int j;
+					favorites[menu.selectedEntry][0]= '\0';
+					for (j=menu.selectedEntry; j <= totalfavs; j++){
+						strcpy(favorites[j], favorites[j+1]);
+					}
+				/*
+					int j;
+					char removed = 0;
+					//Erase selected and move up the other favorites
+					for (j=0; j <= totalfavs; j++){
+						if (removed){
+							strcpy(favorites[j-1], favorites[j]);
+						}
+						char * pch;
+						pch=strrchr(favorites[j],'/');
+						if ( strncmp(favorites[j], me->executablePath, pch-favorites[j]+1) == 0 ){
+							favorites[j][0] = '\0';
+							removed=1;
+						}
+					}
+				*/
+					//Erase the last one
+					favorites[totalfavs][0] = '\0';
+					totalfavs--;
+					if (totalfavs >0){
+						updatefolder = 2;
+					}else{
+						favActive ^= 1;
+						updatefolder = 1;
+					}
 				}
+				confUpdate = 1;
 			}
 			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_R) //toogle region free
 			{
@@ -470,6 +520,8 @@ int main()
 
 		gspWaitForVBlank();
 	}
+
+	if (confUpdate) writeFolders(&Folders);
 
 	menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
 

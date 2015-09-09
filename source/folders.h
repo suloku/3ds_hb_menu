@@ -27,6 +27,7 @@ typedef struct
 } hbfolder;
 
 void loadFolders(hbfolder* folder);
+void writeFolders(hbfolder* folder);
 
 #ifdef __cplusplus
 }

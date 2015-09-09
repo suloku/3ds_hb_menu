@@ -159,7 +159,7 @@ void clearMenuEntries(menu_s* m)
 
 	if(regionFreeAvailable && !favActive && !disableRF)
 	{
-		// should always be available //Well, not anymore
+		// should always be available //Well, not anymore, always accessible though
 		addMenuEntryCopy(m, &regionfreeEntry);
 	}
 }
