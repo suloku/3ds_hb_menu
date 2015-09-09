@@ -3,5 +3,3 @@ build/
 *.exe
 *.elf
 *~
-/source/folders.cpp
-/source/folders.h
