@@ -244,9 +244,16 @@ int main()
 	if(sdmcCurrent == 1)
 	{
 		if(remembermenu){
-			if (lastFolder <= Folders.max) Folders.current = lastFolder;
-			scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
-			if (lastEntry <= menu.numEntries) menu.selectedEntry = lastEntry;
+			if(lastFolder == -1){//Favorites
+				favActive ^= 1;
+				addFavorites(&menu);
+			}else{
+				if (lastFolder <= Folders.max && lastFolder >= 0){
+					Folders.current = lastFolder;
+				}
+				scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
+			}
+			if (lastEntry <= menu.numEntries && lastEntry >= 0) menu.selectedEntry = lastEntry;
 		}else{
 			scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
 		}
@@ -514,7 +521,11 @@ int main()
 	}
 
 	if (confUpdate || remembermenu ){
-		lastFolder = Folders.current;
+		if (favActive){
+			lastFolder = -1;
+		}else{
+			lastFolder = Folders.current;
+		}
 		lastEntry = menu.selectedEntry;
 		writeFolders(&Folders);
 	}
