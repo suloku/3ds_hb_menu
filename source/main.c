@@ -13,7 +13,7 @@
 #include "regionfree.h"
 #include "boot.h"
 #include "titles.h"
-#include "folders.h"
+#include "config.h"
 
 bool brewMode = false;
 u8 sdmcCurrent = 0;
@@ -346,6 +346,7 @@ int main()
 			if(hidKeysDown()&KEY_A)
 			{
 				//reboot
+				if (confUpdate) writeFolders(&Folders);
 				aptOpenSession();
 					APT_HardwareResetAsync(NULL);
 				aptCloseSession();
@@ -411,22 +412,6 @@ int main()
 					for (j=menu.selectedEntry; j <= totalfavs; j++){
 						strcpy(favorites[j], favorites[j+1]);
 					}
-				/*
-					int j;
-					char removed = 0;
-					//Erase selected and move up the other favorites
-					for (j=0; j <= totalfavs; j++){
-						if (removed){
-							strcpy(favorites[j-1], favorites[j]);
-						}
-						char * pch;
-						pch=strrchr(favorites[j],'/');
-						if ( strncmp(favorites[j], me->executablePath, pch-favorites[j]+1) == 0 ){
-							favorites[j][0] = '\0';
-							removed=1;
-						}
-					}
-				*/
 					//Erase the last one
 					favorites[totalfavs][0] = '\0';
 					totalfavs--;
@@ -441,8 +426,10 @@ int main()
 			}
 			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_R) //toogle region free
 			{
-				disableRF ^= 1;
-				updatefolder = 1;
+				if (!favActive){
+					disableRF ^= 1;
+					updatefolder = 1;
+				}
 			}
 			if (updatefolder)
 			{

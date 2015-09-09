@@ -1,7 +1,7 @@
 #pragma once
 #include <3ds.h>
 #include "menu.h"
-#include "folders.h"
+#include "config.h"
 
 extern FS_archive sdmcArchive;
 
