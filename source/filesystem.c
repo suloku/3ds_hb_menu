@@ -87,7 +87,9 @@ void addFileToMenu(menu_s* m, char* execPath)
 
 	int i, l=-1; for(i=0; execPath[i]; i++) if(execPath[i]=='/')l=i;
 
-	initMenuEntry(&tmpEntry, execPath, &execPath[l+1], execPath, "Unknown publisher", (u8*)installerIcon_bin);
+	char execPathFav[1024];
+	sprintf(execPathFav, "%s%s", (isFavorite(execPath)?"* ":""), execPath);
+	initMenuEntry(&tmpEntry, execPath, &execPath[l+1], execPathFav, "Unknown Publisher", (u8*)installerIcon_bin);
 
 	static char xmlPath[128];
 	snprintf(xmlPath, 128, "%s", execPath);
@@ -134,9 +136,18 @@ void addDirectoryToMenu(menu_s* m, char* path)
 		initEmptyMenuEntry(&tmpEntry);
 		ret=extractSmdhData(&tmpSmdh, tmpEntry.name, tmpEntry.description, tmpEntry.author, tmpEntry.iconData);
 		strncpy(tmpEntry.executablePath, execPath, ENTRY_PATHLENGTH);
+		if (isFavorite(path)){
+			char descriptionFav[ENTRY_DESCLENGTH+1];
+			sprintf(descriptionFav, "%s%s", (isFavorite(path)?"*":""), tmpEntry.description);
+			strcpy(tmpEntry.description, descriptionFav);
+		}
 	}
 
-	if(ret)initMenuEntry(&tmpEntry, execPath, &path[l+1], execPath, "Unknown publisher", (u8*)installerIcon_bin);
+	if(ret){
+		char descriptionFav[ENTRY_DESCLENGTH+1];
+		sprintf(descriptionFav, "%s%s", (isFavorite(path)?"*":""), execPath);
+		initMenuEntry(&tmpEntry, execPath, &path[l+1], descriptionFav, "Unknown publisher", (u8*)installerIcon_bin);
+	}
 
 	snprintf(xmlPath, 128, "%s/descriptor.xml", path);
 	if(!fileExists(xmlPath, &sdmcArchive))snprintf(xmlPath, 128, "%s/%s.xml", path, &path[l+1]);

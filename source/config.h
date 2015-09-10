@@ -29,8 +29,9 @@ typedef struct
 	int max;
 } hbfolder;
 
-void loadFolders(hbfolder* folder);
-void writeFolders(hbfolder* folder);
+void loadConfig(hbfolder* folder);
+void writeConfig(hbfolder* folder);
+int isFavorite(char* path);
 
 #ifdef __cplusplus
 }

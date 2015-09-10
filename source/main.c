@@ -29,6 +29,7 @@ hbfolder Folders;
 char updatefolder = 0;
 char favActive = 0;
 char confUpdate = 0;
+menu_s lastMenu;
 
 static enum
 {
@@ -146,13 +147,15 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 				"Previous folder:    %s                                                                                        \n"
 				"Next folder:           %s                                                                                        ",
 				(Folders.current-1<0?Folders.dir[Folders.max]:Folders.dir[Folders.current-1]),
-				(Folders.current+1>Folders.max?Folders.dir[0]:Folders.dir[Folders.current+1]) );
+				(Folders.current+1>Folders.max?Folders.dir[0]:Folders.dir[Folders.current+1]));
 			char bof3[1024+64];
 			sprintf(bof3, "Current folder: %s", Folders.dir[Folders.current]);
 			drawFolders(
 				bof3,
 				bof2,
 				-175);
+			if (remembermenu)
+				gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, "*", 0, 0);
 		}
 	}
 }
@@ -233,7 +236,7 @@ int main()
 	strcpy(Folders.dir[0], "/3ds/");
 	Folders.current = 0;
 	Folders.max = 0;
-	loadFolders(&Folders); //Needs to be before initMenu to disable regionfree entry if configured
+	loadConfig(&Folders); //Needs to be before initMenu to disable regionfree entry if configured
 	if (Folders.max >= MAX_FOLDER) Folders.max = MAX_FOLDER-1;
 
 	initMenu(&menu);
@@ -358,7 +361,7 @@ int main()
 			if(hidKeysDown()&KEY_A)
 			{
 				//reboot
-				if (confUpdate) writeFolders(&Folders);
+				if (confUpdate) writeConfig(&Folders);
 				aptOpenSession();
 					APT_HardwareResetAsync(NULL);
 				aptCloseSession();
@@ -374,7 +377,7 @@ int main()
 				if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 				else if(isNinjhax2()) hbmenu_state = HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2;
 			}
-			if(hidKeysDown()&KEY_X && totalfavs >0)//Toogle Favorites
+			if(hidKeysDown()&KEY_X && totalfavs >0 && hbmenu_state == HBMENU_DEFAULT)//Toogle Favorites
 			{
 				if (!favActive){
 					updatefolder = 2;
@@ -383,42 +386,74 @@ int main()
 				}
 				favActive ^= 1;
 			}
-			if(hidKeysDown()&KEY_R && !favActive && !(hidKeysHeld()&KEY_UP))//Next folder
+			if(hidKeysDown()&KEY_R && !favActive && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Next folder
 			{
 				Folders.current++;
 				if (Folders.current > Folders.max) Folders.current = 0;
 				updatefolder = 1;
 			}
-			if(hidKeysDown()&KEY_L && !favActive)//Previous folder
+			if(hidKeysDown()&KEY_L && !favActive && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Previous folder
 			{
 				Folders.current--;
 				if (Folders.current < 0) Folders.current = Folders.max;
 				updatefolder = 1;
 			}
-			if(hidKeysDown()&KEY_SELECT)//Add or remove favorite
+			if(hidKeysDown()&KEY_SELECT && hbmenu_state == HBMENU_DEFAULT)//Add or remove favorite
 			{
-				if (!favActive && totalfavs < MAX_FAVS)
+				if (!disableRF && regionFreeAvailable && !netloader_boot){
+					//Do nothing with region free
+				}else if (!favActive && totalfavs < MAX_FAVS)
 				{
 					menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
+					char infavs=0;
 					//Is it a stray 3dsx?
+					//If name and description end both in .3dsx and it's not a stray 3dsx file, the smdh creator is nuts.
 					char stray = 0;
-					if (strcmp(me->author, "Unknown publisher") == 0) stray = 1;
+					int lenght = strlen(me->description);
+					if (lenght >= 4 && me->description[lenght-5] == '.' && me->description[lenght-4] == '3' && me->description[lenght-3] == 'd' && me->description[lenght-2] == 's' && me->description[lenght-1] == 'x')
+					{
+						lenght = strlen(me->name);
+						if (lenght >= 4 && me->name[lenght-5] == '.' && me->name[lenght-4] == '3' && me->name[lenght-3] == 'd' && me->name[lenght-2] == 's' && me->name[lenght-1] == 'x')
+						{
+							stray = 1;
+						}
+					}
 					if (totalfavs < MAX_FAVS-1){ //If there's room
 						//Is it a stray 3dsx?
 						if (stray){
-							strcpy(favorites[totalfavs], me->executablePath);
+							infavs = isFavorite(me->executablePath);
+							if (!infavs){
+								strcpy(favorites[totalfavs], me->executablePath);
+							}
 						}else{
 						//Full folder entry
-							strcpy(favorites[totalfavs], me->executablePath);
+							char tmp[1024];
+							strcpy(tmp, me->executablePath);
 							char * pch;
-							pch=strrchr(favorites[totalfavs],'/');
-							favorites[totalfavs][pch-favorites[totalfavs]]='\0';
+							pch=strrchr(tmp,'/');
+							tmp[pch-tmp]='\0';
+							infavs = isFavorite(tmp);
+							if (!infavs){
+								strcpy(favorites[totalfavs], tmp);
+							}
 						}
-						totalfavs++;
+						if(!infavs){
+							totalfavs++;
+						}else if (infavs) //remove favorite
+						{
+							int j;
+							favorites[infavs-1][0]= '\0';
+							for (j=infavs-1; j <= totalfavs; j++){
+								strcpy(favorites[j], favorites[j+1]);
+							}
+							//Erase the last one
+							favorites[totalfavs][0] = '\0';
+							totalfavs--;
+						}
 					}
-					updatefolder = 1;
+					updatefolder = 3;
+					lastEntry = menu.selectedEntry;
 				}else if (favActive){
-				
 					int j;
 					favorites[menu.selectedEntry][0]= '\0';
 					for (j=menu.selectedEntry; j <= totalfavs; j++){
@@ -428,7 +463,7 @@ int main()
 					favorites[totalfavs][0] = '\0';
 					totalfavs--;
 					if (totalfavs >0){
-						updatefolder = 2;
+						updatefolder = 4;
 					}else{
 						favActive ^= 1;
 						updatefolder = 1;
@@ -436,26 +471,45 @@ int main()
 				}
 				confUpdate = 1;
 			}
-			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_R) //toogle region free
+			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_R  && hbmenu_state == HBMENU_DEFAULT) //toogle region free
 			{
 				if (!favActive){
 					disableRF ^= 1;
 					updatefolder = 1;
 				}
 			}
+			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_L  && hbmenu_state == HBMENU_DEFAULT) //toogle remember_menu
+			{
+				remembermenu ^= 1;
+				updatefolder = 1;
+			}
 			if (updatefolder)
 			{
+				lastMenu = menu;
 				clearMenuEntries(&menu);
 				menu.selectedEntry=0;
 				menu.scrollLocation=0;
 				closeSDArchive();
 				openSDArchive();
-				if(updatefolder == 1)
+				if(updatefolder == 1 || updatefolder == 3)
 				{
 					scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
-				}else if (updatefolder == 2)
+					if (updatefolder == 3)//Mark as favorite, we don't change menu, just reload it.
+					{
+						menu = lastMenu;
+					}
+				}else if (updatefolder == 2 || updatefolder == 4)
 				{
 					addFavorites(&menu);
+					//Disabled because the scrolling is confusing with many entries
+					/*
+					if (updatefolder == 4){//Deleted favorite, restore menu
+						if(lastMenu.selectedEntry-1 >=0){
+							menu.selectedEntry = lastMenu.selectedEntry-1;
+							menu.atEquilibrium = false;
+						}
+					}
+					*/
 				}
 				updatefolder = 0;
 			}
@@ -527,7 +581,7 @@ int main()
 			lastFolder = Folders.current;
 		}
 		lastEntry = menu.selectedEntry;
-		writeFolders(&Folders);
+		writeConfig(&Folders);
 	}
 
 	menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);

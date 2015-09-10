@@ -11,7 +11,7 @@ int lastFolder = 0;
 int lastEntry = 0;
 char favorites[MAX_FAVS][1024];
 
-void loadFolders(hbfolder* folder){
+void loadConfig(hbfolder* folder){
 
 	if(!folder)return;
 
@@ -67,7 +67,7 @@ void loadFolders(hbfolder* folder){
 
 }
 
-void writeFolders(hbfolder* folder){
+void writeConfig(hbfolder* folder){
 
 	if(!folder)return;
 
@@ -126,4 +126,12 @@ void writeFolders(hbfolder* folder){
 //End favs
 
 	xmlDoc.SaveFile(FOLDER_FILE);
+}
+
+int isFavorite(char* path){
+	int i;
+	for (i=0; i<totalfavs ; i++){
+		if (strcmp(path, favorites[i]) == 0) return i+1;//+1 to use return value as boolean
+	}
+	return 0;
 }
