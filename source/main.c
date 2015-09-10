@@ -244,7 +244,7 @@ int main()
 	if(sdmcCurrent == 1)
 	{
 		if(remembermenu){
-			if(lastFolder == -1){//Favorites
+			if(lastFolder == -1 && totalfavs >0){//Favorites
 				favActive ^= 1;
 				addFavorites(&menu);
 			}else{
