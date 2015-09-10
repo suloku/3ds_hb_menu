@@ -188,7 +188,8 @@ bool secretCode(void)
 		if(state == sizeof(secret_code)/sizeof(secret_code[0]))
 		{
 			state = 0;
-			return true;
+			rememberbrew ^=1;
+			return rememberbrew;
 		}
 	}
 
@@ -237,6 +238,7 @@ int main()
 	Folders.current = 0;
 	Folders.max = 0;
 	loadConfig(&Folders); //Needs to be before initMenu to disable regionfree entry if configured
+	brewMode = rememberbrew;
 	if (Folders.max >= MAX_FOLDER) Folders.max = MAX_FOLDER-1;
 
 	initMenu(&menu);

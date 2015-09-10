@@ -17,6 +17,7 @@ extern int caseSetting;
 extern int mixSetting;
 extern int totalfavs;
 extern int remembermenu;
+extern int rememberbrew;
 extern int lastFolder;
 extern int lastEntry;
 extern int disableRF;
