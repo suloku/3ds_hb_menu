@@ -515,7 +515,7 @@ int main()
 				}
 				updatefolder = 0;
 			}
-			if(secretCode())brewMode = true;
+			if(secretCode())brewMode ^= 1;
 			else if(updateMenu(&menu))
 			{
 				menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
