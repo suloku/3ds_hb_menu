@@ -189,6 +189,7 @@ bool secretCode(void)
 		{
 			state = 0;
 			rememberbrew ^=1;
+			confUpdate = 1;
 			return rememberbrew;
 		}
 	}
@@ -484,6 +485,7 @@ int main()
 			{
 				remembermenu ^= 1;
 				updatefolder = 1;
+				confUpdate = 1;
 			}
 			if (updatefolder)
 			{

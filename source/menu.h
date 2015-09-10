@@ -19,7 +19,8 @@
 #define ENTRY_HEIGHT_SELECTED (298)
 
 #define ENTRY_BGCOLOR (u8[]){246, 252, 255}
-#define ENTRY_BGCOLOR_SHADOW (u8[]){34, 153, 183}
+//#define ENTRY_BGCOLOR_SHADOW (u8[]){34, 153, 183}
+#define ENTRY_BGCOLOR_SHADOW (u8[]){23, 92, 113}
 
 #define fptToInt(v) ((v)>>10)
 #define intToFpt(v) ((v)<<10)

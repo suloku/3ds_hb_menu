@@ -12,8 +12,8 @@
 #define BG_WATER_NEIGHBORHOODS (3)
 #define BG_WATER_DAMPFACTOR (0.7f)
 #define BG_WATER_SPRINGFACTOR (0.85f)
-#define BG_WATER_WIDTH (500)
-#define BG_WATER_OFFSET (0)
+#define BG_WATER_WIDTH (525)
+#define BG_WATER_OFFSET (-25)
 
 static bubble_t bubbles[BUBBLE_COUNT];
 static waterEffect_s waterEffect;

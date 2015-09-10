@@ -83,6 +83,13 @@ int bootApp(char* executablePath, executableMetadata_s* em)
 		argbuffer_length = strlen((char*)&argbuffer[1]) + 4 + 1; // don't forget null terminator !
 	// }
 
+		if (netloader_boot)
+		{
+			snprintf((char*)&argbuffer[0]+argbuffer_length, 0x200*4 - 4 - argbuffer_length, "%s", netloaded_commandline);
+			argbuffer_length += strlen((char*)&argbuffer[0]+argbuffer_length) + 1;
+			argbuffer[0]++;
+		}
+
 	// figure out the preferred way of running the 3dsx
 	if(!hbInit())
 	{
