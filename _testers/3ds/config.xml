@@ -1,12 +1,46 @@
 <root>
-	<folders>
-		<path></path>
-		<mix_files>0</mix_files>
-		<case_sensitive>0</case_sensitive>
-		<disable_RF>1</disable_RF>
+    <folders>
+        <path>/3ds/Emulators/</path>
+        <path>/3ds/Homebrew Games/</path>
+        <path>/3ds/Utilities/</path>
+		<path>/3ds/Other/</path>
+        <mix_files>0</mix_files>
+        <case_sensitive>0</case_sensitive>
+        <disable_RF>1</disable_RF>
+ 		<current_theme>2</current_theme>
 		<menu_pos remember_menu="1" folder="0" entry="0"/>
-	</folders>
+    </folders>
 	<favorites>
 		<fav></fav>
 	</favorites>
+	<theme1>
+		<FOLDER_BGCOLOR r="246" g="252" b="255"/>
+		<ENTRY_BGCOLOR r="246" g="252" b="255"/>
+		<ENTRY_BGCOLOR_SHADOW r="34" g="153" b="183"/>
+		<WATERBORDERCOLOR r="66" g="224" b="255"/>
+		<WATERCOLOR r="66" g="163" b="255"/>
+		<BGCOLOR r="0" g="132" b="255"/>
+		<SCROLL_COLOR r="132" g="224" b="255"/>
+		<SCROLLFRONT_COLOR r="255" g="255" b="255"/>
+		<FONT_DEFAULT r="255" g="255" b="255"/>
+		<FONT_TITLE r="118" g="118" b="118"/>
+		<FONT_DESCRIPTION r="118" g="118" b="118"/>
+		<FONT_TITLEFOLDER r="118" g="118" b="118"/>
+		<FONT_DESCRIPTIONFOLDER r="118" g="118" b="118"/>
+	</theme1>
+	<theme2>
+		<FOLDER_BGCOLOR r="33" g="33" b="33"/>
+		<ENTRY_BGCOLOR r="33" g="33" b="33"/>
+		<ENTRY_BGCOLOR_SHADOW r="200" g="200" b="200"/>
+		<WATERBORDERCOLOR r="33" g="33" b="33"/>
+		<WATERCOLOR r="255" g="50" b="40"/>
+		<BGCOLOR r="40" g="40" b="40"/>
+		<SCROLL_COLOR r="33" g="33" b="33"/>
+		<SCROLLFRONT_COLOR r="200" g="200" b="200"/>
+		<FONT_DEFAULT r="40" g="40" b="40"/>
+		<FONT_TITLE r="255" g="255" b="255"/>
+		<FONT_DESCRIPTION r="255" g="255" b="255"/>
+		<FONT_TITLEFOLDER r="200" g="50" b="40"/>
+		<FONT_DESCRIPTIONFOLDER r="255" g="255" b="255"/>	
+	</theme2>
 </root>

@@ -24,3 +24,19 @@ font_s fontDescription =
 	13,
 	(u8[]){0x76,0x76,0x76}
 };
+
+font_s fontTitleFolder =
+{
+	font1Data,
+	font1Desc,
+	16,
+	(u8[]){0x76,0x76,0x76}
+};
+
+font_s fontDescriptionFolder =
+{
+	font2Data,
+	font2Desc,
+	13,
+	(u8[]){0x76,0x76,0x76}
+};

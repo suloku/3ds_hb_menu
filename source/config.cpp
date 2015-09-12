@@ -223,6 +223,28 @@ void loadConfig(hbfolder* folder){
 				subElement->QueryIntAttribute("b", &temp);
 				fontDescription.color[2] = (short)temp;
 			}
+			subElement = pElement->FirstChildElement("FONT_TITLEFOLDER");
+			if (subElement != nullptr)
+			{
+				//Values
+				subElement->QueryIntAttribute("r", &temp);
+				fontTitleFolder.color[0] = (short)temp;
+				subElement->QueryIntAttribute("g", &temp);
+				fontTitleFolder.color[1] = (short)temp;
+				subElement->QueryIntAttribute("b", &temp);
+				fontTitleFolder.color[2] = (short)temp;
+			}
+			subElement = pElement->FirstChildElement("FONT_DESCRIPTIONFOLDER");
+			if (subElement != nullptr)
+			{
+				//Values
+				subElement->QueryIntAttribute("r", &temp);
+				fontDescriptionFolder.color[0] = (short)temp;
+				subElement->QueryIntAttribute("g", &temp);
+				fontDescriptionFolder.color[1] = (short)temp;
+				subElement->QueryIntAttribute("b", &temp);
+				fontDescriptionFolder.color[2] = (short)temp;
+			}
 		}
 }
 

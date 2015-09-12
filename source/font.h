@@ -19,5 +19,7 @@ extern charDesc_s font2Desc[];
 extern font_s fontDefault;
 extern font_s fontTitle;
 extern font_s fontDescription;
+extern font_s fontTitleFolder;
+extern font_s fontDescriptionFolder;
 
 #endif

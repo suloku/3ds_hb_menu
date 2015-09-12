@@ -70,7 +70,10 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"Reboot",
 			"    You're about to reboot your console into home menu.\n\n"
 			"                                                                                            A : Proceed\n"
-			"                                                                                            B : Cancel\n",
+			"                                                                                            B : Cancel\n"
+			"                                                                                                      \n"
+			"  L : Previous theme                                                                                  \n"
+			"  R : Next theme                                                                                      \n",
 			0);
 	}else if(!sdmcCurrent)
 	{

@@ -69,19 +69,20 @@ void drawFolders(char* current, char* previous, char* next, int offset)
 	pch=strrchr(temp,'/');
 	*pch='\0';
 	pch=strrchr(temp,'/')+1;
-	gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, pch,  x+width-16, y+38);
+	gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescriptionFolder, pch,  x+width-16, y+38);
 
 	strcpy (temp, current);
 	pch=strrchr(temp,'/');
 	*pch='\0';
 	pch=strrchr(temp,'/')+1;
-	gfxDrawText(GFX_TOP, GFX_LEFT, &fontTitle, pch, x+width-5-16-13, y+26);
+	gfxDrawText(GFX_TOP, GFX_LEFT, &fontTitleFolder, pch, x+width-5-16-13, y+26);
 
 	strcpy (temp, next);
 	pch=strrchr(temp,'/');
 	*pch='\0';
 	pch=strrchr(temp,'/')+1;
-	gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, pch, x+width-5-16-13-16, y+38);
+	gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescriptionFolder, pch, x+width-5-16-13-16, y+38);
+
 	gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)arrowup_bin, 9, 16, 46, 8);
 	gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)arrowdown_bin, 9, 16, 6, 8);
 }
