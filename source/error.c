@@ -5,6 +5,8 @@
 #include "error.h"
 #include "menu.h"
 #include "text.h"
+#include "arrowdown_bgr.h"
+#include "arrowup_bgr.h"
 
 u8 roundLutError[]={8, 5, 4, 3, 2, 1, 1, 1, 0};
 
@@ -42,7 +44,6 @@ void drawError(gfxScreen_t screen, char* title, char* body, int offset)
 
 void drawFolders(char* current, char* previous, char* next, int offset)
 {
-
 	int i;
 
 	int numLines=countLines("\n\n");
@@ -61,26 +62,26 @@ void drawFolders(char* current, char* previous, char* next, int offset)
 	//Get folder name
 	char * pch;
 	char temp[1024];
-	char temp2[1024];
 
 	strcpy (temp, previous);
 	pch=strrchr(temp,'/');
 	*pch='\0';
 	pch=strrchr(temp,'/')+1;
-	sprintf (temp2, "/\\     %s", pch);
-	gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, temp2,  x+width-16, y+6);
+	gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, pch,  x+width-16, y+38);
 
 	strcpy (temp, current);
 	pch=strrchr(temp,'/');
 	*pch='\0';
 	pch=strrchr(temp,'/')+1;
-	gfxDrawText(GFX_TOP, GFX_LEFT, &fontTitle, pch, x+width-5-16-13, y+28);
+	gfxDrawText(GFX_TOP, GFX_LEFT, &fontTitle, pch, x+width-5-16-13, y+26);
 
 	strcpy (temp, next);
 	pch=strrchr(temp,'/');
 	*pch='\0';
 	pch=strrchr(temp,'/')+1;
-	sprintf (temp2, "\\/     %s", pch);
-	gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, temp2, x+width-5-16-13-16, y+6);
+	gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, pch, x+width-5-16-13-16, y+38);
+	gfxDrawSprite(GFX_TOP, GFX_LEFT, (u8*)arrowdown_bgr, 9, 14, 6, 8);
+	gfxDrawSprite(GFX_TOP, GFX_LEFT, (u8*)arrowup_bgr, 9, 14, 46, 8);
+
 
 }
