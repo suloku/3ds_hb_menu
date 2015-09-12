@@ -190,7 +190,7 @@ bool secretCode(void)
 			state = 0;
 			rememberbrew ^=1;
 			confUpdate = 1;
-			return rememberbrew;
+			return true;
 		}
 	}
 
@@ -477,7 +477,15 @@ int main()
 			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_R  && hbmenu_state == HBMENU_DEFAULT) //toogle region free
 			{
 				if (!favActive){
-					disableRF ^= 1;
+					if (disableRF && menu.numEntries > 0){//We'll enable
+						menu.numEntries++;
+						menu.selectedEntry++;
+						disableRF ^= 1;
+					}else{//We'll disable
+						menu.numEntries--;
+						menu.selectedEntry--;
+						disableRF ^= 1;
+					}
 					updatefolder = 1;
 				}
 			}
@@ -489,6 +497,11 @@ int main()
 			}
 			if (updatefolder)
 			{
+				//Safety check, if no homebrew and no region free entry, HBL crashes, so let's put region free there.
+				if (disableRF && !menu.numEntries){
+					disableRF ^= 1;
+					menu.numEntries = 1;
+				}
 				lastMenu = menu;
 				clearMenuEntries(&menu);
 				menu.selectedEntry=0;
@@ -517,7 +530,7 @@ int main()
 				}
 				updatefolder = 0;
 			}
-			if(secretCode())brewMode ^= 1;
+			if(secretCode())brewMode = !brewMode;
 			else if(updateMenu(&menu))
 			{
 				menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);

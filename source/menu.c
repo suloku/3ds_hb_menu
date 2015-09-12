@@ -36,12 +36,11 @@ void initMenu(menu_s* m)
 	m->scrollTarget=0;
 	m->atEquilibrium=false;
 
-	if(regionFreeAvailable)
+	if(regionFreeAvailable && !disableRF)
 	{
 		extractSmdhData((smdh_s*)regionfree_bin, regionfreeEntry.name, regionfreeEntry.description, regionfreeEntry.author, regionfreeEntry.iconData);
 		strcpy(regionfreeEntry.executablePath, REGIONFREE_PATH);
-		if (!disableRF)
-			addMenuEntryCopy(m, &regionfreeEntry);
+		addMenuEntryCopy(m, &regionfreeEntry);
 	}
 }
 
