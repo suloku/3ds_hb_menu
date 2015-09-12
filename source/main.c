@@ -579,8 +579,8 @@ int main()
 			}
 		}
 
-		if(brewMode)renderFrame(BGCOLOR, BEERBORDERCOLOR, BEERCOLOR);
-		else renderFrame(BGCOLOR, WATERBORDERCOLOR, WATERCOLOR);
+		if(brewMode)renderFrame(bgcolor, BEERBORDERCOLOR, BEERCOLOR);
+		else renderFrame(bgcolor, waterbordercolor, watercolor);
 
 		if(rebootCounter<256)
 		{

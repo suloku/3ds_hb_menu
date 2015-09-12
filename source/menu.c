@@ -13,6 +13,9 @@ u8 roundLut[]={8, 5, 4, 3, 2, 1, 1, 1, 0};
 u8 roundLut2[]={4, 3, 2, 1, 0};
 u8 roundLut3[]={0, 1, 2};
 
+u8 entry_bgcolor[] = {246, 252, 255};
+u8 entry_bgcolor_shadow[] = {23, 92, 113};
+
 #define SCROLLING_SPEED (16) //lower is faster
 
 extern int debugValues[100]; //TEMP
@@ -338,15 +341,15 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, u16 x, u16 y, bool select
 	{
 		const int sw=4;
 		const int sx=x-sw;
-		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, ENTRY_BGCOLOR_SHADOW, sx+roundLut[i], y+i, sw, 1);
-		gfxDrawRectangle(screen, GFX_LEFT, ENTRY_BGCOLOR_SHADOW, sx, y+9, sw, actualHeight-9*2);
-		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, ENTRY_BGCOLOR_SHADOW, sx+roundLut[i], y+actualHeight-1-i, sw, 1);
+		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, sx+roundLut[i], y+i, sw, 1);
+		gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, sx, y+9, sw, actualHeight-9*2);
+		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, sx+roundLut[i], y+actualHeight-1-i, sw, 1);
 	}
 
 	//main frame
-	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, ENTRY_BGCOLOR, x-widthOffset+roundLut[i], y+i, actualWidth-roundLut[i]*2, 1);
-	gfxDrawRectangle(screen, GFX_LEFT, ENTRY_BGCOLOR, x-widthOffset, y+9, actualWidth, actualHeight-9*2);
-	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, ENTRY_BGCOLOR, x-widthOffset+roundLut[i], y+actualHeight-1-i, actualWidth-roundLut[i]*2, 1);
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x-widthOffset+roundLut[i], y+i, actualWidth-roundLut[i]*2, 1);
+	gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x-widthOffset, y+9, actualWidth, actualHeight-9*2);
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x-widthOffset+roundLut[i], y+actualHeight-1-i, actualWidth-roundLut[i]*2, 1);
 
 	//icon frame
 	u8 colorIcon[]={225, 225, 225};

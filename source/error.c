@@ -33,9 +33,9 @@ void drawError(gfxScreen_t screen, char* title, char* body, int offset)
 	int x=240-width-12+offset, y=4;
 
 	//main frame
-	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, ENTRY_BGCOLOR, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
-	gfxDrawRectangle(screen, GFX_LEFT, ENTRY_BGCOLOR, x, y+9, width, height-9*2);
-	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, ENTRY_BGCOLOR, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
+	gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x, y+9, width, height-9*2);
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
 
 	//content
 	gfxDrawText(screen, GFX_LEFT, &fontTitle, title, x+width-6-16, y+6);
@@ -53,9 +53,9 @@ void drawFolders(char* current, char* previous, char* next, int offset)
 	int x=240-width-12+offset, y=4;
 
 	//main frame
-	for(i=0; i<9; i++)gfxDrawRectangle(GFX_TOP, GFX_LEFT, ENTRY_BGCOLOR, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
-	gfxDrawRectangle(GFX_TOP, GFX_LEFT, ENTRY_BGCOLOR, x, y+9, width, height-9*2);
-	for(i=0; i<9; i++)gfxDrawRectangle(GFX_TOP, GFX_LEFT, ENTRY_BGCOLOR, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
+	for(i=0; i<9; i++)gfxDrawRectangle(GFX_TOP, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
+	gfxDrawRectangle(GFX_TOP, GFX_LEFT, entry_bgcolor, x, y+9, width, height-9*2);
+	for(i=0; i<9; i++)gfxDrawRectangle(GFX_TOP, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
 
 	//content
 	

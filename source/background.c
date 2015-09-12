@@ -15,6 +15,10 @@
 #define BG_WATER_WIDTH (525)
 #define BG_WATER_OFFSET (-25)
 
+u8 waterbordercolor[] = {66, 224, 255};
+u8 watercolor[] = {66, 163, 255};
+u8 bgcolor[] = {0, 132, 255};
+
 static bubble_t bubbles[BUBBLE_COUNT];
 static waterEffect_s waterEffect;
 static int backgroundCnt;
