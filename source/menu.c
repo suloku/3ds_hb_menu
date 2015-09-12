@@ -13,8 +13,11 @@ u8 roundLut[]={8, 5, 4, 3, 2, 1, 1, 1, 0};
 u8 roundLut2[]={4, 3, 2, 1, 0};
 u8 roundLut3[]={0, 1, 2};
 
+u8 folder_bgcolor[] = {246, 252, 255};
 u8 entry_bgcolor[] = {246, 252, 255};
 u8 entry_bgcolor_shadow[] = {23, 92, 113};
+u8 scroll_colorBg[]={132, 224, 255};
+u8 scrollfront_color[]={255, 255, 255};
 
 #define SCROLLING_SPEED (16) //lower is faster
 
@@ -66,15 +69,15 @@ void drawScrollBar(menu_s* m)
 	int i;
 	// background scrollbar thing
 		//35,308 - 200,7
-		u8 colorBg[]={132, 224, 255};
-		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, colorBg, 38-i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
-		gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, colorBg, 38, 308, 194, 7);
-		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, colorBg, 232+i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
+		//u8 colorBg[]={132, 224, 255};
+		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scroll_colorBg, 38-i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
+		gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scroll_colorBg, 38, 308, 194, 7);
+		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scroll_colorBg, 232+i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
 	// actual scrollbar
-		u8 color[]={255, 255, 255};
-		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, color, 200-scrollBarTotalSize-m->scrollBarPos+38-i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
-		gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, color, 200-scrollBarTotalSize-m->scrollBarPos+38, 308, m->currentScrollBarSize, 7);
-		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, color, 200-scrollBarTotalSize-m->scrollBarPos+38+m->currentScrollBarSize+i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
+		//u8 color[]={255, 255, 255};
+		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-scrollBarTotalSize-m->scrollBarPos+38-i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
+		gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-scrollBarTotalSize-m->scrollBarPos+38, 308, m->currentScrollBarSize, 7);
+		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-scrollBarTotalSize-m->scrollBarPos+38+m->currentScrollBarSize+i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
 }
 
 void drawMenu(menu_s* m)

@@ -7,6 +7,8 @@
 #include "text.h"
 #include "arrowdown_bgr.h"
 #include "arrowup_bgr.h"
+#include "arrowdown_bin.h"
+#include "arrowup_bin.h"
 
 u8 roundLutError[]={8, 5, 4, 3, 2, 1, 1, 1, 0};
 
@@ -53,9 +55,9 @@ void drawFolders(char* current, char* previous, char* next, int offset)
 	int x=240-width-12+offset, y=4;
 
 	//main frame
-	for(i=0; i<9; i++)gfxDrawRectangle(GFX_TOP, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
-	gfxDrawRectangle(GFX_TOP, GFX_LEFT, entry_bgcolor, x, y+9, width, height-9*2);
-	for(i=0; i<9; i++)gfxDrawRectangle(GFX_TOP, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
+	for(i=0; i<9; i++)gfxDrawRectangle(GFX_TOP, GFX_LEFT, folder_bgcolor, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
+	gfxDrawRectangle(GFX_TOP, GFX_LEFT, folder_bgcolor, x, y+9, width, height-9*2);
+	for(i=0; i<9; i++)gfxDrawRectangle(GFX_TOP, GFX_LEFT, folder_bgcolor, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
 
 	//content
 	
@@ -80,8 +82,6 @@ void drawFolders(char* current, char* previous, char* next, int offset)
 	*pch='\0';
 	pch=strrchr(temp,'/')+1;
 	gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, pch, x+width-5-16-13-16, y+38);
-	gfxDrawSprite(GFX_TOP, GFX_LEFT, (u8*)arrowdown_bgr, 9, 14, 6, 8);
-	gfxDrawSprite(GFX_TOP, GFX_LEFT, (u8*)arrowup_bgr, 9, 14, 46, 8);
-
-
+	gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)arrowup_bin, 9, 16, 46, 8);
+	gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)arrowdown_bin, 9, 16, 6, 8);
 }

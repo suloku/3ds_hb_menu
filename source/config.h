@@ -11,6 +11,8 @@ extern "C" {
 #define MAX_FOLDER 21
 #define FOLDER_FILE "sdmc:/3ds/config.xml"
 
+#define MAX_THEMES 5
+
 #define MAX_FAVS 20
 
 extern int caseSetting;
@@ -22,6 +24,8 @@ extern int lastFolder;
 extern int lastEntry;
 extern int disableRF;
 extern char favorites[MAX_FAVS][1024];
+extern int current_theme;
+extern int totalThemes;
 
 typedef struct
 {

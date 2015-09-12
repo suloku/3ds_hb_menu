@@ -1,4 +1,7 @@
 #include "config.h"
+#include "font.h"
+#include "menu.h"
+#include "background.h"
 #include "tinyxml2.h"
 
 using namespace tinyxml2;
@@ -11,6 +14,9 @@ int rememberbrew = 0;
 int lastFolder = 0;
 int lastEntry = 0;
 char favorites[MAX_FAVS][1024];
+int current_theme = 0;
+int totalThemes = 0;
+int first_theme = 0;
 
 void loadConfig(hbfolder* folder){
 
@@ -60,6 +66,11 @@ void loadConfig(hbfolder* folder){
 			subElement->QueryIntAttribute("folder", &lastFolder);
 			subElement->QueryIntAttribute("entry", &lastEntry);
 		}
+		if (!first_theme){ //Don't reload theme when changing themes
+			subElement = pElement->FirstChildElement("current_theme");
+			if (subElement != nullptr) subElement->QueryIntText(&current_theme);
+			first_theme = 1;
+		}
 	}
 
 	pElement = pRoot->FirstChildElement("favorites");
@@ -76,6 +87,143 @@ void loadConfig(hbfolder* folder){
 			subElement = subElement->NextSiblingElement("fav");
 		}
 	}
+
+		char theme[32];
+		totalThemes = 0;
+		for (i=1; i <= MAX_THEMES; i++){
+			sprintf(theme, "theme%d", i);
+			pElement = pRoot->FirstChildElement(theme);
+			if (pElement != nullptr)
+				totalThemes++;
+		}
+
+		sprintf(theme, "theme%d", current_theme);
+		pElement = pRoot->FirstChildElement(theme);
+		if (pElement != nullptr)
+		{
+			int temp;
+			subElement = pElement->FirstChildElement("FOLDER_BGCOLOR");
+			if (subElement != nullptr)
+			{
+				//Values
+				subElement->QueryIntAttribute("r", &temp);
+				folder_bgcolor[0] = (short)temp;
+				subElement->QueryIntAttribute("g", &temp);
+				folder_bgcolor[1] = (short)temp;
+				subElement->QueryIntAttribute("b", &temp);
+				folder_bgcolor[2] = (short)temp;
+			}
+			subElement = pElement->FirstChildElement("ENTRY_BGCOLOR");
+			if (subElement != nullptr)
+			{
+				//Values
+				subElement->QueryIntAttribute("r", &temp);
+				entry_bgcolor[0] = (short)temp;
+				subElement->QueryIntAttribute("g", &temp);
+				entry_bgcolor[1] = (short)temp;
+				subElement->QueryIntAttribute("b", &temp);
+				entry_bgcolor[2] = (short)temp;
+			}
+			subElement = pElement->FirstChildElement("ENTRY_BGCOLOR_SHADOW");
+			if (subElement != nullptr)
+			{
+				//Values
+				subElement->QueryIntAttribute("r", &temp);
+				entry_bgcolor_shadow[0] = (short)temp;
+				subElement->QueryIntAttribute("g", &temp);
+				entry_bgcolor_shadow[1] = (short)temp;
+				subElement->QueryIntAttribute("b", &temp);
+				entry_bgcolor_shadow[2] = (short)temp;
+			}
+			subElement = pElement->FirstChildElement("WATERBORDERCOLOR");
+			if (subElement != nullptr)
+			{
+				//Values
+				subElement->QueryIntAttribute("r", &temp);
+				waterbordercolor[0] = (short)temp;
+				subElement->QueryIntAttribute("g", &temp);
+				waterbordercolor[1] = (short)temp;
+				subElement->QueryIntAttribute("b", &temp);
+				waterbordercolor[2] = (short)temp;
+			}
+			subElement = pElement->FirstChildElement("WATERCOLOR");
+			if (subElement != nullptr)
+			{
+				//Values
+				subElement->QueryIntAttribute("r", &temp);
+				watercolor[0] = (short)temp;
+				subElement->QueryIntAttribute("g", &temp);
+				watercolor[1] = (short)temp;
+				subElement->QueryIntAttribute("b", &temp);
+				watercolor[2] = (short)temp;
+			}
+			subElement = pElement->FirstChildElement("BGCOLOR");
+			if (subElement != nullptr)
+			{
+				//Values
+				subElement->QueryIntAttribute("r", &temp);
+				bgcolor[0] = (short)temp;
+				subElement->QueryIntAttribute("g", &temp);
+				bgcolor[1] = (short)temp;
+				subElement->QueryIntAttribute("b", &temp);
+				bgcolor[2] = (short)temp;
+			}
+			subElement = pElement->FirstChildElement("SCROLL_COLOR");
+			if (subElement != nullptr)
+			{
+				//Values
+				subElement->QueryIntAttribute("r", &temp);
+				scroll_colorBg[0] = (short)temp;
+				subElement->QueryIntAttribute("g", &temp);
+				scroll_colorBg[1] = (short)temp;
+				subElement->QueryIntAttribute("b", &temp);
+				scroll_colorBg[2] = (short)temp;
+			}
+			subElement = pElement->FirstChildElement("SCROLLFRONT_COLOR");
+			if (subElement != nullptr)
+			{
+				//Values
+				subElement->QueryIntAttribute("r", &temp);
+				scrollfront_color[0] = (short)temp;
+				subElement->QueryIntAttribute("g", &temp);
+				scrollfront_color[1] = (short)temp;
+				subElement->QueryIntAttribute("b", &temp);
+				scrollfront_color[2] = (short)temp;
+			}
+			subElement = pElement->FirstChildElement("FONT_DEFAULT");
+			if (subElement != nullptr)
+			{
+				//Values
+				subElement->QueryIntAttribute("r", &temp);
+				fontDefault.color[0] = (short)temp;
+				subElement->QueryIntAttribute("g", &temp);
+				fontDefault.color[1] = (short)temp;
+				subElement->QueryIntAttribute("b", &temp);
+				fontDefault.color[2] = (short)temp;
+			}
+			subElement = pElement->FirstChildElement("FONT_TITLE");
+			if (subElement != nullptr)
+			{
+				//Values
+				subElement->QueryIntAttribute("r", &temp);
+				fontTitle.color[0] = (short)temp;
+				subElement->QueryIntAttribute("g", &temp);
+				fontTitle.color[1] = (short)temp;
+				subElement->QueryIntAttribute("b", &temp);
+				fontTitle.color[2] = (short)temp;
+			}
+			subElement = pElement->FirstChildElement("FONT_DESCRIPTION");
+			if (subElement != nullptr)
+			{
+				//Values
+				subElement->QueryIntAttribute("r", &temp);
+				fontDescription.color[0] = (short)temp;
+				subElement->QueryIntAttribute("g", &temp);
+				fontDescription.color[1] = (short)temp;
+				subElement->QueryIntAttribute("b", &temp);
+				fontDescription.color[2] = (short)temp;
+			}
+		}
 }
 
 void writeConfig(hbfolder* folder){
@@ -115,6 +263,10 @@ void writeConfig(hbfolder* folder){
 
 	subElement = xmlDoc.NewElement("theBrew");
 	subElement->SetText(rememberbrew);
+	pElement->InsertEndChild(subElement);//close
+
+	subElement = xmlDoc.NewElement("current_theme");
+	subElement->SetText(current_theme);
 	pElement->InsertEndChild(subElement);//close
 
 //Remember menu

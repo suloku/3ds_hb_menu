@@ -366,6 +366,22 @@ int main()
 			{
 				rebootCounter++;
 			}
+			else if(hidKeysDown()&KEY_L)
+			{
+				if (current_theme != 0){
+					current_theme--;
+					if (current_theme < 1) current_theme = totalThemes;
+					loadConfig(&Folders);
+				}
+			}
+			else if(hidKeysDown()&KEY_R)
+			{
+				if (current_theme != 0){
+					current_theme++;
+					if (current_theme > totalThemes) current_theme = 1;
+					loadConfig(&Folders);
+				}
+			}
 		}else if(rebootCounter==257){
 			if(hidKeysDown()&KEY_START)rebootCounter--;
 			if(hidKeysDown()&KEY_Y)
