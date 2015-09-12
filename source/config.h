@@ -12,6 +12,7 @@ extern "C" {
 #define FOLDER_FILE "sdmc:/3ds/config.xml"
 
 #define MAX_THEMES 5
+#define THEMES_FILE "sdmc:/3ds/themes.xml"
 
 #define MAX_FAVS 20
 
@@ -34,6 +35,7 @@ typedef struct
 	int max;
 } hbfolder;
 
+void loadTheme();
 void loadConfig(hbfolder* folder);
 void writeConfig(hbfolder* folder);
 int isFavorite(char* path);

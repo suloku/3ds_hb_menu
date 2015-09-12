@@ -234,7 +234,8 @@ int main()
 	strcpy(Folders.dir[0], "/3ds/");
 	Folders.current = 0;
 	Folders.max = 0;
-	loadConfig(&Folders); //Needs to be before initMenu to disable regionfree entry if configured
+	loadConfig(&Folders); //Needs to be before initMenu to disable regionfree entry if configured. Let's hope there's a sd card inserted, well, boot.3dsx should be in sdcard
+	loadTheme();
 	brewMode = rememberbrew;
 	if (Folders.max >= MAX_FOLDER) Folders.max = MAX_FOLDER-1;
 
@@ -374,7 +375,7 @@ int main()
 				if (current_theme != 0){
 					current_theme--;
 					if (current_theme < 1) current_theme = totalThemes;
-					loadConfig(&Folders);
+					loadTheme();
 				}
 			}
 			else if(hidKeysDown()&KEY_R)
@@ -382,7 +383,7 @@ int main()
 				if (current_theme != 0){
 					current_theme++;
 					if (current_theme > totalThemes) current_theme = 1;
-					loadConfig(&Folders);
+					loadTheme();
 				}
 			}
 		}else if(rebootCounter==257){
@@ -415,7 +416,7 @@ int main()
 			}
 			if(hidKeysDown()&KEY_SELECT && hbmenu_state == HBMENU_DEFAULT)//Add or remove favorite
 			{
-				if (!disableRF && regionFreeAvailable && !netloader_boot){
+				if (!disableRF && regionFreeAvailable && !netloader_boot && menu.selectedEntry == 0 && !favActive){
 					//Do nothing with region free
 				}else if (!favActive && totalfavs < MAX_FAVS)
 				{

@@ -5,8 +5,6 @@
 #include "error.h"
 #include "menu.h"
 #include "text.h"
-#include "arrowdown_bgr.h"
-#include "arrowup_bgr.h"
 #include "arrowdown_bin.h"
 #include "arrowup_bin.h"
 
