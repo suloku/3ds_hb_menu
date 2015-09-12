@@ -1,4 +1,6 @@
 #include <3ds.h>
+#include <string.h>
+#include <stdio.h>
 
 #include "error.h"
 #include "menu.h"
@@ -38,14 +40,15 @@ void drawError(gfxScreen_t screen, char* title, char* body, int offset)
 	gfxDrawText(screen, GFX_LEFT, &fontDescription, body, x+width-5-16-13, y+8);
 }
 
-void drawFolders(char* title, char* body, int offset)
+void drawFolders(char* current, char* previous, char* next, int offset)
 {
+
 	int i;
 
-	int numLines=countLines(body);
+	int numLines=countLines("\n\n");
 
 	int width=numLines*8+32;
-	int height=300;
+	int height=175;
 	int x=240-width-12+offset, y=4;
 
 	//main frame
@@ -54,6 +57,30 @@ void drawFolders(char* title, char* body, int offset)
 	for(i=0; i<9; i++)gfxDrawRectangle(GFX_TOP, GFX_LEFT, ENTRY_BGCOLOR, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
 
 	//content
-	gfxDrawText(GFX_TOP, GFX_LEFT, &fontTitle, title, x+width-6-16, y+6);
-	gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, body, x+width-5-16-13, y+8);
+	
+	//Get folder name
+	char * pch;
+	char temp[1024];
+	char temp2[1024];
+
+	strcpy (temp, previous);
+	pch=strrchr(temp,'/');
+	*pch='\0';
+	pch=strrchr(temp,'/')+1;
+	sprintf (temp2, "/\\     %s", pch);
+	gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, temp2,  x+width-16, y+6);
+
+	strcpy (temp, current);
+	pch=strrchr(temp,'/');
+	*pch='\0';
+	pch=strrchr(temp,'/')+1;
+	gfxDrawText(GFX_TOP, GFX_LEFT, &fontTitle, pch, x+width-5-16-13, y+28);
+
+	strcpy (temp, next);
+	pch=strrchr(temp,'/');
+	*pch='\0';
+	pch=strrchr(temp,'/')+1;
+	sprintf (temp2, "\\/     %s", pch);
+	gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, temp2, x+width-5-16-13-16, y+6);
+
 }

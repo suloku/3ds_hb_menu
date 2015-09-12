@@ -142,18 +142,11 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 		//got SD
 		drawMenu(&menu);
 		if (Folders.max > 0 && !favActive){
-			char bof2[1024*3+64];
-			sprintf(bof2,
-				"Previous folder:    %s                                                                                        \n"
-				"Next folder:           %s                                                                                        ",
-				(Folders.current-1<0?Folders.dir[Folders.max]:Folders.dir[Folders.current-1]),
-				(Folders.current+1>Folders.max?Folders.dir[0]:Folders.dir[Folders.current+1]));
-			char bof3[1024+64];
-			sprintf(bof3, "Current folder: %s", Folders.dir[Folders.current]);
 			drawFolders(
-				bof3,
-				bof2,
-				-175);
+				Folders.dir[Folders.current],
+				(Folders.current-1<0?Folders.dir[Folders.max]:Folders.dir[Folders.current-1]),
+				(Folders.current+1>Folders.max?Folders.dir[0]:Folders.dir[Folders.current+1]),
+				-170);
 			if (remembermenu)
 				gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, "*", 0, 0);
 		}
@@ -511,6 +504,18 @@ int main()
 				if(updatefolder == 1 || updatefolder == 3)
 				{
 					scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
+					//Check if there are any entries in the menu, if not, enable refion free to prevent crash
+					if (disableRF && !menu.numEntries){
+						disableRF ^= 1;
+						menu.numEntries = 1;
+						lastMenu = menu;
+						clearMenuEntries(&menu);
+						menu.selectedEntry=0;
+						menu.scrollLocation=0;
+						closeSDArchive();
+						openSDArchive();
+						scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
+					}
 					if (updatefolder == 3)//Mark as favorite, we don't change menu, just reload it.
 					{
 						menu = lastMenu;
