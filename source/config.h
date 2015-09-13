@@ -11,7 +11,7 @@ extern "C" {
 #define MAX_FOLDER 21
 #define FOLDER_FILE "sdmc:/3ds/config.xml"
 
-#define MAX_THEMES 5
+#define MAX_THEMES 50
 #define THEMES_FILE "sdmc:/3ds/themes.xml"
 
 #define MAX_FAVS 20

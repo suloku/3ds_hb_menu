@@ -88,7 +88,7 @@ void addFileToMenu(menu_s* m, char* execPath)
 	int i, l=-1; for(i=0; execPath[i]; i++) if(execPath[i]=='/')l=i;
 
 	char execPathFav[1024];
-	sprintf(execPathFav, "%s%s", (isFavorite(execPath)?"* ":""), execPath);
+	sprintf(execPathFav, "%s%s", (isFavorite(execPath)?FAVORITE_MARKER:""), execPath);
 	initMenuEntry(&tmpEntry, execPath, &execPath[l+1], execPathFav, "Unknown Publisher", (u8*)installerIcon_bin);
 
 	static char xmlPath[128];
@@ -138,14 +138,14 @@ void addDirectoryToMenu(menu_s* m, char* path)
 		strncpy(tmpEntry.executablePath, execPath, ENTRY_PATHLENGTH);
 		if (isFavorite(path)){
 			char descriptionFav[ENTRY_DESCLENGTH+1];
-			sprintf(descriptionFav, "%s%s", (isFavorite(path)?"*":""), tmpEntry.description);
+			sprintf(descriptionFav, "%s%s", (isFavorite(path)?FAVORITE_MARKER:""), tmpEntry.description);
 			strcpy(tmpEntry.description, descriptionFav);
 		}
 	}
 
 	if(ret){
 		char descriptionFav[ENTRY_DESCLENGTH+1];
-		sprintf(descriptionFav, "%s%s", (isFavorite(path)?"*":""), execPath);
+		sprintf(descriptionFav, "%s%s", (isFavorite(path)?FAVORITE_MARKER:""), execPath);
 		initMenuEntry(&tmpEntry, execPath, &path[l+1], descriptionFav, "Unknown publisher", (u8*)installerIcon_bin);
 	}
 

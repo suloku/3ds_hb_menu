@@ -14,6 +14,9 @@
 extern u8 waterbordercolor[];
 extern u8 watercolor[];
 extern u8 bgcolor[];
+extern u8 fav_waterbordercolor[];
+extern u8 fav_watercolor[];
+extern u8 fav_bgcolor[];
 
 typedef struct
 {

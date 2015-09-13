@@ -3,6 +3,8 @@
 #include "menu.h"
 #include "config.h"
 
+#define FAVORITE_MARKER "* "
+
 extern FS_archive sdmcArchive;
 
 //system stuff

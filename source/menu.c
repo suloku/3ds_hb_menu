@@ -8,6 +8,8 @@
 #include "smdh.h"
 #include "regionfree.h"
 #include "regionfree_bin.h"
+#include "filesystem.h" //for FAVORITE_MARKER
+#include "star_bin.h"
 
 u8 roundLut[]={8, 5, 4, 3, 2, 1, 1, 1, 0};
 u8 roundLut2[]={4, 3, 2, 1, 0};
@@ -375,6 +377,12 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, u16 x, u16 y, bool select
 		gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description + 56 * 2, 56, x+10, y+70);
 	}
 	gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->author, ENTRY_AUTHORLENGTH, x+4, y+ENTRY_HEIGHT-getStringLength(&fontDescription, me->author)-10);
+	
+	//Favorite Start marker
+	if ( strncmp (me->description, FAVORITE_MARKER, strlen(FAVORITE_MARKER)) == 0 ){
+		//gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)star_bin, 16, 16, x+18+(16/2)-2, y+70-(16/2));
+		gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)star_bin, 16, 16, x+38+(16/3), y+70+205);
+	}
 
 	return totalWidth;
 }

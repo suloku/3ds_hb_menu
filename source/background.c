@@ -18,6 +18,9 @@
 u8 waterbordercolor[] = {66, 224, 255};
 u8 watercolor[] = {66, 163, 255};
 u8 bgcolor[] = {0, 132, 255};
+u8 fav_waterbordercolor[] = {66, 224, 255};
+u8 fav_watercolor[] = {66, 163, 255};
+u8 fav_bgcolor[] = {0, 132, 255};
 
 static bubble_t bubbles[BUBBLE_COUNT];
 static waterEffect_s waterEffect;

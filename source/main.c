@@ -376,6 +376,7 @@ int main()
 					current_theme--;
 					if (current_theme < 1) current_theme = totalThemes;
 					loadTheme();
+					confUpdate = 1;
 				}
 			}
 			else if(hidKeysDown()&KEY_R)
@@ -384,6 +385,7 @@ int main()
 					current_theme++;
 					if (current_theme > totalThemes) current_theme = 1;
 					loadTheme();
+					confUpdate = 1;
 				}
 			}
 		}else if(rebootCounter==257){
@@ -600,7 +602,11 @@ int main()
 		}
 
 		if(brewMode)renderFrame(bgcolor, BEERBORDERCOLOR, BEERCOLOR);
-		else renderFrame(bgcolor, waterbordercolor, watercolor);
+		else if (favActive){
+			renderFrame(fav_bgcolor, fav_waterbordercolor, fav_watercolor);
+		}else{
+			renderFrame(bgcolor, waterbordercolor, watercolor);
+		}
 
 		if(rebootCounter<256)
 		{

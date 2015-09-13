@@ -110,6 +110,39 @@ void loadTheme(){
 			subElement->QueryIntAttribute("b", &temp);
 			bgcolor[2] = (short)temp;
 		}
+		subElement = pElement->FirstChildElement("FAV_WATERBORDERCOLOR");
+		if (subElement != nullptr)
+		{
+			//Values
+			subElement->QueryIntAttribute("r", &temp);
+			fav_waterbordercolor[0] = (short)temp;
+			subElement->QueryIntAttribute("g", &temp);
+			fav_waterbordercolor[1] = (short)temp;
+			subElement->QueryIntAttribute("b", &temp);
+			fav_waterbordercolor[2] = (short)temp;
+		}
+		subElement = pElement->FirstChildElement("FAV_WATERCOLOR");
+		if (subElement != nullptr)
+		{
+			//Values
+			subElement->QueryIntAttribute("r", &temp);
+			fav_watercolor[0] = (short)temp;
+			subElement->QueryIntAttribute("g", &temp);
+			fav_watercolor[1] = (short)temp;
+			subElement->QueryIntAttribute("b", &temp);
+			fav_watercolor[2] = (short)temp;
+		}
+		subElement = pElement->FirstChildElement("FAV_BGCOLOR");
+		if (subElement != nullptr)
+		{
+			//Values
+			subElement->QueryIntAttribute("r", &temp);
+			fav_bgcolor[0] = (short)temp;
+			subElement->QueryIntAttribute("g", &temp);
+			fav_bgcolor[1] = (short)temp;
+			subElement->QueryIntAttribute("b", &temp);
+			fav_bgcolor[2] = (short)temp;
+		}
 		subElement = pElement->FirstChildElement("SCROLL_COLOR");
 		if (subElement != nullptr)
 		{

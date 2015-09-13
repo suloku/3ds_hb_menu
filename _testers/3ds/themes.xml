@@ -5,6 +5,9 @@
 		<ENTRY_BGCOLOR_SHADOW r="34" g="153" b="183"/>
 		<WATERBORDERCOLOR r="66" g="224" b="255"/>
 		<WATERCOLOR r="66" g="163" b="255"/>
+		<FAV_WATERBORDERCOLOR r="66" g="224" b="255"/>
+		<FAV_WATERCOLOR r="66" g="163" b="255"/>
+		<FAV_BGCOLOR r="0" g="132" b="255"/>	
 		<BGCOLOR r="0" g="132" b="255"/>
 		<SCROLL_COLOR r="132" g="224" b="255"/>
 		<SCROLLFRONT_COLOR r="255" g="255" b="255"/>
@@ -21,6 +24,9 @@
 		<WATERBORDERCOLOR r="33" g="33" b="33"/>
 		<WATERCOLOR r="255" g="50" b="40"/>
 		<BGCOLOR r="40" g="40" b="40"/>
+		<FAV_WATERBORDERCOLOR r="33" g="33" b="33"/>
+		<FAV_WATERCOLOR r="200" g="50" b="150"/>
+		<FAV_BGCOLOR r="40" g="40" b="40"/>		
 		<SCROLL_COLOR r="33" g="33" b="33"/>
 		<SCROLLFRONT_COLOR r="200" g="200" b="200"/>
 		<FONT_DEFAULT r="255" g="255" b="255"/>
