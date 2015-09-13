@@ -214,6 +214,9 @@ void loadConfig(hbfolder* folder){
 			if (subElement && subElement->GetText()){
 				const char* str = subElement->GetText();
 				sprintf(folder->dir[i], "%s", str);
+				if ( folder->dir[i][strlen(folder->dir[i])-1] != '/' ){
+					strcat(folder->dir[i], "/");
+				}
 				folder->max = i;
 			}
 			subElement = subElement->NextSiblingElement("path");
