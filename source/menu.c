@@ -364,22 +364,27 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, u16 x, u16 y, bool select
 	for(i=0; i<5; i++)gfxDrawRectangle(screen, GFX_LEFT, colorIcon, x+3+roundLut2[i], y+4+56-1-i, 56-roundLut2[i]*2, 1);
 
 	//app specific stuff
+	//This will make us know we have a favorite entry and also don't print the marker since we have a star icon for now.
+	char isfav = 0;
+	if (strncmp (me->description, FAVORITE_MARKER, strlen(FAVORITE_MARKER)) == 0 )
+		isfav = strlen(FAVORITE_MARKER);
+	
 	gfxDrawSprite(screen, GFX_LEFT, me->iconData, ENTRY_ICON_WIDTH, ENTRY_ICON_HEIGHT, x+7, y+8);
 	gfxDrawTextN(screen, GFX_LEFT, &fontTitle, me->name, ENTRY_NAMELENGTH, x+38, y+66);
-	gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description, 56, x+26, y+70);
+	gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description+isfav, 56, x+26, y+70);
 	if(strlen(me->description) > 56 * 1)
 	{
-		gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description + 56, 56, x+18, y+70);
+		gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description+isfav + 56, 56, x+18, y+70);
 	}
 	else if(strlen(me->description) > 56 * 2)
 	{
-		gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description + 56 * 1, 56, x+18, y+70);
-		gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description + 56 * 2, 56, x+10, y+70);
+		gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description+isfav + 56 * 1, 56, x+18, y+70);
+		gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description+isfav + 56 * 2, 56, x+10, y+70);
 	}
 	gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->author, ENTRY_AUTHORLENGTH, x+4, y+ENTRY_HEIGHT-getStringLength(&fontDescription, me->author)-10);
 	
 	//Favorite Start marker
-	if ( strncmp (me->description, FAVORITE_MARKER, strlen(FAVORITE_MARKER)) == 0 ){
+	if (isfav){
 		//gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)star_bin, 16, 16, x+18+(16/2)-2, y+70-(16/2));
 		gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)star_bin, 16, 16, x+38+(16/3), y+70+205);
 	}
