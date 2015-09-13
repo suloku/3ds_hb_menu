@@ -350,6 +350,14 @@ int main()
 			{
 				targetProcessId = -2;
 				target_title = *titleBrowser.selected;
+				//A very bad way to pass tid to svdt
+				menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
+				if(strcmp(me->name, "svdt") == 0){
+					FILE * pFile;
+					pFile = fopen ("/svdt/tid.bin", "wb");
+					fwrite (&target_title.title_id , sizeof(char), sizeof(target_title.title_id), pFile);
+					fclose (pFile);
+				}
 				break;
 			}
 			else if(hidKeysDown()&KEY_B)hbmenu_state = HBMENU_DEFAULT;
