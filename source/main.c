@@ -150,9 +150,9 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 				(Folders.current-1<0?Folders.dir[Folders.max]:Folders.dir[Folders.current-1]),
 				(Folders.current+1>Folders.max?Folders.dir[0]:Folders.dir[Folders.current+1]),
 				-170);
-			if (remembermenu)
-				gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, "*", 0, 0);
 		}
+		if (remembermenu)
+			gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, "*", 0, 0);
 	}
 }
 
@@ -515,7 +515,6 @@ int main()
 			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_L  && hbmenu_state == HBMENU_DEFAULT) //toogle remember_menu
 			{
 				remembermenu ^= 1;
-				updatefolder = 1;
 				confUpdate = 1;
 			}
 			if (updatefolder)
