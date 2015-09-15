@@ -63,7 +63,7 @@ The 3DS screens are rotated -90 degrees. To fix that, the tool rotates your imag
 <b>2) Check your options:</b>
 <br>
 <br>
-<input type="checkbox" id="rotate" checked> rotate 90° - <input type="checkbox" id="alpha"> preserve transparency  - <input type="checkbox" id="grba"> output as GRBA
+<input type="checkbox" id="rotate" checked> rotate 90° - <input type="checkbox" id="alpha"> preserve transparency (AGRB)  - <input type="checkbox" id="grba"> preserve transparency (GRBA)
 
 <br>
 <br>
@@ -76,42 +76,40 @@ The 3DS screens are rotated -90 degrees. To fix that, the tool rotates your imag
 <br>
 
 <script>
-f.onchange=load.onclick=rotate.onchange=alpha.onchange=function(){
+f.onchange=load.onclick=rotate.onchange=alpha.onchange=grba.onchange=function(){
   with(new FileReader){
-    readAsDataURL(f.files[0]);
-    onload=function(){
-      z=new Image;
-      z.src=result;
-      W=c.width=rotate.checked?z.height:z.width;
-      H=c.height=rotate.checked?z.width:z.height;
-      x=c.getContext("2d");
-      if(rotate.checked){
-        x.save();
-        x.translate(c.width/2,c.height/2);
-        x.rotate(90*Math.PI/180);
-        x.drawImage(z,-z.width/2,-z.height/2);
-        x.restore();
-      }
-      else{
-        x.drawImage(z,0,0);
-      }
-      d=x.getImageData(0,0,W,H).data;
-      b='';
-      for(i=0;i<d.length;i+=4){
-		if (!grba.checked){
-			if(alpha.checked){
-			  b+=String.fromCharCode(d[i+3]);
-			}
-			b+=String.fromCharCode(d[i+2], d[i+1], d[i]);
+		readAsDataURL(f.files[0]);
+		onload=function(){
+		  z=new Image;
+		  z.src=result;
+		  W=c.width=rotate.checked?z.height:z.width;
+		  H=c.height=rotate.checked?z.width:z.height;
+		  x=c.getContext("2d");
+		  if(rotate.checked){
+			x.save();
+			x.translate(c.width/2,c.height/2);
+			x.rotate(90*Math.PI/180);
+			x.drawImage(z,-z.width/2,-z.height/2);
+			x.restore();
 		  }
-		}else{
-			b+=String.fromCharCode(d[i+2], d[i+1], d[i]);
-			if(alpha.checked){
-			  b+=String.fromCharCode(d[i+3]);
-			}			
-		}
-      a.href="data:application/octet-stream;base64,"+btoa(b);
-    }
-  }
+		  else{
+			x.drawImage(z,0,0);
+		  }
+		  d=x.getImageData(0,0,W,H).data;
+		  b='';
+		  for(i=0;i<d.length;i+=4){
+			if (grba.checked){
+		   		b+=String.fromCharCode(d[i+2], d[i+1], d[i], d[i+3]);
+			}else{
+				if(alpha.checked){
+					b+=String.fromCharCode(d[i+3]);
+				}
+			   
+				b+=String.fromCharCode(d[i+2], d[i+1], d[i]);
+			}
+			a.href="data:application/octet-stream;base64,"+btoa(b);
+		  }
+	    }
+	}
 }
 </script>
