@@ -1,3 +1,6 @@
+17 sept 2015 - 00:40 GTM+1
+- Solved crash when launching svdt and /svdt folder didn't exist.
+
 16 sept 2015 - 19:00 GTM+1
 - Added remaining settings toggles from config.xml to reboot screen (press start).
 - Changed reboot screen to fit new toggles.
