@@ -76,14 +76,28 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 		//Theme controls
 		char bof[1024];
 		sprintf(bof, 
+			//"                                                                                                      \n"
 			"  L : Previous theme                                                                                  \n"
 			"  R : Next theme                                                                                      \n"
-			"  X : Toogle randomize (currently %s%s", random_theme?"on) ":"off)", "                                                                  \n",
-			"                                                                                                      \n");
+			"  X : Toggle randomize (currently %s%s", random_theme?"on) ":"off)", "                                                                  \n"
+			);
 		drawError(GFX_BOTTOM,
 			"Themes",
 			bof,
-			-150);
+			-95);
+		//Config controls
+		sprintf(bof, 
+			"  Y  : Toggle remember menu (currently %s%s"
+			"  /\\ : Toggle sorting (currently %s%s"
+			"  \\/ : Toggle mix files (currently %s%s",
+			remembermenu?"on) ":"off)", "                                                           \n",
+			caseSetting?"alphabetic)":"filesystem)", "                                                          \n",
+			mixSetting?"on) ":"off)", "                                                              \n"
+			);
+		drawError(GFX_BOTTOM,
+			"Config",
+			bof,
+			-160);
 	}else if(!sdmcCurrent)
 	{
 		//no SD
@@ -160,8 +174,8 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 				(Folders.current+1>Folders.max?Folders.dir[0]:Folders.dir[Folders.current+1]),
 				-170);
 		}
-		if (remembermenu)
-			gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, "*", 0, 0);
+		//if (remembermenu)
+			//gfxDrawText(GFX_TOP, GFX_LEFT, &fontDescription, "*", 0, 0);
 	}
 }
 
@@ -410,6 +424,21 @@ int main()
 				random_theme ^= 1;
 				confUpdate = 1;
 			}
+			else if(hidKeysDown()&KEY_Y)
+			{
+				remembermenu ^= 1;
+				confUpdate = 1;
+			}
+			else if(hidKeysDown()&KEY_UP)
+			{
+				caseSetting ^= 1;
+				confUpdate = 1;
+			}
+			else if(hidKeysDown()&KEY_DOWN)
+			{
+				mixSetting ^= 1;
+				confUpdate = 1;
+			}
 		}else if(rebootCounter==257){
 			if(hidKeysDown()&KEY_START)rebootCounter--;
 			if(hidKeysDown()&KEY_Y)
@@ -417,7 +446,7 @@ int main()
 				if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 				else if(isNinjhax2()) hbmenu_state = HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2;
 			}
-			if(hidKeysDown()&KEY_X && totalfavs >0 && hbmenu_state == HBMENU_DEFAULT)//Toogle Favorites
+			if(hidKeysDown()&KEY_X && totalfavs >0 && hbmenu_state == HBMENU_DEFAULT)//Toggle Favorites
 			{
 				if (!favActive){
 					updatefolder = 2;
@@ -511,7 +540,7 @@ int main()
 				}
 				confUpdate = 1;
 			}
-			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_R  && hbmenu_state == HBMENU_DEFAULT) //toogle region free
+			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_R  && hbmenu_state == HBMENU_DEFAULT) //toggle region free
 			{
 				if (!favActive){
 					if (disableRF && menu.numEntries > 0){//We'll enable
@@ -526,7 +555,7 @@ int main()
 					updatefolder = 1;
 				}
 			}
-			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_L  && hbmenu_state == HBMENU_DEFAULT) //toogle remember_menu
+			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_L  && hbmenu_state == HBMENU_DEFAULT) //toggle remember_menu
 			{
 				remembermenu ^= 1;
 				confUpdate = 1;
@@ -597,7 +626,16 @@ int main()
 						for(i=0; i<me->descriptor.numTargetTitles; i++)
 						{
 							ret = findTitleBrowser(&titleBrowser, me->descriptor.targetTitles[i].mediatype, me->descriptor.targetTitles[i].tid);
-							if(ret)break;
+							if(ret){
+								//A very bad way to pass tid to svdt
+								if(strcmp(me->name, "svdt") == 0){
+									FILE * pFile;
+									pFile = fopen ("/svdt/tid.bin", "wb");
+									fwrite (&ret->title_id , sizeof(char), sizeof(ret->title_id), pFile);
+									fclose (pFile);
+								}
+								break;
+							}
 						}
 
 						if(ret)

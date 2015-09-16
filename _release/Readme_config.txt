@@ -20,9 +20,11 @@ Config values:
  - mix_files:
 	· 0 = OFF Stray .3dsx files are sorted after homebrew with folder and icon
 	· 1 = ON all homebrew is sorted alphabetically
+	· Note: this can be toogled on/off at the Reboot screen (press start)., so there's really no need to manually edit it.
  - case_sensitive (see example)
 	· 0 = OFF : capital and lower case letters alike
 	· 1 = ON : Capital letters before lower case
+	· Note: this can be toogled on/off at the Reboot screen (press start)., so there's really no need to manually edit it.	
  - disable_RF
 	· 0 = OFF : region free entry will appear
 	· 1 = ON : disables the region free entry
@@ -43,14 +45,14 @@ Case_sensitive sorting example:
 
  - current_theme: stores the current theme being used from themes.xml file. Can be changed with L/R at Reboot screen (press start).
 
- - random_theme
-	· 0 = OFF : las theme is loaded at boot. Theme change with L/R sequentially.
+ - random_theme: can be changed with X at the Reboot screen (press start).
+	· 0 = OFF : last theme is loaded at boot. Theme change with L/R sequentially.
 	· 1 = ON : random theme loaded at each boot. Theme change randomly with L/R
 
  - menu_pos: 
 	· remember_menu = 0 = always start on /3ds/ folder, first entry
 	· remember_menu = 1 = start on last folder and entry.
-	· Note: this can be toogled on/off by holding Dup+L, so there's really no need to manually edit it.
+	· Note: this can be toogled on/off at the Reboot screen (press start), so there's really no need to manually edit it.
 	· Note: the folder and entry atributes are only there to store the last folder and entry.
 
 

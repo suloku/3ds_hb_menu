@@ -1,3 +1,8 @@
+16 sept 2015 - 19:00 GTM+1
+- Added remaining settings toggles from config.xml to reboot screen (press start).
+- Changed reboot screen to fit new toggles.
+- svdt integration for xml files with set target titles.
+
 16 sept 2015 - 17:00 GTM+1
 - Added themes from https://gbatemp.net/threads/homebrew-launcher-custom-themes.397183/ to themes.xml
 - Added option in config.xml to randomize themes (on boot and when changing themes)
