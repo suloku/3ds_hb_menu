@@ -73,21 +73,21 @@
 	</theme4>
 	<theme5> <!-- Wii HBC by Jwiz33 -->
 		<FOLDER_BGCOLOR r="246" g="252" b="255"/>
-        <ENTRY_BGCOLOR r="246" g="252" b="255"/>
-        <ENTRY_BGCOLOR_SHADOW r="0" g="0" b="255"/>
-        <WATERBORDERCOLOR r="233" g="233" b="255"/>
-        <WATERCOLOR r="10" g="100" b="207"/>
-        <FAV_WATERBORDERCOLOR r="66" g="224" b="255"/>
-        <FAV_WATERCOLOR r="255" g="232" b="0"/>
-        <FAV_BGCOLOR r="255" g="247" b="0"/>
-        <BGCOLOR r="239" g="239" b="255"/>
-        <SCROLL_COLOR r="132" g="224" b="255"/>
-        <SCROLLFRONT_COLOR r="255" g="255" b="255"/>
-        <FONT_DEFAULT r="255" g="255" b="255"/>
-        <FONT_TITLE r="118" g="118" b="118"/>
-        <FONT_DESCRIPTION r="118" g="118" b="118"/>
-        <FONT_TITLEFOLDER r="118" g="118" b="118"/>
-        <FONT_DESCRIPTIONFOLDER r="118" g="118" b="118"/>
+		<ENTRY_BGCOLOR r="246" g="252" b="255"/>
+		<ENTRY_BGCOLOR_SHADOW r="0" g="0" b="255"/>
+		<WATERBORDERCOLOR r="233" g="233" b="255"/>
+		<WATERCOLOR r="10" g="100" b="207"/>
+		<FAV_WATERBORDERCOLOR r="66" g="224" b="255"/>
+		<FAV_WATERCOLOR r="255" g="232" b="0"/>
+		<FAV_BGCOLOR r="255" g="247" b="0"/>
+		<BGCOLOR r="239" g="239" b="255"/>
+		<SCROLL_COLOR r="132" g="224" b="255"/>
+		<SCROLLFRONT_COLOR r="255" g="255" b="255"/>
+		<FONT_DEFAULT r="255" g="255" b="255"/>
+		<FONT_TITLE r="118" g="118" b="118"/>
+		<FONT_DESCRIPTION r="118" g="118" b="118"/>
+		<FONT_TITLEFOLDER r="118" g="118" b="118"/>
+		<FONT_DESCRIPTIONFOLDER r="118" g="118" b="118"/>
 	</theme5>
 	<theme6> <!-- Xmas by JJTapia19 -->
 		<FOLDER_BGCOLOR r="255" g="255" b="255"/>

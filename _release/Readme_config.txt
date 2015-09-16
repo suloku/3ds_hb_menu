@@ -41,7 +41,11 @@ Case_sensitive sorting example:
 	SavedataManager		ftbrony
 	svdt				svdt
 
- - current_theme: stores the current theme being used from themes.xml file.
+ - current_theme: stores the current theme being used from themes.xml file. Can be changed with L/R at Reboot screen (press start).
+
+ - random_theme
+	· 0 = OFF : las theme is loaded at boot. Theme change with L/R sequentially.
+	· 1 = ON : random theme loaded at each boot. Theme change randomly with L/R
 
  - menu_pos: 
 	· remember_menu = 0 = always start on /3ds/ folder, first entry
