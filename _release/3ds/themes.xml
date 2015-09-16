@@ -1,5 +1,5 @@
 <root>
-	<theme1>
+	<theme1> <!-- Original HBL by Smea -->
 		<FOLDER_BGCOLOR r="246" g="252" b="255"/>
 		<ENTRY_BGCOLOR r="246" g="252" b="255"/>
 		<ENTRY_BGCOLOR_SHADOW r="34" g="153" b="183"/>
@@ -17,7 +17,7 @@
 		<FONT_TITLEFOLDER r="118" g="118" b="118"/>
 		<FONT_DESCRIPTIONFOLDER r="118" g="118" b="118"/>
 	</theme1>
-	<theme2>
+	<theme2> <!-- Red purple by suloku -->
 		<FOLDER_BGCOLOR r="33" g="33" b="33"/>
 		<ENTRY_BGCOLOR r="33" g="33" b="33"/>
 		<ENTRY_BGCOLOR_SHADOW r="200" g="200" b="200"/>
@@ -35,4 +35,238 @@
 		<FONT_TITLEFOLDER r="200" g="50" b="40"/>
 		<FONT_DESCRIPTIONFOLDER r="255" g="255" b="255"/>	
 	</theme2>
+	<theme3> <!-- Lime by JJTapia19 -->
+		<FOLDER_BGCOLOR r="0" g="0" b="0"/>
+		<ENTRY_BGCOLOR r="0" g="0" b="0"/>
+		<ENTRY_BGCOLOR_SHADOW r="192" g="192" b="192"/>
+		<WATERBORDERCOLOR r="255" g="242" b="85"/>
+		<WATERCOLOR r="128" g="255" b="0"/>
+		<FAV_WATERBORDERCOLOR r="128" g="255" b="0"/>
+		<FAV_WATERCOLOR r="255" g="255" b="0"/>
+		<FAV_BGCOLOR r="0" g="0" b="0"/>
+		<BGCOLOR r="0" g="0" b="0"/>
+		<SCROLL_COLOR r="0" g="0" b="0"/>
+		<SCROLLFRONT_COLOR r="128" g="255" b="0"/>
+		<FONT_DEFAULT r="128" g="255" b="0"/>
+		<FONT_TITLE r="255" g="255" b="255"/>
+		<FONT_DESCRIPTION r="128" g="255" b="0"/>
+		<FONT_TITLEFOLDER r="128" g="255" b="0"/>
+		<FONT_DESCRIPTIONFOLDER r="255" g="255" b="255"/>
+	</theme3>
+	<theme4> <!-- Halloween by JJTapia19 -->
+		<FOLDER_BGCOLOR r="33" g="33" b="33"/>
+		<ENTRY_BGCOLOR r="33" g="33" b="33"/>
+		<ENTRY_BGCOLOR_SHADOW r="200" g="200" b="200"/>
+		<WATERBORDERCOLOR r="33" g="33" b="33"/>
+		<WATERCOLOR r="255" g="128" b="64"/>
+		<FAV_WATERBORDERCOLOR r="0" g="0" b="0"/>
+		<FAV_WATERCOLOR r="255" g="128" b="64"/>
+		<FAV_BGCOLOR r="0" g="0" b="0"/>
+		<BGCOLOR r="40" g="40" b="40"/>
+		<SCROLL_COLOR r="33" g="33" b="33"/>
+		<SCROLLFRONT_COLOR r="255" g="128" b="64"/>
+		<FONT_DEFAULT r="255" g="255" b="255"/>
+		<FONT_TITLE r="255" g="128" b="64"/>
+		<FONT_DESCRIPTION r="255" g="255" b="255"/>
+		<FONT_TITLEFOLDER r="255" g="128" b="64"/>
+		<FONT_DESCRIPTIONFOLDER r="255" g="255" b="255"/>
+	</theme4>
+	<theme5> <!-- Wii HBC by Jwiz33 -->
+		<FOLDER_BGCOLOR r="246" g="252" b="255"/>
+        <ENTRY_BGCOLOR r="246" g="252" b="255"/>
+        <ENTRY_BGCOLOR_SHADOW r="0" g="0" b="255"/>
+        <WATERBORDERCOLOR r="233" g="233" b="255"/>
+        <WATERCOLOR r="10" g="100" b="207"/>
+        <FAV_WATERBORDERCOLOR r="66" g="224" b="255"/>
+        <FAV_WATERCOLOR r="255" g="232" b="0"/>
+        <FAV_BGCOLOR r="255" g="247" b="0"/>
+        <BGCOLOR r="239" g="239" b="255"/>
+        <SCROLL_COLOR r="132" g="224" b="255"/>
+        <SCROLLFRONT_COLOR r="255" g="255" b="255"/>
+        <FONT_DEFAULT r="255" g="255" b="255"/>
+        <FONT_TITLE r="118" g="118" b="118"/>
+        <FONT_DESCRIPTION r="118" g="118" b="118"/>
+        <FONT_TITLEFOLDER r="118" g="118" b="118"/>
+        <FONT_DESCRIPTIONFOLDER r="118" g="118" b="118"/>
+	</theme5>
+	<theme6> <!-- Xmas by JJTapia19 -->
+		<FOLDER_BGCOLOR r="255" g="255" b="255"/>
+		<ENTRY_BGCOLOR r="255" g="255" b="255"/>
+		<ENTRY_BGCOLOR_SHADOW r="51" g="150" b="37"/>
+		<WATERBORDERCOLOR r="0" g="0" b="0"/>
+		<WATERCOLOR r="255" g="0" b="0"/>
+		<FAV_WATERBORDERCOLOR r="0" g="0" b="0"/>
+		<FAV_WATERCOLOR r="255" g="0" b="0"/>
+		<FAV_BGCOLOR r="51" g="150" b="37"/>
+		<BGCOLOR r="51" g="150" b="37"/>
+		<SCROLL_COLOR r="51" g="150" b="37"/>
+		<SCROLLFRONT_COLOR r="255" g="255" b="255"/>
+		<FONT_DEFAULT r="255" g="0" b="0"/>
+		<FONT_TITLE r="255" g="0" b="0"/>
+		<FONT_DESCRIPTION r="51" g="150" b="37"/>
+		<FONT_TITLEFOLDER r="255" g="0" b="0"/>
+		<FONT_DESCRIPTIONFOLDER r="255" g="0" b="0"/>
+	</theme6>
+	<theme7> <!-- Mario by JJTapia19 -->
+		<FOLDER_BGCOLOR r="128" g="64" b="64"/>
+		<ENTRY_BGCOLOR r="255" g="0" b="0"/>
+		<ENTRY_BGCOLOR_SHADOW r="128" g="64" b="64"/>
+		<WATERBORDERCOLOR r="251" g="226" b="153"/>
+		<WATERCOLOR r="0" g="0" b="255"/>
+		<FAV_WATERBORDERCOLOR r="251" g="255" b="153"/>
+		<FAV_WATERCOLOR r="0" g="0" b="255"/>
+		<FAV_BGCOLOR r="255" g="0" b="0"/>
+		<BGCOLOR r="255" g="0" b="0"/>
+		<SCROLL_COLOR r="255" g="0" b="0"/>
+		<SCROLLFRONT_COLOR r="255" g="255" b="0"/>
+		<FONT_DEFAULT r="255" g="255" b="0"/>
+		<FONT_TITLE r="255" g="255" b="255"/>
+		<FONT_DESCRIPTION r="255" g="255" b="0"/>
+		<FONT_TITLEFOLDER r="255" g="255" b="255"/>
+		<FONT_DESCRIPTIONFOLDER r="255" g="255" b="0"/>
+	</theme7>
+	<theme8> <!-- Luigi by JJTapia19 -->
+		<FOLDER_BGCOLOR r="128" g="64" b="64"/>
+		<ENTRY_BGCOLOR r="51" g="150" b="37"/>
+		<ENTRY_BGCOLOR_SHADOW r="128" g="64" b="64"/>
+		<WATERBORDERCOLOR r="251" g="226" b="153"/>
+		<WATERCOLOR r="0" g="0" b="255"/>
+		<FAV_WATERBORDERCOLOR r="251" g="255" b="153"/>
+		<FAV_WATERCOLOR r="0" g="0" b="255"/>
+		<FAV_BGCOLOR r="0" g="164" b="0"/>
+		<BGCOLOR r="0" g="164" b="0"/>
+		<SCROLL_COLOR r="51" g="150" b="37"/>
+		<SCROLLFRONT_COLOR r="255" g="255" b="0"/>
+		<FONT_DEFAULT r="255" g="255" b="0"/>
+		<FONT_TITLE r="255" g="255" b="255"/>
+		<FONT_DESCRIPTION r="255" g="255" b="0"/>
+		<FONT_TITLEFOLDER r="255" g="255" b="255"/>
+		<FONT_DESCRIPTIONFOLDER r="255" g="255" b="0"/>
+	</theme8>
+	<theme9> <!-- Pikachu by JJTapia19 -->
+		<FOLDER_BGCOLOR r="128" g="64" b="64"/>
+		<ENTRY_BGCOLOR r="243" g="203" b="63"/>
+		<ENTRY_BGCOLOR_SHADOW r="128" g="64" b="64"/>
+		<WATERBORDERCOLOR r="255" g="0" b="0"/>
+		<WATERCOLOR r="243" g="203" b="63"/>
+		<FAV_WATERBORDERCOLOR r="255" g="0" b="0"/>
+		<FAV_WATERCOLOR r="243" g="203" b="63"/>
+		<FAV_BGCOLOR r="243" g="203" b="63"/>
+		<BGCOLOR r="243" g="203" b="63"/>
+		<SCROLL_COLOR r="128" g="64" b="64"/>
+		<SCROLLFRONT_COLOR r="243" g="203" b="63"/>
+		<FONT_DEFAULT r="255" g="0" b="0"/>
+		<FONT_TITLE r="255" g="0" b="0"/>
+		<FONT_DESCRIPTION r="128" g="64" b="64"/>
+		<FONT_TITLEFOLDER r="255" g="255" b="255"/>
+		<FONT_DESCRIPTIONFOLDER r="243" g="203" b="63"/>
+	</theme9>
+	<theme10> <!-- Pikachu v2 by JJTapia19 -->
+		<FOLDER_BGCOLOR r="128" g="64" b="64"/>
+		<ENTRY_BGCOLOR r="243" g="203" b="63"/>
+		<ENTRY_BGCOLOR_SHADOW r="128" g="64" b="64"/>
+		<WATERBORDERCOLOR r="128" g="64" b="64"/>
+		<WATERCOLOR r="243" g="203" b="63"/>
+		<FAV_WATERBORDERCOLOR r="128" g="64" b="64"/>
+		<FAV_WATERCOLOR r="243" g="203" b="63"/>
+		<FAV_BGCOLOR r="243" g="203" b="63"/>
+		<BGCOLOR r="243" g="203" b="63"/>
+		<SCROLL_COLOR r="128" g="64" b="64"/>
+		<SCROLLFRONT_COLOR r="243" g="203" b="63"/>
+		<FONT_DEFAULT r="255" g="0" b="0"/>
+		<FONT_TITLE r="255" g="0" b="0"/>
+		<FONT_DESCRIPTION r="128" g="64" b="64"/>
+		<FONT_TITLEFOLDER r="255" g="255" b="255"/>
+		<FONT_DESCRIPTIONFOLDER r="243" g="203" b="63"/>
+	</theme10>
+	<theme11> <!-- E-shop by JJTapia19 -->
+		<FOLDER_BGCOLOR r="255" g="128" b="64"/>
+		<ENTRY_BGCOLOR r="247" g="226" b="183"/>
+		<ENTRY_BGCOLOR_SHADOW r="255" g="128" b="64"/>
+		<WATERBORDERCOLOR r="255" g="128" b="64"/>
+		<WATERCOLOR r="255" g="255" b="128"/>
+		<FAV_WATERBORDERCOLOR r="255" g="128" b="64"/>
+		<FAV_WATERCOLOR r="255" g="255" b="128"/>
+		<FAV_BGCOLOR r="241" g="179" b="61"/>
+		<BGCOLOR r="241" g="179" b="61"/>
+		<SCROLL_COLOR r="255" g="128" b="64"/>
+		<SCROLLFRONT_COLOR r="255" g="255" b="255"/>
+		<FONT_DEFAULT r="255" g="255" b="255"/>
+		<FONT_TITLE r="255" g="128" b="64"/>
+		<FONT_DESCRIPTION r="0" g="0" b="0"/>
+		<FONT_TITLEFOLDER r="255" g="255" b="255"/>
+		<FONT_DESCRIPTIONFOLDER r="255" g="255" b="255"/>
+	</theme11>
+	<theme12> <!-- Objection by Red3agle-->
+		<FOLDER_BGCOLOR r="33" g="33" b="33"/>
+		<ENTRY_BGCOLOR r="33" g="10" b="209"/>
+		<ENTRY_BGCOLOR_SHADOW r="200" g="200" b="200"/>
+		<WATERBORDERCOLOR r="0" g="0" b="0"/> <!-- Black/ The thick line -->
+		<WATERCOLOR r="255" g="255" b="255"/> <!-- Purple/ Rectangles -->
+		<FAV_WATERBORDERCOLOR r="0" g="0" b="0"/>
+		<FAV_WATERCOLOR r="255" g="128" b="64"/>
+		<FAV_BGCOLOR r="0" g="0" b="0"/>
+		<BGCOLOR r="79" g="9" b="133"/> <!-- Purple/ Above the motion wave-->
+		<SCROLL_COLOR r="242" g="0" b="57"/> <!-- The rounded rect/red -->
+		<SCROLLFRONT_COLOR r="255" g="128" b="64"/>
+		<FONT_DEFAULT r="255" g="255" b="255"/>
+		<FONT_TITLE r="255" g="128" b="64"/>
+		<FONT_DESCRIPTION r="201" g="199" b="255"/>
+		<FONT_TITLEFOLDER r="255" g="128" b="201"/> <!-- Silver/ The description -->
+		<FONT_DESCRIPTIONFOLDER r="255" g="255" b="255"/>
+	</theme12>
+	<theme13> <!-- Link by JJTapia19 -->
+		<FOLDER_BGCOLOR r="252" g="242" b="171"/>
+		<ENTRY_BGCOLOR r="252" g="242" b="171"/>
+		<ENTRY_BGCOLOR_SHADOW r="27" g="139" b="20"/>
+		<WATERBORDERCOLOR r="255" g="255" b="128"/>
+		<WATERCOLOR r="128" g="64" b="0"/>
+		<FAV_WATERBORDERCOLOR r="255" g="255" b="128"/>
+		<FAV_WATERCOLOR r="128" g="64" b="0"/>
+		<FAV_BGCOLOR r="27" g="139" b="20"/>
+		<BGCOLOR r="27" g="139" b="20"/>
+		<SCROLL_COLOR r="128" g="64" b="0"/>
+		<SCROLLFRONT_COLOR r="205" g="183" b="58"/>
+		<FONT_DEFAULT r="255" g="255" b="255"/>
+		<FONT_TITLE r="128" g="64" b="0"/>
+		<FONT_DESCRIPTION r="128" g="64" b="0"/>
+		<FONT_TITLEFOLDER r="128" g="64" b="0"/>
+		<FONT_DESCRIPTIONFOLDER r="128" g="64" b="0"/>
+	</theme13>
+	<theme14> <!-- Greyscale by JJTapia19 -->
+		<FOLDER_BGCOLOR r="192" g="192" b="192"/>
+		<ENTRY_BGCOLOR r="192" g="192" b="192"/>
+		<ENTRY_BGCOLOR_SHADOW r="0" g="0" b="0"/>
+		<WATERBORDERCOLOR r="0" g="0" b="0"/>
+		<WATERCOLOR r="128" g="128" b="128"/>
+		<FAV_WATERBORDERCOLOR r="0" g="0" b="0"/>
+		<FAV_WATERCOLOR r="128" g="128" b="128"/>
+		<FAV_BGCOLOR r="192" g="192" b="192"/>
+		<BGCOLOR r="192" g="192" b="192"/>
+		<SCROLL_COLOR r="192" g="192" b="192"/>
+		<SCROLLFRONT_COLOR r="102" g="102" b="102"/>
+		<FONT_DEFAULT r="255" g="255" b="255"/>
+		<FONT_TITLE r="0" g="0" b="0"/>
+		<FONT_DESCRIPTION r="102" g="102" b="102"/>
+		<FONT_TITLEFOLDER r="0" g="0" b="0"/>
+		<FONT_DESCRIPTIONFOLDER r="102" g="102" b="102"/>
+	</theme14>
+	<theme15> <!-- Kirby by JJTapia19 -->
+		<FOLDER_BGCOLOR r="253" g="242" b="104"/>
+		<ENTRY_BGCOLOR r="234" g="149" b="181"/>
+		<ENTRY_BGCOLOR_SHADOW r="253" g="242" b="104"/>
+		<WATERBORDERCOLOR r="231" g="67" b="91"/>
+		<WATERCOLOR r="227" g="21" b="27"/>
+		<FAV_WATERBORDERCOLOR r="231" g="67" b="91"/>
+		<FAV_WATERCOLOR r="227" g="21" b="27"/>
+		<FAV_BGCOLOR r="234" g="149" b="181"/>
+		<BGCOLOR r="234" g="149" b="181"/>
+		<SCROLL_COLOR r="253" g="242" b="104"/>
+		<SCROLLFRONT_COLOR r="227" g="21" b="27"/>
+		<FONT_DEFAULT r="255" g="255" b="255"/>
+		<FONT_TITLE r="227" g="21" b="27"/>
+		<FONT_DESCRIPTION r="0" g="0" b="255"/>
+		<FONT_TITLEFOLDER r="227" g="21" b="27"/>
+		<FONT_DESCRIPTIONFOLDER r="0" g="0" b="255"/>
+	</theme15>
 </root>

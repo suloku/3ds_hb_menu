@@ -1,3 +1,4 @@
+#include <time.h>
 #include "config.h"
 #include "font.h"
 #include "menu.h"
@@ -15,8 +16,22 @@ int lastFolder = 0;
 int lastEntry = 0;
 char favorites[MAX_FAVS][1024];
 int current_theme = 0;
+int random_theme = 0;
 int totalThemes = 0;
 int first_theme = 0;
+
+//Function from K. Biermann (http://stackoverflow.com/questions/2509679/how-to-generate-a-random-number-from-within-a-range)
+uint32_t getRandInterval(uint32_t begin, uint32_t end) {
+    uint32_t range = 1 + end - begin;
+    uint32_t limit = RAND_MAX - (RAND_MAX % range); 
+
+    uint32_t randVal;
+    do {
+        randVal = rand();
+    } while (randVal >= limit);
+
+    return (randVal % range) + begin;
+}
 
 void loadTheme(){
 
@@ -38,23 +53,15 @@ void loadTheme(){
 		if (pElement != nullptr)
 			totalThemes++;
 	}
+	if (random_theme && totalThemes > 0){
+		current_theme = getRandInterval(1, totalThemes);
+	}
 
 	sprintf(theme, "theme%d", current_theme);
 	pElement = pRoot->FirstChildElement(theme);
 	if (pElement != nullptr)
 	{
 		int temp;
-		subElement = pElement->FirstChildElement("FOLDER_BGCOLOR");
-		if (subElement != nullptr)
-		{
-			//Values
-			subElement->QueryIntAttribute("r", &temp);
-			folder_bgcolor[0] = (short)temp;
-			subElement->QueryIntAttribute("g", &temp);
-			folder_bgcolor[1] = (short)temp;
-			subElement->QueryIntAttribute("b", &temp);
-			folder_bgcolor[2] = (short)temp;
-		}
 		subElement = pElement->FirstChildElement("ENTRY_BGCOLOR");
 		if (subElement != nullptr)
 		{
@@ -66,6 +73,21 @@ void loadTheme(){
 			subElement->QueryIntAttribute("b", &temp);
 			entry_bgcolor[2] = (short)temp;
 		}
+		subElement = pElement->FirstChildElement("FOLDER_BGCOLOR");
+		if (subElement != nullptr)
+		{
+			//Values
+			subElement->QueryIntAttribute("r", &temp);
+			folder_bgcolor[0] = (short)temp;
+			subElement->QueryIntAttribute("g", &temp);
+			folder_bgcolor[1] = (short)temp;
+			subElement->QueryIntAttribute("b", &temp);
+			folder_bgcolor[2] = (short)temp;
+		}else{
+			folder_bgcolor[0] = entry_bgcolor[0];
+			folder_bgcolor[1] = entry_bgcolor[1];
+			folder_bgcolor[2] = entry_bgcolor[2];
+		}
 		subElement = pElement->FirstChildElement("ENTRY_BGCOLOR_SHADOW");
 		if (subElement != nullptr)
 		{
@@ -76,6 +98,36 @@ void loadTheme(){
 			entry_bgcolor_shadow[1] = (short)temp;
 			subElement->QueryIntAttribute("b", &temp);
 			entry_bgcolor_shadow[2] = (short)temp;
+		}
+		subElement = pElement->FirstChildElement("BEERBORDERCOLOR");
+		if (subElement != nullptr)
+		{
+			//Values
+			subElement->QueryIntAttribute("r", &temp);
+			beerbordercolor[0] = (short)temp;
+			subElement->QueryIntAttribute("g", &temp);
+			beerbordercolor[1] = (short)temp;
+			subElement->QueryIntAttribute("b", &temp);
+			beerbordercolor[2] = (short)temp;
+		}else{ //This is supposed to be an easter egg, even for themes
+			beerbordercolor[0] = 240;
+			beerbordercolor[1] = 240;
+			beerbordercolor[2] = 240;
+		}
+		subElement = pElement->FirstChildElement("BEERCOLOR");
+		if (subElement != nullptr)
+		{
+			//Values
+			subElement->QueryIntAttribute("r", &temp);
+			beercolor[0] = (short)temp;
+			subElement->QueryIntAttribute("g", &temp);
+			beercolor[1] = (short)temp;
+			subElement->QueryIntAttribute("b", &temp);
+			beercolor[2] = (short)temp;
+		}else{ //Same as above
+			beercolor[0] = 188;
+			beercolor[1] = 157;
+			beercolor[2] = 75;
 		}
 		subElement = pElement->FirstChildElement("WATERBORDERCOLOR");
 		if (subElement != nullptr)
@@ -208,6 +260,10 @@ void loadTheme(){
 			fontTitleFolder.color[1] = (short)temp;
 			subElement->QueryIntAttribute("b", &temp);
 			fontTitleFolder.color[2] = (short)temp;
+		}else{
+			fontTitleFolder.color[0] = fontTitle.color[0];
+			fontTitleFolder.color[2] = fontTitle.color[1];
+			fontTitleFolder.color[1] = fontTitle.color[2];
 		}
 		subElement = pElement->FirstChildElement("FONT_DESCRIPTIONFOLDER");
 		if (subElement != nullptr)
@@ -219,6 +275,10 @@ void loadTheme(){
 			fontDescriptionFolder.color[1] = (short)temp;
 			subElement->QueryIntAttribute("b", &temp);
 			fontDescriptionFolder.color[2] = (short)temp;
+		}else{
+			fontDescriptionFolder.color[0] = fontDescription.color[0];
+			fontDescriptionFolder.color[1] = fontDescription.color[1];
+			fontDescriptionFolder.color[2] = fontDescription.color[2];
 		}
 	}
 }
@@ -269,6 +329,10 @@ void loadConfig(hbfolder* folder){
 		subElement = pElement->FirstChildElement("current_theme");
 		if (subElement != nullptr) subElement->QueryIntText(&current_theme);
 		first_theme = 1;
+
+		srand (time(NULL)); //We only call loadConfig() once, so let's put this here
+		subElement = pElement->FirstChildElement("random_theme");
+		if (subElement != nullptr) subElement->QueryIntText(&random_theme);
 
 		subElement = pElement->FirstChildElement("menu_pos");
 		if (subElement != nullptr)
@@ -337,6 +401,10 @@ void writeConfig(hbfolder* folder){
 
 	subElement = xmlDoc.NewElement("current_theme");
 	subElement->SetText(current_theme);
+	pElement->InsertEndChild(subElement);//close
+
+	subElement = xmlDoc.NewElement("random_theme");
+	subElement->SetText(random_theme);
 	pElement->InsertEndChild(subElement);//close
 
 //Remember menu

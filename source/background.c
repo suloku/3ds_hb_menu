@@ -15,6 +15,9 @@
 #define BG_WATER_WIDTH (525)
 #define BG_WATER_OFFSET (-25)
 
+
+u8 beerbordercolor[] = {240, 240, 240};
+u8 beercolor[] = {188, 157, 75};
 u8 waterbordercolor[] = {66, 224, 255};
 u8 watercolor[] = {66, 163, 255};
 u8 bgcolor[] = {0, 132, 255};

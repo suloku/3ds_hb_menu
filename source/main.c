@@ -70,11 +70,20 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"Reboot",
 			"    You're about to reboot your console into home menu.\n\n"
 			"                                                                                            A : Proceed\n"
-			"                                                                                            B : Cancel\n"
-			"                                                                                                      \n"
-			"  L : Previous theme                                                                                  \n"
-			"  R : Next theme                                                                                      \n",
+			"                                                                                            B : Cancel\n",
 			0);
+
+		//Theme controls
+		char bof[1024];
+		sprintf(bof, 
+			"  L : Previous theme                                                                                  \n"
+			"  R : Next theme                                                                                      \n"
+			"  X : Toogle randomize (currently %s%s", random_theme?"on) ":"off)", "                                                                  \n",
+			"                                                                                                      \n");
+		drawError(GFX_BOTTOM,
+			"Themes",
+			bof,
+			-150);
 	}else if(!sdmcCurrent)
 	{
 		//no SD
@@ -396,6 +405,11 @@ int main()
 					confUpdate = 1;
 				}
 			}
+			else if(hidKeysDown()&KEY_X)
+			{
+				random_theme ^= 1;
+				confUpdate = 1;
+			}
 		}else if(rebootCounter==257){
 			if(hidKeysDown()&KEY_START)rebootCounter--;
 			if(hidKeysDown()&KEY_Y)
@@ -608,7 +622,7 @@ int main()
 			}
 		}
 
-		if(brewMode)renderFrame(bgcolor, BEERBORDERCOLOR, BEERCOLOR);
+		if(brewMode)renderFrame(bgcolor, beerbordercolor, beercolor);
 		else if (favActive){
 			renderFrame(fav_bgcolor, fav_waterbordercolor, fav_watercolor);
 		}else{

@@ -1,3 +1,12 @@
+16 sept 2015 - 17:00 GTM+1
+- Added themes from https://gbatemp.net/threads/homebrew-launcher-custom-themes.397183/ to themes.xml
+- Added option in config.xml to randomize themes (on boot and when changing themes)
+- Changed theme controls display in the Reboot screen (start button)
+- Toogle random themes in Reboot screen with X button.
+- Folder bgcolor, title font color and description color will use the entry colors if not specified in xml file.
+- On a side note, Konami came and told me "BEER is WATER, with and without BORDER, Rise oh Great Bishop"
+
+
 15 sept 2015 - 17:00 GTM+1
 - Fixed: Toogling remember menu on favorite screen returned to folder view without actually exiting favorites.
 - Display remember menu indicator also on favorite screen
