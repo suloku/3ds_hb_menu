@@ -377,8 +377,8 @@ int main()
 				menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
 				if(strcmp(me->name, "svdt") == 0){
 					FILE * pFile;
-					mkdir("/svdt");
-					pFile = fopen ("/svdt/tid.bin", "wb");
+					mkdir("sdmc:/svdt");
+					pFile = fopen ("sdmc:/svdt/tid.bin", "wb");
 					if (pFile != NULL){
 						fwrite (&target_title.title_id , sizeof(char), sizeof(target_title.title_id), pFile);
 					}
@@ -633,8 +633,8 @@ int main()
 								//A very bad way to pass tid to svdt
 								if(strcmp(me->name, "svdt") == 0){
 									FILE * pFile;
-									mkdir("/svdt");
-									pFile = fopen ("/svdt/tid.bin", "wb");
+									mkdir("sdmc:/svdt");
+									pFile = fopen ("sdmc:/svdt/tid.bin", "wb");
 									if (pFile != NULL){
 										fwrite (&target_title.title_id , sizeof(char), sizeof(target_title.title_id), pFile);
 									}
