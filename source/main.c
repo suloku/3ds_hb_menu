@@ -319,6 +319,17 @@ int main()
 					break;
 				}
 			}
+			else if(hidKeysDown()&KEY_L){
+				filterID++;
+				if (filterID > MAX_FILTER) filterID = 1;
+			}
+			else if(hidKeysDown()&KEY_R){
+				filterID--;
+				if (filterID < 1) filterID = MAX_FILTER;
+			}
+			else if(hidKeysDown()&KEY_X){
+				filterID = 0;
+			}
 			else updateTitleBrowser(&titleBrowser);
 		}else if(hbmenu_state == HBMENU_NETLOADER_ERROR){
 			if(hidKeysDown()&KEY_B)

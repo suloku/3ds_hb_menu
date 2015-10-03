@@ -6,6 +6,9 @@
 #include "smdh.h"
 #include "menu.h"
 
+#define MAX_FILTER 3
+extern int filterID;
+
 typedef struct
 {
 	u8 mediatype;

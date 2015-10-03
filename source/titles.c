@@ -9,6 +9,9 @@
 
 extern int debugValues[100];
 
+//0 all, 1 user, 2 demos, 3 system
+int filterID = 1;
+
 void titlesInit()
 {
 	amInit();
@@ -73,6 +76,17 @@ Result loadTitleInfoIcon(titleInfo_s* ti)
 bool application_filter(u64 tid)
 {
 	u32 tid_high = tid >> 32;
+	switch (filterID){
+		case 1:
+			return (tid_high == 0x00040000);
+			break;
+		case 2:
+			return (tid_high == 0x00040002);
+			break;
+		case 3:
+			return (tid_high == 0x00040010);
+			break;
+	}
 	return (tid_high == 0x00040010 || tid_high == 0x00040000 || tid_high == 0x00040002);
 }
 
@@ -275,18 +289,38 @@ void drawTitleBrowser(titleBrowser_s* tb)
 {
 	if(!tb)return;
 
+	char mode[32];
+	switch (filterID){
+		case 0:
+			strcpy (mode, "All titles");
+			break;
+		case 1:
+			strcpy (mode, "Application titles");
+			break;
+		case 2:
+			strcpy (mode, "Demo titles");
+			break;
+		case 3:
+			strcpy (mode, "System titles");
+			break;
+	}
+
 	if(tb->selected && tb->selected->icon)
 	{
 		drawError(GFX_BOTTOM,
-			"Target title selector",
-			"    Press LEFT or RIGHT to select a title.                                 \n\n"
+			mode,
+			"    Press LEFT or RIGHT to select a title.                                 \n"
+			"    Press L or R to change title mode.                                     \n"
+			"    Press X to show all titles.                                            \n\n"
 			"                                                                                                        A : Select target\n"
 			"                                                                                                        B : Exit\n",
 			10-drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, 9, true));
 	}else{
 		drawError(GFX_BOTTOM,
-			"Target title selector",
-			"    Press LEFT or RIGHT to select a title.                                 \n\n"
+			mode,
+			"    Press LEFT or RIGHT to select a title.                                 \n"
+			"    Press L or R to change title mode.                                     \n"
+			"    Press X to show all titles.                                            \n\n"
 			"    No adequate target title could be found. :(\n\n"
 			"                                                                                            B : Exit\n",
 			0);
