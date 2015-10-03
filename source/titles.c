@@ -279,16 +279,16 @@ void drawTitleBrowser(titleBrowser_s* tb)
 	{
 		drawError(GFX_BOTTOM,
 			"Target title selector",
-			"    The application you're trying to run requires that you select a target.\n\n"
+			"    Press LEFT or RIGHT to select a title.                                 \n\n"
 			"                                                                                                        A : Select target\n"
-			"                                                                                                        B : Cancel\n",
+			"                                                                                                        B : Exit\n",
 			10-drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, 9, true));
 	}else{
 		drawError(GFX_BOTTOM,
 			"Target title selector",
-			"    The application you're trying to run requires that you select a target.\n"
+			"    Press LEFT or RIGHT to select a title.                                 \n\n"
 			"    No adequate target title could be found. :(\n\n"
-			"                                                                                            B : Cancel\n",
+			"                                                                                            B : Exit\n",
 			0);
 	}
 }

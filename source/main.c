@@ -216,7 +216,7 @@ int main()
 	FSUSER_IsSdmcDetected(NULL, &sdmcCurrent);
 	if(sdmcCurrent == 1)
 	{
-		scanHomebrewDirectory(&menu, "/3ds/");
+		//scanHomebrewDirectory(&menu, "/3ds/saves/");
 	}
 	sdmcPrevious = sdmcCurrent;
 	nextSdCheck = osGetTime()+250;
@@ -309,7 +309,16 @@ int main()
 				target_title = *titleBrowser.selected;
 				break;
 			}
-			else if(hidKeysDown()&KEY_B)hbmenu_state = HBMENU_DEFAULT;
+			else if(hidKeysDown()&KEY_B){
+				if(isNinjhax2())
+				{
+					// basically just relaunch boot.3dsx w/ scanning in hopes of getting netloader capabilities
+					static char hbmenuPath[] = "/boot.3dsx";
+					netloadedPath = hbmenuPath; // fine since it's static
+					netloader_boot = true;
+					break;
+				}
+			}
 			else updateTitleBrowser(&titleBrowser);
 		}else if(hbmenu_state == HBMENU_NETLOADER_ERROR){
 			if(hidKeysDown()&KEY_B)
@@ -375,6 +384,7 @@ int main()
 
 				}
 			}
+			hbmenu_state = HBMENU_TITLESELECT;
 		}
 
 		if(brewMode)renderFrame(BGCOLOR, BEERBORDERCOLOR, BEERCOLOR);
@@ -417,9 +427,14 @@ int main()
 	aptExit();
 	srvExit();
 
-	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)return regionFreeRun();
-	
+//	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)return regionFreeRun();
+
+	if (! netloader_boot)
+		return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
+
+
 	regionFreeExit();
 
+	
 	return bootApp(me->executablePath, &me->descriptor.executableMetadata);
 }
