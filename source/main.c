@@ -282,7 +282,7 @@ int main()
 		PTMU_GetBatteryChargeState(NULL, &charging);
 		hidScanInput();
 
-		if (autoboottitle > 0){
+		if (autoboottitle == 1){
 			if(hidKeysHeld()&KEY_A)
 				autoboottitle = 0;
 			else
@@ -561,7 +561,7 @@ int main()
 //	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)return regionFreeRun();
 
 	if (! netloader_boot){
-		if (autoboottitle){
+		if (autoboottitle == 1){
 			return regionFreeRun2(tidLo, tidHi, mediaT, 0x1);
 		}else
 			return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
