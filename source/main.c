@@ -228,20 +228,26 @@ int main()
     	FILE *file;
    		file =fopen("title.txt","r");
    		if (!file){
-			autoboottitle = 0;
+			autoboottitle = -1;
 		}else{
 		    fgets(autobootMediatype,31, file);
 			fgets(autobootTIDhi,31, file);
 			fgets(autobootTIDlo,31, file);
+			autobootMediatype[1] = '\0';
+			autobootTIDhi[8] = '\0';
+			autobootTIDlo[8] = '\0';
 
 			tidLo = (u32)strtol(autobootTIDlo, NULL, 16);
 			tidHi = (u32)strtol(autobootTIDhi, NULL, 16);
 			mediaT = (u32)strtol(autobootMediatype, NULL, 16);
 
 			autoboottitle = 1;
+			if (mediaT == 9)
+				autoboottitle = -1;
 		}
 		fclose(file);
 	}
+
 	sdmcPrevious = sdmcCurrent;
 	nextSdCheck = osGetTime()+250;
 
@@ -276,7 +282,7 @@ int main()
 		PTMU_GetBatteryChargeState(NULL, &charging);
 		hidScanInput();
 
-		if (autoboottitle){
+		if (autoboottitle > 0){
 			if(hidKeysHeld()&KEY_A)
 				autoboottitle = 0;
 			else
@@ -361,21 +367,88 @@ int main()
 			else if(hidKeysDown()&KEY_X){
 				filterID = 0;
 			}
-			if(hidKeysDown()&KEY_SELECT && titleBrowser.selected)
+			else if(hidKeysDown()&KEY_SELECT && titleBrowser.selected)
 			{
 				FILE * pFile;
 				pFile = fopen ("title.txt","w");
 				if (pFile){
 					fprintf (pFile, "%d\r\n",titleBrowser.selected->mediatype);
+					sprintf (autobootMediatype, "%d",titleBrowser.selected->mediatype);
 					if (titleBrowser.selected->mediatype == 2){ //For gamecards use generic launch
 						fprintf (pFile, "%08lX\r\n", (u32)0x00000000);
 						fprintf (pFile, "%08lX\r\n", (u32)0x00000000);
+						sprintf (autobootTIDhi, "%08lX", (u32)0x00000000);
+						sprintf (autobootTIDlo, "%08lX", (u32)0x00000000);
 					}else{
 						fprintf (pFile, "%08lX\r\n", (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff));
 						fprintf (pFile, "%08lX\r\n",(u32)(titleBrowser.selected->title_id & 0xffffffff));
+						sprintf (autobootTIDhi, "%08lX", (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff));
+						sprintf (autobootTIDlo, "%08lX",(u32)(titleBrowser.selected->title_id & 0xffffffff));
 					}
 				}
 				fclose (pFile);
+				pFile = fopen ("icon.smdh","wb");
+				if (pFile){
+					if (titleBrowser.selected->mediatype == 2){ //Copy custom card smdh
+						FILE* pFile2;
+						long lSize;
+						size_t result;
+						char * buffer = NULL;
+						pFile2 = fopen ( "cardsmdh" , "rb" );
+						if (pFile2!=NULL) {
+							fseek (pFile2 , 0 , SEEK_END);
+							lSize = ftell (pFile2);
+							rewind (pFile2);
+							buffer = (char*) malloc (sizeof(char)*lSize);
+							if (buffer != NULL) {
+								result = fread (buffer,1,lSize,pFile2);
+								if (result == lSize) {
+									fwrite(buffer, sizeof(u8), lSize, pFile);
+								}
+							}
+						}
+						fclose (pFile2);
+						if (buffer != NULL) free (buffer);
+					}else{
+						fwrite(titleBrowser.selected->icon, sizeof(u8), sizeof(smdh_s), pFile);
+					}
+				}
+				fclose (pFile);
+				autoboottitle = 0;
+			}
+			else if(hidKeysDown()&KEY_START)
+			{
+				FILE * pFile;
+				pFile = fopen ("icon.smdh","wb");
+				if (pFile){
+					FILE* pFile2;
+					long lSize;
+					size_t result;
+					char * buffer = NULL;
+					pFile2 = fopen ( "tlsmdh" , "rb" );
+					if (pFile2!=NULL) {
+						fseek (pFile2 , 0 , SEEK_END);
+						lSize = ftell (pFile2);
+						rewind (pFile2);
+						buffer = (char*) malloc (sizeof(char)*lSize);
+						if (buffer != NULL) {
+							result = fread (buffer,1,lSize,pFile2);
+							if (result == lSize) {
+								fwrite(buffer, sizeof(u8), lSize, pFile);
+							}
+						}
+					}
+					fclose (pFile2);
+					if (buffer != NULL) free (buffer);
+					}
+				fclose (pFile);
+				
+				pFile = fopen ("title.txt","w");
+				if (pFile){
+					fprintf (pFile, "%d\r\n",9);
+				}
+				fclose (pFile);
+				autoboottitle = -1;
 			}
 			else updateTitleBrowser(&titleBrowser);
 		}else if(hbmenu_state == HBMENU_NETLOADER_ERROR){

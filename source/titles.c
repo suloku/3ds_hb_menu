@@ -12,6 +12,12 @@ extern int debugValues[100];
 //0 all, 1 user, 2 demos, 3 system
 int filterID = 1;
 
+extern char autobootTIDhi[32];
+extern char autobootTIDlo[32];
+extern char autobootMediatype[32];
+
+extern int autoboottitle;
+
 void titlesInit()
 {
 	amInit();
@@ -318,12 +324,25 @@ void drawTitleBrowser(titleBrowser_s* tb)
 			10-drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, 9, true));
 		*/
 		char titlestring[1024];
-		sprintf (titlestring, "%s\nMediatype: %d\nTitle ID Hi: %08lX\nTitle ID Lo: %08lX\n", 			"    Press LEFT or RIGHT to select a title.                                 \n"
-			"    Press L or R to change title mode.                                     \n"
-			"    Press X to show all titles.                                            \n"
-			"    Press SELECT to set current title as autoboot                          \n\n"
-			"                                                                                                        A : Select target\n"
-			"                                                                                                        B : Exit\n" ,tb->selected->mediatype, (u32)((tb->selected->title_id >> 32) & 0xFFFFFFFF), (u32)(tb->selected->title_id & 0xFFFFFFFF));
+		if (autoboottitle >= 0){
+			sprintf (titlestring, "%s\nMediatype: %d                                           Autoboot mediatype: %s\nTitle ID Hi: %08lX                            Autoboot TID Hi: %s\nTitle ID Lo: %08lX                           Autoboot TID Lo: %s\n",
+				"    Press LEFT or RIGHT to select a title.                                 \n"
+				"    Press L or R to change title mode.                                     \n"
+				"    Press X to show all titles.                                            \n"
+				"    Press START to disable autoboot.                                       \n"
+				"    Press SELECT to set current title as autoboot                          \n\n"
+				"                                                                                                        A : Select target\n"
+				"                                                                                                        B : Exit\n" ,tb->selected->mediatype, autobootMediatype, (u32)((tb->selected->title_id >> 32) & 0xFFFFFFFF), autobootTIDhi, (u32)(tb->selected->title_id & 0xFFFFFFFF), autobootTIDlo);
+		}else if (autoboottitle == -1){
+			sprintf (titlestring, "%s\nMediatype: %d\nTitle ID Hi: %08lX\nTitle ID Lo: %08lX\n",
+				"    Press LEFT or RIGHT to select a title.                                 \n"
+				"    Press L or R to change title mode.                                     \n"
+				"    Press X to show all titles.                                            \n"
+				"    Press START to disable autoboot.                                       \n"
+				"    Press SELECT to set current title as autoboot                          \n\n"
+				"                                                                                                        A : Select target\n"
+				"                                                                                                        B : Exit\n" ,tb->selected->mediatype, (u32)((tb->selected->title_id >> 32) & 0xFFFFFFFF), (u32)(tb->selected->title_id & 0xFFFFFFFF));
+		}
 		drawError(GFX_BOTTOM,
 			mode,
 			titlestring,
