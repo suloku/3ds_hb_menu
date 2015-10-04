@@ -320,7 +320,8 @@ void drawTitleBrowser(titleBrowser_s* tb)
 		char titlestring[1024];
 		sprintf (titlestring, "%s\nMediatype: %d\nTitle ID Hi: %08lX\nTitle ID Lo: %08lX\n", 			"    Press LEFT or RIGHT to select a title.                                 \n"
 			"    Press L or R to change title mode.                                     \n"
-			"    Press X to show all titles.                                            \n\n"
+			"    Press X to show all titles.                                            \n"
+			"    Press SELECT to set current title as autoboot                          \n\n"
 			"                                                                                                        A : Select target\n"
 			"                                                                                                        B : Exit\n" ,tb->selected->mediatype, (u32)((tb->selected->title_id >> 32) & 0xFFFFFFFF), (u32)(tb->selected->title_id & 0xFFFFFFFF));
 		drawError(GFX_BOTTOM,

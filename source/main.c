@@ -28,6 +28,9 @@ int autoboottitle = 0;
 char autobootTIDhi[32];
 char autobootTIDlo[32];
 char autobootMediatype[32];
+u32 tidLo;
+u32 tidHi;
+u32 mediaT;
 
 static enum
 {
@@ -230,7 +233,11 @@ int main()
 		    fgets(autobootMediatype,31, file);
 			fgets(autobootTIDhi,31, file);
 			fgets(autobootTIDlo,31, file);
-			
+
+			tidLo = (u32)strtol(autobootTIDlo, NULL, 16);
+			tidHi = (u32)strtol(autobootTIDhi, NULL, 16);
+			mediaT = (u32)strtol(autobootMediatype, NULL, 16);
+
 			autoboottitle = 1;
 		}
 		fclose(file);
@@ -244,8 +251,6 @@ int main()
 
 	while(aptMainLoop())
 	{
-		if (autoboottitle) break;
-
 		if (nextSdCheck < osGetTime())
 		{
 			regionFreeUpdate();
@@ -270,6 +275,13 @@ int main()
 		PTMU_GetBatteryLevel(NULL, &batteryLevel);
 		PTMU_GetBatteryChargeState(NULL, &charging);
 		hidScanInput();
+
+		if (autoboottitle){
+			if(hidKeysHeld()&KEY_A)
+				autoboottitle = 0;
+			else
+				break;
+		}
 
 		updateBackground();
 
@@ -348,6 +360,22 @@ int main()
 			}
 			else if(hidKeysDown()&KEY_X){
 				filterID = 0;
+			}
+			if(hidKeysDown()&KEY_SELECT && titleBrowser.selected)
+			{
+				FILE * pFile;
+				pFile = fopen ("title.txt","w");
+				if (pFile){
+					fprintf (pFile, "%d\r\n",titleBrowser.selected->mediatype);
+					if (titleBrowser.selected->mediatype == 2){ //For gamecards use generic launch
+						fprintf (pFile, "%08lX\r\n", (u32)0x00000000);
+						fprintf (pFile, "%08lX\r\n", (u32)0x00000000);
+					}else{
+						fprintf (pFile, "%08lX\r\n", (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff));
+						fprintf (pFile, "%08lX\r\n",(u32)(titleBrowser.selected->title_id & 0xffffffff));
+					}
+				}
+				fclose (pFile);
 			}
 			else updateTitleBrowser(&titleBrowser);
 		}else if(hbmenu_state == HBMENU_NETLOADER_ERROR){
@@ -461,9 +489,6 @@ int main()
 
 	if (! netloader_boot){
 		if (autoboottitle){
-			u32 tidLo = (u32)strtol(autobootTIDlo, NULL, 16);
-			u32 tidHi = (u32)strtol(autobootTIDhi, NULL, 16);
-			u32 mediaT = (u32)strtol(autobootMediatype, NULL, 16);
 			return regionFreeRun2(tidLo, tidHi, mediaT, 0x1);
 		}else
 			return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
