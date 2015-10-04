@@ -324,25 +324,12 @@ void drawTitleBrowser(titleBrowser_s* tb)
 			10-drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, 9, true));
 		*/
 		char titlestring[1024];
-		if (autoboottitle >= 0){
-			sprintf (titlestring, "%s\nMediatype: %d                                           Autoboot mediatype: %s\nTitle ID Hi: %08lX                            Autoboot TID Hi: %s\nTitle ID Lo: %08lX                           Autoboot TID Lo: %s\n",
-				"    Press LEFT or RIGHT to select a title.                                 \n"
-				"    Press L or R to change title mode.                                     \n"
-				"    Press X to show all titles.                                            \n"
-				"    Press START to disable autoboot.                                       \n"
-				"    Press SELECT to set current title as autoboot                          \n\n"
-				"                                                                                                        A : Select target\n"
-				"                                                                                                        B : Exit\n" ,tb->selected->mediatype, autobootMediatype, (u32)((tb->selected->title_id >> 32) & 0xFFFFFFFF), autobootTIDhi, (u32)(tb->selected->title_id & 0xFFFFFFFF), autobootTIDlo);
-		}else if (autoboottitle == -1){
-			sprintf (titlestring, "%s\nMediatype: %d\nTitle ID Hi: %08lX\nTitle ID Lo: %08lX\n",
-				"    Press LEFT or RIGHT to select a title.                                 \n"
-				"    Press L or R to change title mode.                                     \n"
-				"    Press X to show all titles.                                            \n"
-				"    Press START to disable autoboot.                                       \n"
-				"    Press SELECT to set current title as autoboot                          \n\n"
-				"                                                                                                        A : Select target\n"
-				"                                                                                                        B : Exit\n" ,tb->selected->mediatype, (u32)((tb->selected->title_id >> 32) & 0xFFFFFFFF), (u32)(tb->selected->title_id & 0xFFFFFFFF));
-		}
+		sprintf (titlestring, "%s\nMediatype: %d\nTitle ID Hi: %08lX\nTitle ID Lo: %08lX\n",
+			"    Press LEFT or RIGHT to select a title.                                 \n"
+			"    Press L or R to change title mode.                                     \n"
+			"    Press X to show all titles.                                            \n\n"
+			"                                                                                                        A : Dump SMDH\n"
+			"                                                                                                        B : Exit\n" ,tb->selected->mediatype, (u32)((tb->selected->title_id >> 32) & 0xFFFFFFFF), (u32)(tb->selected->title_id & 0xFFFFFFFF));
 		drawError(GFX_BOTTOM,
 			mode,
 			titlestring,
