@@ -24,6 +24,10 @@ u8 batteryLevel = 5;
 u8 charging = 0;
 int rebootCounter;
 titleBrowser_s titleBrowser;
+int autoboottitle = 0;
+char autobootTIDhi[32];
+char autobootTIDlo[32];
+char autobootMediatype[32];
 
 static enum
 {
@@ -217,6 +221,19 @@ int main()
 	if(sdmcCurrent == 1)
 	{
 		//scanHomebrewDirectory(&menu, "/3ds/saves/");
+
+    	FILE *file;
+   		file =fopen("title.txt","r");
+   		if (!file){
+			autoboottitle = 0;
+		}else{
+		    fgets(autobootMediatype,31, file);
+			fgets(autobootTIDhi,31, file);
+			fgets(autobootTIDlo,31, file);
+			
+			autoboottitle = 1;
+		}
+		fclose(file);
 	}
 	sdmcPrevious = sdmcCurrent;
 	nextSdCheck = osGetTime()+250;
@@ -227,6 +244,8 @@ int main()
 
 	while(aptMainLoop())
 	{
+		if (autoboottitle) break;
+
 		if (nextSdCheck < osGetTime())
 		{
 			regionFreeUpdate();
@@ -237,7 +256,7 @@ int main()
 			{
 				closeSDArchive();
 				openSDArchive();
-				scanHomebrewDirectory(&menu, "/3ds/");
+				//scanHomebrewDirectory(&menu, "/3ds/");
 			}
 			else if(sdmcCurrent < 1 && sdmcPrevious == 1)
 			{
@@ -440,8 +459,15 @@ int main()
 
 //	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)return regionFreeRun();
 
-	if (! netloader_boot)
-		return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
+	if (! netloader_boot){
+		if (autoboottitle){
+			u32 tidLo = (u32)strtol(autobootTIDlo, NULL, 16);
+			u32 tidHi = (u32)strtol(autobootTIDhi, NULL, 16);
+			u32 mediaT = (u32)strtol(autobootMediatype, NULL, 16);
+			return regionFreeRun2(tidLo, tidHi, mediaT, 0x1);
+		}else
+			return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
+	}
 
 
 	regionFreeExit();

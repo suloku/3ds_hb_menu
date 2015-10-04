@@ -307,6 +307,7 @@ void drawTitleBrowser(titleBrowser_s* tb)
 
 	if(tb->selected && tb->selected->icon)
 	{
+		/*
 		drawError(GFX_BOTTOM,
 			mode,
 			"    Press LEFT or RIGHT to select a title.                                 \n"
@@ -314,6 +315,17 @@ void drawTitleBrowser(titleBrowser_s* tb)
 			"    Press X to show all titles.                                            \n\n"
 			"                                                                                                        A : Select target\n"
 			"                                                                                                        B : Exit\n",
+			10-drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, 9, true));
+		*/
+		char titlestring[1024];
+		sprintf (titlestring, "%s\nMediatype: %d\nTitle ID Hi: %08lX\nTitle ID Lo: %08lX\n", 			"    Press LEFT or RIGHT to select a title.                                 \n"
+			"    Press L or R to change title mode.                                     \n"
+			"    Press X to show all titles.                                            \n\n"
+			"                                                                                                        A : Select target\n"
+			"                                                                                                        B : Exit\n" ,tb->selected->mediatype, (u32)((tb->selected->title_id >> 32) & 0xFFFFFFFF), (u32)(tb->selected->title_id & 0xFFFFFFFF));
+		drawError(GFX_BOTTOM,
+			mode,
+			titlestring,
 			10-drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, 9, true));
 	}else{
 		drawError(GFX_BOTTOM,
