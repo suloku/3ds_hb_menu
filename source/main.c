@@ -374,20 +374,20 @@ int main()
 			{
 				targetProcessId = -2;
 				target_title = *titleBrowser.selected;
-				//A very bad way to pass tid to svdt
-				menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
-				if(strcmp(me->name, "svdt") == 0){
-					FILE * pFile;
-					mkdir("sdmc:/svdt", S_IRWXO);
-					pFile = fopen ("sdmc:/svdt/tid.bin", "wb");
-					if (pFile != NULL){
-						fwrite (&target_title.title_id , sizeof(char), sizeof(target_title.title_id), pFile);
-					}
-					fclose (pFile);
-				}
 				break;
 			}
 			else if(hidKeysDown()&KEY_B)hbmenu_state = HBMENU_DEFAULT;
+			else if(hidKeysDown()&KEY_L){
+				filterID++;
+				if (filterID > MAX_FILTER) filterID = 1;
+			}
+			else if(hidKeysDown()&KEY_R){
+				filterID--;
+				if (filterID < 1) filterID = MAX_FILTER;
+			}
+			else if(hidKeysDown()&KEY_X){
+				filterID = 0;
+			}
 			else updateTitleBrowser(&titleBrowser);
 		}else if(hbmenu_state == HBMENU_NETLOADER_ERROR){
 			if(hidKeysDown()&KEY_B)
@@ -630,19 +630,7 @@ int main()
 						for(i=0; i<me->descriptor.numTargetTitles; i++)
 						{
 							ret = findTitleBrowser(&titleBrowser, me->descriptor.targetTitles[i].mediatype, me->descriptor.targetTitles[i].tid);
-							if(ret){
-								//A very bad way to pass tid to svdt
-								if(strcmp(me->name, "svdt") == 0){
-									FILE * pFile;
-									mkdir("sdmc:/svdt", S_IRWXO);
-									pFile = fopen ("sdmc:/svdt/tid.bin", "wb");
-									if (pFile != NULL){
-										fwrite (&target_title.title_id , sizeof(char), sizeof(target_title.title_id), pFile);
-									}
-									fclose (pFile);
-								}
-								break;
-							}
+							if(ret)break;
 						}
 
 						if(ret)
