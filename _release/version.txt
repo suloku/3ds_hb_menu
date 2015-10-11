@@ -1,3 +1,7 @@
+11 oct 2015 - 17:30 GTM+1
+- Converted Region Free into title launcher.
+- Gamecard is now always the first title.
+
 04 oct 2015 - 22:00 GTM+1
 - Removed tid.bin creation since applications can now obtain title id by themselves.
 - Added selectable application filters to title selector.

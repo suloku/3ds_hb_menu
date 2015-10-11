@@ -32,6 +32,8 @@ char favActive = 0;
 char confUpdate = 0;
 menu_s lastMenu;
 
+extern bool regionFreeGamecardIn;
+
 static enum
 {
 	HBMENU_DEFAULT,
@@ -138,6 +140,12 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"                                                                                            B : No\n",
 			0);
 	}else if(hbmenu_state == HBMENU_REGIONFREE){
+		drawTitleBrowser(&titleBrowser);
+		drawError(GFX_BOTTOM,
+			"                        Title Launcher                                          ",
+			NULL,
+			-185);		
+	/*
 		if(regionFreeGamecardIn)
 		{
 			drawError(GFX_BOTTOM,
@@ -154,6 +162,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 				"                                                                                            B : Cancel\n",
 				0);
 		}
+	*/
 	}else if(hbmenu_state == HBMENU_TITLESELECT){
 		drawTitleBrowser(&titleBrowser);
 	}else if(hbmenu_state == HBMENU_TITLETARGET_ERROR){
@@ -265,6 +274,8 @@ int main()
 
 	initMenu(&menu);
 	initTitleBrowser(&titleBrowser, NULL);
+	regionFreeUpdate();
+	if(regionFreeGamecardIn) titleBrowser.selectedId -= 1;
 	
 	u8 sdmcPrevious = 0;
 	FSUSER_IsSdmcDetected(NULL, &sdmcCurrent);
@@ -358,6 +369,26 @@ int main()
 				}
 			}
 		}else if(hbmenu_state == HBMENU_REGIONFREE){
+			if(hidKeysDown()&KEY_A && titleBrowser.selected)
+			{
+				targetProcessId = -2;
+				target_title = *titleBrowser.selected;
+				break;
+			}
+			else if(hidKeysDown()&KEY_B)hbmenu_state = HBMENU_DEFAULT;
+			else if(hidKeysDown()&KEY_L){
+				filterID++;
+				if (filterID > MAX_FILTER) filterID = 1;
+			}
+			else if(hidKeysDown()&KEY_R){
+				filterID--;
+				if (filterID < 1) filterID = MAX_FILTER;
+			}
+			else if(hidKeysDown()&KEY_X){
+				filterID = 0;
+			}
+			else updateTitleBrowser(&titleBrowser);
+		/*
 			if(hidKeysDown()&KEY_B){
 				hbmenu_state = HBMENU_DEFAULT;
 			}else if(hidKeysDown()&KEY_A && regionFreeGamecardIn)
@@ -365,6 +396,7 @@ int main()
 				// region free menu entry is selected so we can just break out like updateMenu() normally would
 				break;
 			}
+		*/
 		}else if(hbmenu_state == HBMENU_TITLETARGET_ERROR){
 			if(hidKeysDown()&KEY_B){
 				hbmenu_state = HBMENU_DEFAULT;
@@ -709,7 +741,7 @@ int main()
 	aptExit();
 	srvExit();
 
-	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)return regionFreeRun();
+	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
 	
 	regionFreeExit();
 

@@ -8,6 +8,7 @@
 #include "error.h"
 
 extern int debugValues[100];
+extern bool regionFreeGamecardIn;
 
 //0 all, 1 user, 2 demos, 3 system
 int filterID = 1;
@@ -241,6 +242,7 @@ void updateTitleBrowser(titleBrowser_s* tb)
 		if(updated)
 		{
 			tb->selectedId = 0;
+			if(regionFreeGamecardIn) tb->selectedId -= 1;
 		}
 
 		tb->nextCheck = osGetTime() + 250;
@@ -309,8 +311,8 @@ void drawTitleBrowser(titleBrowser_s* tb)
 	{
 		drawError(GFX_BOTTOM,
 			mode,
-			"    Press LEFT or RIGHT to select a title.                                 \n\n"
-			"    Press L or R to change title mode.                                     \n\n"
+			"    Press LEFT or RIGHT to select a title.                                 \n"
+			"    Press L or R to change title mode.                                     \n"
 			"    Press X to show all titles.                                            \n\n"
 			"                                                                                                        A : Select target\n"
 			"                                                                                                        B : Cancel\n",
