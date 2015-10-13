@@ -98,7 +98,12 @@ void addFileToMenu(menu_s* m, char* execPath)
 	xmlPath[l-2] = 'l';
 	xmlPath[l-3] = 'm';
 	xmlPath[l-4] = 'x';
-	if(fileExists(xmlPath, &sdmcArchive)) loadDescriptor(&tmpEntry.descriptor, xmlPath);
+	if(fileExists(xmlPath, &sdmcArchive)){
+		loadDescriptor(&tmpEntry.descriptor, xmlPath);
+	}else{
+		strcpy(xmlPath, "descriptor.xml");
+		if(fileExists(xmlPath, &sdmcArchive)) loadDescriptor(&tmpEntry.descriptor, xmlPath);
+	}
 
 	addMenuEntryCopy(m, &tmpEntry);
 }
