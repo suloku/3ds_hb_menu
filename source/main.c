@@ -34,6 +34,37 @@ menu_s lastMenu;
 
 extern bool regionFreeGamecardIn;
 
+u8 tmpfilterID = 0;
+
+//Wifi toggle code by thedax https://github.com/thedax/3DS_Wifi_toggle/
+enum
+{
+	WIFI_ENABLE = 0,
+	WIFI_DISABLE
+};
+
+// http://3dbrew.org/wiki/NWMEXT:ControlWirelessEnabled
+// 0 = enable wifi, 1 = disable wifi
+Result NWMEXT_ControlWirelessEnabled(u32 enable)
+{
+	Handle nwmExtHandle = 0;
+	Result result = srvGetServiceHandle(&nwmExtHandle, "nwm::EXT");
+	if (result != 0)
+		return result;
+
+	u32 *commandBuffer = getThreadCommandBuffer();
+	commandBuffer[0] = 0x00080040;
+	commandBuffer[1] = enable;
+
+	result = svcSendSyncRequest(nwmExtHandle);
+	svcCloseHandle(nwmExtHandle);
+
+	if (result != 0)
+		return result;
+
+	return commandBuffer[1];
+}
+
 static enum
 {
 	HBMENU_DEFAULT,
@@ -302,6 +333,7 @@ int main()
 	srand(svcGetSystemTick());
 
 	rebootCounter=257;
+	filterID = 1;
 
 	while(aptMainLoop())
 	{
@@ -589,12 +621,14 @@ int main()
 						disableRF ^= 1;
 					}
 					updatefolder = 1;
+					NWMEXT_ControlWirelessEnabled(WIFI_DISABLE);
 				}
 			}
-			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_L  && hbmenu_state == HBMENU_DEFAULT) //toggle remember_menu
+			//if ( ( (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_L) || hidKeysDown()& (KEY_ZL|KEY_ZR) )  && hbmenu_state == HBMENU_DEFAULT) //toggle wifi
+			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_L  && hbmenu_state == HBMENU_DEFAULT) //toggle wifi
 			{
-				remembermenu ^= 1;
-				confUpdate = 1;
+				if(wifiStatus) NWMEXT_ControlWirelessEnabled(WIFI_DISABLE);
+				else NWMEXT_ControlWirelessEnabled(WIFI_ENABLE);
 			}
 			if (updatefolder)
 			{
@@ -646,6 +680,10 @@ int main()
 			if(secretCode())brewMode = !brewMode;
 			else if(updateMenu(&menu))
 			{
+				//Search all titles
+				tmpfilterID = filterID;
+				filterID = 0;
+
 				menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
 				if(me && !strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)
 				{
@@ -674,16 +712,20 @@ int main()
 
 						// if we get here, we aint found shit
 						// if appropriate, let user select target title
-						if(me->descriptor.selectTargetProcess) hbmenu_state = HBMENU_TITLESELECT;
-						else hbmenu_state = HBMENU_TITLETARGET_ERROR;
+						if(me->descriptor.selectTargetProcess){
+							filterID = tmpfilterID;
+							hbmenu_state = HBMENU_TITLESELECT;
+						}else{ hbmenu_state = HBMENU_TITLETARGET_ERROR;}
 					}else
 					{
-						if(me->descriptor.selectTargetProcess) hbmenu_state = HBMENU_TITLESELECT;
-						else break;
+						if(me->descriptor.selectTargetProcess){
+							filterID = tmpfilterID;
+							hbmenu_state = HBMENU_TITLESELECT;
+						}else{ break;}
 					}
-
-
 				}
+
+				filterID = tmpfilterID;
 			}
 		}
 
@@ -707,6 +749,8 @@ int main()
 
 		gspWaitForVBlank();
 	}
+
+	filterID = 0;
 
 	if (confUpdate || remembermenu ){
 		if (favActive){

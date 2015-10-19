@@ -1,3 +1,7 @@
+19 oct 2015 - 13:55 GTM+1
+- Filters are not applied when searching for services/titles defined in descriptor xml file
+- UP+L toogle wifi if hbl has access to the service (run under system settings title for example). Maybe ninhax 2.5 will solve this.
+
 13 oct 2015 - 20:50 GTM+1
 - Able to use generic name for descriptor xml file (descriptor.xml)
 

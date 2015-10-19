@@ -11,7 +11,7 @@ extern int debugValues[100];
 extern bool regionFreeGamecardIn;
 
 //0 all, 1 user, 2 demos, 3 system
-int filterID = 1;
+int filterID = 0;
 
 void titlesInit()
 {
