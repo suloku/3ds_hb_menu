@@ -78,12 +78,30 @@ static enum
 
 int debugValues[100];
 
-void drawDebug()
-{
-	char str[256];
-	sprintf(str, "hello3 %08X %d %d %d %d %d %d %d\n\n%08X %08X %08X %08X\n\n%08X %08X %08X %08X\n\n%08X %08X %08X %08X\n\n", debugValues[50], debugValues[51], debugValues[52], debugValues[53], debugValues[54], debugValues[55], debugValues[56], debugValues[57], debugValues[58], debugValues[59], debugValues[60], debugValues[61], debugValues[62], debugValues[63], debugValues[64], debugValues[65], debugValues[66], debugValues[67], debugValues[68], debugValues[69]);
-	gfxDrawText(GFX_TOP, GFX_LEFT, NULL, str, 48, 100);
-}
+// typedef struct
+// {
+// 	int processId;
+// 	bool capabilities[0x10];
+// }processEntry_s;
+
+// void (*_getBestProcess_2x)(u32 sectionSizes[3], bool* requirements, int num_requirements, processEntry_s* out, int out_size, int* out_len) = (void*)0x0010000C;
+
+// void drawDebug()
+// {
+// 	char str[256];
+// 	sprintf(str, "hello3 %08X %d %d %d %d %d %d %d\n\n%08X %08X %08X %08X\n\n%08X %08X %08X %08X\n\n%08X %08X %08X %08X\n\n", debugValues[50], debugValues[51], debugValues[52], debugValues[53], debugValues[54], debugValues[55], debugValues[56], debugValues[57], debugValues[58], debugValues[59], debugValues[60], debugValues[61], debugValues[62], debugValues[63], debugValues[64], debugValues[65], debugValues[66], debugValues[67], debugValues[68], debugValues[69]);
+// 	menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
+// 	if(me && me->descriptor.numRequestedServices)
+// 	{
+// 		scanMenuEntry(me);
+// 		executableMetadata_s* em = &me->descriptor.executableMetadata;
+// 		processEntry_s out[4];
+// 		int out_len = 0;
+// 		_getBestProcess_2x(em->sectionSizes, (bool*)em->servicesThatMatter, NUM_SERVICESTHATMATTER, out, 4, &out_len);
+// 		sprintf(str, "hello3 %s %d %d %d %d\n", me->descriptor.requestedServices[0].name, out_len, out[0].processId, out[0].capabilities[4], em->servicesThatMatter[4]);
+// 	}
+// 	gfxDrawText(GFX_TOP, GFX_LEFT, NULL, str, 48, 100);
+// }
 
 void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 {
@@ -118,20 +136,22 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 		drawError(GFX_BOTTOM,
 			"Themes",
 			bof,
-			-95);
+			-90);
 		//Config controls
 		sprintf(bof, 
 			"  Y  : Toggle remember menu (currently %s%s"
 			"  /\\ : Toggle sorting (currently %s%s"
-			"  \\/ : Toggle mix files (currently %s%s",
+			"  \\/ : Toggle mix files (currently %s%s"
+			"  <  : Toogle remember Region Free (currently %s%s",
 			remembermenu?"on) ":"off)", "                                                           \n",
 			caseSetting?"alphabetic)":"filesystem)", "                                                          \n",
-			mixSetting?"on) ":"off)", "                                                              \n"
+			mixSetting?"on) ":"off)", "                                                              \n",
+			rememberRF?"on) ":"off)", "                                                           \n"
 			);
 		drawError(GFX_BOTTOM,
 			"Config",
 			bof,
-			-160);
+			-155);
 	}else if(!sdmcCurrent)
 	{
 		//no SD
@@ -279,12 +299,13 @@ int main()
 	initFilesystem();
 	openSDArchive();
 	hidInit(NULL);
-	irrstInit(NULL);
 	acInit();
 	ptmInit();
 	titlesInit();
 	regionFreeInit();
 	netloader_init();
+
+	osSetSpeedupEnable(true);
 
 	// offset potential issues caused by homebrew that just ran
 	aptOpenSession();
@@ -299,6 +320,7 @@ int main()
 	Folders.current = 0;
 	Folders.max = 0;
 	loadConfig(&Folders); //Needs to be before initMenu to disable regionfree entry if configured. Let's hope there's a sd card inserted, well, boot.3dsx should be in sdcard
+	RFatboot = disableRF;
 	loadTheme();
 	brewMode = rememberbrew;
 	if (Folders.max >= MAX_FOLDER) Folders.max = MAX_FOLDER-1;
@@ -507,6 +529,11 @@ int main()
 				mixSetting ^= 1;
 				confUpdate = 1;
 			}
+			else if(hidKeysDown()&KEY_LEFT)
+			{
+				rememberRF ^= 1;
+				confUpdate = 1;
+			}
 		}else if(rebootCounter==257){
 			if(hidKeysDown()&KEY_START)rebootCounter--;
 			if(hidKeysDown()&KEY_Y)
@@ -621,7 +648,7 @@ int main()
 						disableRF ^= 1;
 					}
 					updatefolder = 1;
-					NWMEXT_ControlWirelessEnabled(WIFI_DISABLE);
+					if (rememberRF) confUpdate = 1;
 				}
 			}
 			//if ( ( (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_L) || hidKeysDown()& (KEY_ZL|KEY_ZR) )  && hbmenu_state == HBMENU_DEFAULT) //toggle wifi
@@ -777,11 +804,10 @@ int main()
 	titlesExit();
 	ptmExit();
 	acExit();
-	irrstExit();
 	hidExit();
 	gfxExit();
-	exitFilesystem();
 	closeSDArchive();
+	exitFilesystem();
 	aptExit();
 	srvExit();
 

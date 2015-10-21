@@ -19,6 +19,8 @@ int current_theme = 0;
 int random_theme = 0;
 int totalThemes = 0;
 int first_theme = 0;
+int rememberRF = 0;
+int RFatboot = 0;
 
 //Function from K. Biermann (http://stackoverflow.com/questions/2509679/how-to-generate-a-random-number-from-within-a-range)
 uint32_t getRandInterval(uint32_t begin, uint32_t end) {
@@ -323,6 +325,9 @@ void loadConfig(hbfolder* folder){
 		subElement = pElement->FirstChildElement("disable_RF");
 		if (subElement != nullptr) subElement->QueryIntText(&disableRF);
 
+		subElement = pElement->FirstChildElement("remember_RF");
+		if (subElement != nullptr) subElement->QueryIntText(&rememberRF);
+
 		subElement = pElement->FirstChildElement("theBrew");
 		if (subElement != nullptr) subElement->QueryIntText(&rememberbrew);
 
@@ -392,7 +397,15 @@ void writeConfig(hbfolder* folder){
 	pElement->InsertEndChild(subElement);//close
 
 	subElement = xmlDoc.NewElement("disable_RF");
-	subElement->SetText(disableRF);
+	if (rememberRF){
+		subElement->SetText(disableRF);
+	}else{
+		subElement->SetText(RFatboot);
+	}
+	pElement->InsertEndChild(subElement);//close
+
+	subElement = xmlDoc.NewElement("remember_RF");
+	subElement->SetText(rememberRF);
 	pElement->InsertEndChild(subElement);//close
 
 	subElement = xmlDoc.NewElement("theBrew");

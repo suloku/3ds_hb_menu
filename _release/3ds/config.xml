@@ -7,6 +7,7 @@
         <mix_files>0</mix_files>
         <case_sensitive>0</case_sensitive>
         <disable_RF>1</disable_RF>
+		<remember_RF>0</remember_RF>
  		<current_theme>2</current_theme>
 		<random_theme>1</random_theme>
 		<menu_pos remember_menu="1" folder="0" entry="0"/>

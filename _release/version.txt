@@ -1,3 +1,10 @@
+21 oct 2015 - 15:45 GTM+1
+- Added independent setting to remember region free status (enabled/disabled).
+	* Enabled: HBL will boot with latest region free (title launcher) status (if it was disabled, it will boot disabled).
+	* Disabled: HBL will boot with the region free (title launcher) setting, regardless if it was enabled/disabled when exiting HBL.
+- Merged latest changes from smea's master.
+- Compiled with latest ctrulib.
+
 19 oct 2015 - 13:55 GTM+1
 - Filters are not applied when searching for services/titles defined in descriptor xml file
 - UP+L toogle wifi if hbl has access to the service (run under system settings title for example). Maybe ninhax 2.5 will solve this.

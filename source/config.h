@@ -28,6 +28,8 @@ extern char favorites[MAX_FAVS][1024];
 extern int current_theme;
 extern int random_theme;
 extern int totalThemes;
+extern int rememberRF;
+extern int RFatboot;
 
 typedef struct
 {
