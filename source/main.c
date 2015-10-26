@@ -39,33 +39,41 @@ extern bool regionFreeGamecardIn;
 
 u8 tmpfilterID = 0;
 
-//Wifi toggle code by thedax https://github.com/thedax/3DS_Wifi_toggle/
+#define ERR_WIFI_ALREADY_ON_OR_OFF 0xC8A06C0D
+
 enum
 {
-	WIFI_ENABLE = 0,
-	WIFI_DISABLE
-};
+    WIFI_ENABLE = 0,
+    WIFI_DISABLE
+}NWMEXT_WifiStates;
 
 // http://3dbrew.org/wiki/NWMEXT:ControlWirelessEnabled
-// 0 = enable wifi, 1 = disable wifi
 Result NWMEXT_ControlWirelessEnabled(u32 enable)
 {
-	Handle nwmExtHandle = 0;
-	Result result = srvGetServiceHandle(&nwmExtHandle, "nwm::EXT");
-	if (result != 0)
-		return result;
+    Handle nwmExtHandle = 0;
+    Result result = srvGetServiceHandle(&nwmExtHandle, "nwm::EXT");
+    printf("srvGetServiceHandle: %lx\n", result);
+    if (result != 0)
+        return result;
 
-	u32 *commandBuffer = getThreadCommandBuffer();
-	commandBuffer[0] = 0x00080040;
-	commandBuffer[1] = enable;
+    u32 *commandBuffer = getThreadCommandBuffer();
+    commandBuffer[0] = 0x00080040;
+    commandBuffer[1] = enable; // 0 = enable, 1 = disable
 
-	result = svcSendSyncRequest(nwmExtHandle);
-	svcCloseHandle(nwmExtHandle);
+    result = svcSendSyncRequest(nwmExtHandle);
+    printf("svcSendSyncRequest: %lx\n", result);
+    svcCloseHandle(nwmExtHandle);
 
-	if (result != 0)
-		return result;
+    return result;
+}
 
-	return commandBuffer[1];
+void toggleWifi()
+{
+    // Try to turn wifi on by default.
+    Result r = NWMEXT_ControlWirelessEnabled(WIFI_ENABLE);
+
+    if (r == ERR_WIFI_ALREADY_ON_OR_OFF)
+        NWMEXT_ControlWirelessEnabled(WIFI_DISABLE);
 }
 
 static enum
@@ -196,9 +204,10 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 	}else if(hbmenu_state == HBMENU_REGIONFREE){
 		drawTitleBrowser(&titleBrowser);
 		drawError(GFX_BOTTOM,
-			"                        Title Launcher                                          ",
-			NULL,
-			-185);		
+			"                        Title Launcher                                          \n",
+			"\nPress SELECT to create shortcut                                                 "
+			"\nPress START to delete shortcut (if present)                                     ",
+			-170);		
 	/*
 		if(regionFreeGamecardIn)
 		{
@@ -437,12 +446,79 @@ int main()
 					if(!fileExists(HansPath, &sdmcArchive)){
 						HansPath[0] = '\0';
 					}else{
-						sprintf(HansArg, "/3ds/.hans/h/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+						sprintf(HansArg, "-f/3ds/.hans/h/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
 					}
 				}else{
-					sprintf(HansArg, "/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+					sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
 				}
 				break;
+			}
+			else if(hidKeysDown()&KEY_SELECT && titleBrowser.selected) //Create shortcut
+			{
+				//Write SMDH
+				FILE * pFile;
+				char iconPath[32];
+				sprintf(iconPath, "%s%08lX-%08lX.smdh", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
+				pFile = fopen (iconPath,"wb");
+				if (pFile){
+					fwrite(titleBrowser.selected->icon, sizeof(u8), sizeof(smdh_s), pFile);
+				}
+				fclose (pFile);
+				//Write XML
+				//Create a menu entry for HANS
+				strcpy (HansPath, "/3ds/hans/hans.3dsx");
+				if(!fileExists(HansPath, &sdmcArchive)){
+					strcpy (HansPath, "/3ds/.hans/h/hans.3dsx");
+					if(!fileExists(HansPath, &sdmcArchive)){
+						HansPath[0] = '\0';
+					}else{
+						sprintf(HansArg, "-f/3ds/.hans/h/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+					}
+				}else{
+					sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+				}
+				char ShortcutPath[32];
+				sprintf(ShortcutPath, "%s%08lX-%08lX.xml", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
+				writeShortcut(ShortcutPath, HansPath, iconPath, HansArg, titleBrowser.selected->title_id, titleBrowser.selected->mediatype);
+				//Reset paths
+				HansPath[0] = '\0';
+				HansArg[0] = '\0';
+				updatefolder = 1;
+				u64 time = osGetTime();
+				while (1){
+					drawError(GFX_BOTTOM,
+						"\n                     Shortcut Created!                                          \n",
+						"\n",
+						-175);
+					if (osGetTime() - time > 1000) break;
+					gfxFlushBuffers();
+					gfxSwapBuffers();
+
+					gspWaitForVBlank();
+				}
+			}
+			else if(hidKeysDown()&KEY_START && titleBrowser.selected) //Delete shortcut
+			{
+				//Delete SMDH
+				char Path[32];
+				sprintf(Path, "%s%08lX-%08lX.smdh", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
+				remove(Path);
+				//Delete XML
+				sprintf(Path, "%s%08lX-%08lX.xml", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
+				remove(Path);
+				updatefolder = 1;
+				u64 time = osGetTime();
+				while (1){
+					drawError(GFX_BOTTOM,
+						"\n                     Shortcut Deleted!                                          \n",
+						"\n",
+						-175);
+					if (osGetTime() - time > 1000) break;
+					gfxFlushBuffers();
+					gfxSwapBuffers();
+
+					gspWaitForVBlank();
+				}
 			}
 			else if(hidKeysDown()&KEY_B)hbmenu_state = HBMENU_DEFAULT;
 			else if(hidKeysDown()&KEY_L){
@@ -682,8 +758,7 @@ int main()
 			//if ( ( (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_L) || hidKeysDown()& (KEY_ZL|KEY_ZR) )  && hbmenu_state == HBMENU_DEFAULT) //toggle wifi
 			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_L  && hbmenu_state == HBMENU_DEFAULT) //toggle wifi
 			{
-				if(wifiStatus) NWMEXT_ControlWirelessEnabled(WIFI_DISABLE);
-				else NWMEXT_ControlWirelessEnabled(WIFI_ENABLE);
+				toggleWifi();
 			}
 			if (updatefolder)
 			{

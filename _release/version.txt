@@ -1,3 +1,6 @@
+26 oct 2015 - 19:45 GTM+1
+- Title launcher can create and delete title shortcuts to/from current folder.
+
 26 oct 2015 - 18:11 GTM+1
 - Title launcher now runs trough HANS (aka region 5) if one of the following paths is valid:
 	* /3ds/hans/hans.3dsx

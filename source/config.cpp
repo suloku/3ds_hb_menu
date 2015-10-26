@@ -442,6 +442,42 @@ void writeConfig(hbfolder* folder){
 	xmlDoc.SaveFile(FOLDER_FILE);
 }
 
+void writeShortcut(char* ShortcutPath, char* HansPath, char* iconPath, char* arg, u64 title_id, u8 mediatype){
+
+    XMLDocument xmlDoc;
+	
+	XMLElement * pElement;
+	XMLElement * subElement;
+
+//Shortcut
+	pElement = xmlDoc.NewElement("shortcut");
+		subElement = xmlDoc.NewElement("executable");
+		subElement->SetText(HansPath);
+		pElement->InsertEndChild(subElement);//close
+
+		subElement = xmlDoc.NewElement("icon");
+		subElement->SetText(iconPath);
+		pElement->InsertEndChild(subElement);//close
+
+		subElement = xmlDoc.NewElement("arg");
+		subElement->SetText(arg);
+		pElement->InsertEndChild(subElement);//close
+	xmlDoc.LinkEndChild(pElement);//close shortcut
+
+//targets
+	pElement = xmlDoc.NewElement("targets");
+	pElement->SetAttribute("selectable", false);
+		subElement = xmlDoc.NewElement("title");
+		subElement->SetAttribute("mediatype", mediatype);
+		char tmp[32];
+		sprintf (tmp, "%016llX", title_id);
+		subElement->SetText(tmp);
+		pElement->InsertEndChild(subElement);//close
+		xmlDoc.LinkEndChild(pElement);//close targets
+
+	xmlDoc.SaveFile(ShortcutPath);
+}
+
 int isFavorite(char* path){
 	int i;
 	for (i=0; i<totalfavs ; i++){

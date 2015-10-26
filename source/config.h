@@ -41,6 +41,7 @@ typedef struct
 void loadTheme();
 void loadConfig(hbfolder* folder);
 void writeConfig(hbfolder* folder);
+void writeShortcut(char* ShortcutPath, char* HansPath, char* iconPath, char* arg, u64 title_id, u8 mediatype);
 int isFavorite(char* path);
 
 #ifdef __cplusplus
