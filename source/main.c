@@ -206,8 +206,9 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 		drawError(GFX_BOTTOM,
 			"                        Title Launcher                                          \n",
 			"\nPress SELECT to create shortcut                                                 "
-			"\nPress START to delete shortcut (if present)                                     ",
-			-170);		
+			"\nPress START to delete shortcut (if present)                                     "
+			"\nPress Y to launch using region four                                             ",
+			-160);		
 	/*
 		if(regionFreeGamecardIn)
 		{
@@ -488,8 +489,8 @@ int main()
 				while (1){
 					drawError(GFX_BOTTOM,
 						"\n                     Shortcut Created!                                          \n",
-						"\n",
-						-175);
+						"\n\n\n",
+						-160);
 					if (osGetTime() - time > 1000) break;
 					gfxFlushBuffers();
 					gfxSwapBuffers();
@@ -511,14 +512,19 @@ int main()
 				while (1){
 					drawError(GFX_BOTTOM,
 						"\n                     Shortcut Deleted!                                          \n",
-						"\n",
-						-175);
+						"\n\n\n",
+						-160);
 					if (osGetTime() - time > 1000) break;
 					gfxFlushBuffers();
 					gfxSwapBuffers();
 
 					gspWaitForVBlank();
 				}
+			}
+			else if(hidKeysDown()&KEY_Y){ //Boot with region four
+				targetProcessId = -2;
+				target_title = *titleBrowser.selected;
+				break;
 			}
 			else if(hidKeysDown()&KEY_B)hbmenu_state = HBMENU_DEFAULT;
 			else if(hidKeysDown()&KEY_L){

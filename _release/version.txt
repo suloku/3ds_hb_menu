@@ -1,3 +1,6 @@
+27 oct 2015 - 00:00 GTM+1
+- Use Y on title launcher to boot using region four (added since HANS seems unstable for some games)
+
 26 oct 2015 - 20:00 GTM+1
 - Solved bug creating wrong shortcut xml files in folders with name longer than /3ds/
 
