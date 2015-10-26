@@ -1,3 +1,9 @@
+26 oct 2015 - 16:30 GTM+1
+- Merged Smea's HBL changes for ninjhax 2.5 (shortcuts mainly)
+- Todo:
+	* shortcuts favorites
+	* Rethink title launcher to work under HANS.
+
 21 oct 2015 - 15:45 GTM+1
 - Added independent setting to remember region free status (enabled/disabled).
 	* Enabled: HBL will boot with latest region free (title launcher) status (if it was disabled, it will boot disabled).

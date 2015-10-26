@@ -721,6 +721,9 @@ int main()
 					// if appropriate, look for specified titles in list
 					if(me->descriptor.numTargetTitles)
 					{
+						// first refresh list (for sd/gamecard)
+						updateTitleBrowser(&titleBrowser);
+
 						// go through target title list in order so that first ones on list have priority
 						int i;
 						titleInfo_s* ret = NULL;
@@ -815,5 +818,5 @@ int main()
 	
 	regionFreeExit();
 
-	return bootApp(me->executablePath, &me->descriptor.executableMetadata);
+	return bootApp(me->executablePath, &me->descriptor.executableMetadata, me->arg);
 }

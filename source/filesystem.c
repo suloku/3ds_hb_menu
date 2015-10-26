@@ -75,9 +75,9 @@ bool fileExists(char* path, FS_archive* archive)
 	return true;
 }
 
-extern int debugValues[4];
+extern int debugValues[100];
 
-void addFileToMenu(menu_s* m, char* execPath)
+void addExecutableToMenu(menu_s* m, char* execPath)
 {
 	if(!m || !execPath)return;
 
@@ -174,6 +174,58 @@ int cmp(const void *a, const void *b) {
 	}
 }
 
+// should go in menu.c ?
+void createMenuEntryShortcut(menu_s* m, shortcut_s* s)
+{
+	if(!m || !s)return;
+
+	static menuEntry_s tmpEntry;
+	static smdh_s tmpSmdh;
+
+	char* execPath = s->executable;
+
+	if(!fileExists(execPath, &sdmcArchive))return;
+
+	int i, l=-1; for(i=0; execPath[i]; i++) if(execPath[i]=='/') l=i;
+
+	char* iconPath = s->icon;
+	int ret = loadFile(iconPath, &tmpSmdh, &sdmcArchive, sizeof(smdh_s));
+
+	if(!ret)
+	{
+		initEmptyMenuEntry(&tmpEntry);
+		ret = extractSmdhData(&tmpSmdh, tmpEntry.name, tmpEntry.description, tmpEntry.author, tmpEntry.iconData);
+		strncpy(tmpEntry.executablePath, execPath, ENTRY_PATHLENGTH);
+	}
+
+	if(ret) initMenuEntry(&tmpEntry, execPath, &execPath[l+1], execPath, "Unknown publisher", (u8*)installerIcon_bin);
+
+	if(s->name) strncpy(tmpEntry.name, s->name, ENTRY_NAMELENGTH);
+	if(s->description) strncpy(tmpEntry.description, s->description, ENTRY_DESCLENGTH);
+	if(s->author) strncpy(tmpEntry.author, s->author, ENTRY_AUTHORLENGTH);
+
+	if(s->arg)
+	{
+		strncpy(tmpEntry.arg, s->arg, ENTRY_ARGLENGTH);
+	}
+
+	if(fileExists(s->descriptor, &sdmcArchive)) loadDescriptor(&tmpEntry.descriptor, s->descriptor);
+
+	addMenuEntryCopyAt(m, &tmpEntry, 1);
+}
+
+void addShortcutToMenu(menu_s* m, char* shortcutPath)
+{
+	if(!m || !shortcutPath)return;
+
+	static shortcut_s tmpShortcut;
+
+	Result ret = createShortcut(&tmpShortcut, shortcutPath);
+	if(!ret) createMenuEntryShortcut(m, &tmpShortcut);
+
+	freeShortcut(&tmpShortcut);
+}
+
 void scanHomebrewDirectory(menu_s* m, char* path)
 {
 	if(!path)return;
@@ -200,10 +252,14 @@ void scanHomebrewDirectory(menu_s* m, char* path)
 			{
 				//addDirectoryToMenu(m, fullPath[totalentries]);
 				totalentries++;
-			}else{ //stray executables
+			}else{ //stray executables and shortcuts
 				n=strlen(fullPath[totalentries]);
 				if(n>5 && !strcmp(".3dsx", &fullPath[totalentries][n-5])){
-					//addFileToMenu(m, fullPath[totalentries]);
+					//addExecutableToMenu(m, fullPath[totalentries]);
+					totalentries++;
+				}
+				if(n>4 && !strcmp(".xml", &fullPath[totalentries][n-4])){
+					//addShortcutToMenu(m, fullPath[totalentries]);
 					totalentries++;
 				}
 			}
@@ -219,7 +275,13 @@ void scanHomebrewDirectory(menu_s* m, char* path)
 				if (!j && !mixSetting){
 					//skip stray files in first pass
 				}else {
-					addFileToMenu(m, fullPath[i]);
+					addExecutableToMenu(m, fullPath[i]);
+				}
+			}else if(n>4 && !strcmp(".xml", &fullPath[i][n-4])){
+				if (!j){
+					addShortcutToMenu(m, fullPath[i]);
+				}else{
+					//Skip shortcuts in second pass
 				}
 			}else{
 				if (strncmp(".", fullPath[i], 1) != 0){
@@ -245,8 +307,10 @@ void addFavorites(menu_s* m)
 		{
 			int n=strlen(favorites[i]);
 			if(n>5 && !strcmp(".3dsx", &favorites[i][n-5]))	{
-				addFileToMenu(m, favorites[i]);
-			} else {
+				addExecutableToMenu(m, favorites[i]);
+			}else if(n>4 && !strcmp(".xml", &favorites[i][n-4])){
+				addShortcutToMenu(m, favorites[i]);
+			}else {
 				addDirectoryToMenu(m, favorites[i]);
 			}
 		}
