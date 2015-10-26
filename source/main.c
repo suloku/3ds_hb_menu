@@ -457,7 +457,7 @@ int main()
 			{
 				//Write SMDH
 				FILE * pFile;
-				char iconPath[32];
+				char iconPath[ENTRY_PATHLENGTH];
 				sprintf(iconPath, "%s%08lX-%08lX.smdh", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
 				pFile = fopen (iconPath,"wb");
 				if (pFile){
@@ -477,7 +477,7 @@ int main()
 				}else{
 					sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
 				}
-				char ShortcutPath[32];
+				char ShortcutPath[ENTRY_PATHLENGTH];
 				sprintf(ShortcutPath, "%s%08lX-%08lX.xml", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
 				writeShortcut(ShortcutPath, HansPath, iconPath, HansArg, titleBrowser.selected->title_id, titleBrowser.selected->mediatype);
 				//Reset paths
@@ -500,7 +500,7 @@ int main()
 			else if(hidKeysDown()&KEY_START && titleBrowser.selected) //Delete shortcut
 			{
 				//Delete SMDH
-				char Path[32];
+				char Path[ENTRY_PATHLENGTH];
 				sprintf(Path, "%s%08lX-%08lX.smdh", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
 				remove(Path);
 				//Delete XML
