@@ -34,6 +34,7 @@ extern u8 scrollfront_color[];
 typedef struct menuEntry_s
 {
 	char executablePath[ENTRY_PATHLENGTH+1];
+	char shortcutPath[ENTRY_PATHLENGTH+1];
 	char name[ENTRY_NAMELENGTH+1];
 	char description[ENTRY_DESCLENGTH+1];
 	char author[ENTRY_AUTHORLENGTH+1];

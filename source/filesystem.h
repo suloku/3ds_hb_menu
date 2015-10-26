@@ -24,6 +24,6 @@ void addDirectoryToMenu(menu_s* m, char* path);
 void scanHomebrewDirectory(menu_s* m, char* path);
 
 //shortcut menu stuff
-void createMenuEntryShortcut(menu_s* m, shortcut_s* s);
+void createMenuEntryShortcut(menu_s* m, shortcut_s* s, char* shortcutPath);
 
 void addFavorites(menu_s* m);

@@ -572,24 +572,37 @@ int main()
 					char infavs=0;
 					//Is it a stray 3dsx?
 					//If name and description end both in .3dsx and it's not a stray 3dsx file, the smdh creator is nuts.
-					char stray = 0;
+					char type = 0;
 					int lenght = strlen(me->description);
 					if (lenght >= 4 && me->description[lenght-5] == '.' && me->description[lenght-4] == '3' && me->description[lenght-3] == 'd' && me->description[lenght-2] == 's' && me->description[lenght-1] == 'x')
 					{
 						lenght = strlen(me->name);
 						if (lenght >= 4 && me->name[lenght-5] == '.' && me->name[lenght-4] == '3' && me->name[lenght-3] == 'd' && me->name[lenght-2] == 's' && me->name[lenght-1] == 'x')
 						{
-							stray = 1;
+							type = 1;
 						}
+					}
+					//Is it a xml shortcut?
+					if (strlen (me->shortcutPath) > 0)
+					{
+						type = 2;
 					}
 					if (totalfavs < MAX_FAVS-1){ //If there's room
 						//Is it a stray 3dsx?
-						if (stray){
+						if (type == 1){
 							infavs = isFavorite(me->executablePath);
 							if (!infavs){
 								strcpy(favorites[totalfavs], me->executablePath);
 							}
-						}else{
+						}
+						//Is it a shortcut?
+						if (type == 2){
+							infavs = isFavorite(me->shortcutPath);
+							if (!infavs){
+								strcpy(favorites[totalfavs], me->shortcutPath);
+							}
+						}
+						else{
 						//Full folder entry
 							char tmp[1024];
 							strcpy(tmp, me->executablePath);

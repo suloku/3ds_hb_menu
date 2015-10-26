@@ -175,7 +175,7 @@ int cmp(const void *a, const void *b) {
 }
 
 // should go in menu.c ?
-void createMenuEntryShortcut(menu_s* m, shortcut_s* s)
+void createMenuEntryShortcut(menu_s* m, shortcut_s* s, char* shortcutPath)
 {
 	if(!m || !s)return;
 
@@ -196,9 +196,18 @@ void createMenuEntryShortcut(menu_s* m, shortcut_s* s)
 		initEmptyMenuEntry(&tmpEntry);
 		ret = extractSmdhData(&tmpSmdh, tmpEntry.name, tmpEntry.description, tmpEntry.author, tmpEntry.iconData);
 		strncpy(tmpEntry.executablePath, execPath, ENTRY_PATHLENGTH);
+		if (isFavorite(shortcutPath)){
+			char descriptionFav[ENTRY_DESCLENGTH+1];
+			sprintf(descriptionFav, "%s%s", (isFavorite(shortcutPath)?FAVORITE_MARKER:""), tmpEntry.description);
+			strcpy(tmpEntry.description, descriptionFav);
+		}
 	}
 
-	if(ret) initMenuEntry(&tmpEntry, execPath, &execPath[l+1], execPath, "Unknown publisher", (u8*)installerIcon_bin);
+	if(ret){
+		char descriptionFav[ENTRY_DESCLENGTH+1];
+		sprintf(descriptionFav, "%s%s", (isFavorite(shortcutPath)?FAVORITE_MARKER:""), execPath);
+		initMenuEntry(&tmpEntry, execPath, &execPath[l+1], descriptionFav, "Unknown publisher", (u8*)installerIcon_bin);
+	}
 
 	if(s->name) strncpy(tmpEntry.name, s->name, ENTRY_NAMELENGTH);
 	if(s->description) strncpy(tmpEntry.description, s->description, ENTRY_DESCLENGTH);
@@ -210,6 +219,8 @@ void createMenuEntryShortcut(menu_s* m, shortcut_s* s)
 	}
 
 	if(fileExists(s->descriptor, &sdmcArchive)) loadDescriptor(&tmpEntry.descriptor, s->descriptor);
+	
+	strncpy(tmpEntry.shortcutPath, shortcutPath, ENTRY_PATHLENGTH);
 
 	addMenuEntryCopyAt(m, &tmpEntry, 1);
 }
@@ -221,7 +232,7 @@ void addShortcutToMenu(menu_s* m, char* shortcutPath)
 	static shortcut_s tmpShortcut;
 
 	Result ret = createShortcut(&tmpShortcut, shortcutPath);
-	if(!ret) createMenuEntryShortcut(m, &tmpShortcut);
+	if(!ret) createMenuEntryShortcut(m, &tmpShortcut, shortcutPath);
 
 	freeShortcut(&tmpShortcut);
 }
