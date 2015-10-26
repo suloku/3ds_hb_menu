@@ -1,3 +1,9 @@
+26 oct 2015 - 18:11 GTM+1
+- Title launcher now runs trough HANS (aka region 5) if one of the following paths is valid:
+	* /3ds/hans/hans.3dsx
+	* /3ds/.hans/h/hans.3dsx --> this path is so hans won't be displayed in HBL
+If hans is not found in neither of this paths, old method (region 4) will be used.
+
 26 oct 2015 - 17:30 GTM+1
 - Fixed removing favorited shortcuts
 - Shortcuts are the first entry when title launcher is disabled.

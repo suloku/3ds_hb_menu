@@ -32,6 +32,9 @@ char favActive = 0;
 char confUpdate = 0;
 menu_s lastMenu;
 
+char HansPath[ENTRY_PATHLENGTH+1];
+char HansArg[ENTRY_PATHLENGTH+1];
+
 extern bool regionFreeGamecardIn;
 
 u8 tmpfilterID = 0;
@@ -427,6 +430,18 @@ int main()
 			{
 				targetProcessId = -2;
 				target_title = *titleBrowser.selected;
+				//Create a menu entry for HANS
+				strcpy (HansPath, "/3ds/hans/hans.3dsx");
+				if(!fileExists(HansPath, &sdmcArchive)){
+					strcpy (HansPath, "/3ds/.hans/h/hans.3dsx");
+					if(!fileExists(HansPath, &sdmcArchive)){
+						HansPath[0] = '\0';
+					}else{
+						sprintf(HansArg, "/3ds/.hans/h/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+					}
+				}else{
+					sprintf(HansArg, "/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+				}
 				break;
 			}
 			else if(hidKeysDown()&KEY_B)hbmenu_state = HBMENU_DEFAULT;
@@ -827,7 +842,15 @@ int main()
 	aptExit();
 	srvExit();
 
-	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
+	//Title launching
+	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot){
+		if (strlen(HansPath) > 0){
+			regionFreeExit();
+			return bootApp(HansPath, NULL, HansArg);
+		}else{
+			return regionFreeRun2(target_title.title_id & 0xffffffff, (target_title.title_id >> 32) & 0xffffffff, target_title.mediatype, 0x1);
+		}
+	}
 	
 	regionFreeExit();
 
