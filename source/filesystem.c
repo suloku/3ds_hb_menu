@@ -175,7 +175,7 @@ int cmp(const void *a, const void *b) {
 }
 
 // should go in menu.c ?
-void createMenuEntryShortcut(menu_s* m, shortcut_s* s, char* shortcutPath)
+void createMenuEntryShortcut(menu_s* m, shortcut_s* s, char* shortcutPath, int priority)
 {
 	if(!m || !s)return;
 
@@ -222,17 +222,22 @@ void createMenuEntryShortcut(menu_s* m, shortcut_s* s, char* shortcutPath)
 	
 	strncpy(tmpEntry.shortcutPath, shortcutPath, ENTRY_PATHLENGTH);
 
-	addMenuEntryCopyAt(m, &tmpEntry, 1);
+	if (priority){
+		addMenuEntryCopyAt(m, &tmpEntry, 0);
+	}else{
+		addMenuEntryCopy(m, &tmpEntry);
+	}
+
 }
 
-void addShortcutToMenu(menu_s* m, char* shortcutPath)
+void addShortcutToMenu(menu_s* m, char* shortcutPath, int priority)
 {
 	if(!m || !shortcutPath)return;
 
 	static shortcut_s tmpShortcut;
 
 	Result ret = createShortcut(&tmpShortcut, shortcutPath);
-	if(!ret) createMenuEntryShortcut(m, &tmpShortcut, shortcutPath);
+	if(!ret) createMenuEntryShortcut(m, &tmpShortcut, shortcutPath, priority);
 
 	freeShortcut(&tmpShortcut);
 }
@@ -290,7 +295,7 @@ void scanHomebrewDirectory(menu_s* m, char* path)
 				}
 			}else if(n>4 && !strcmp(".xml", &fullPath[i][n-4])){
 				if (!j){
-					addShortcutToMenu(m, fullPath[i]);
+					addShortcutToMenu(m, fullPath[i], 1);
 				}else{
 					//Skip shortcuts in second pass
 				}
@@ -320,7 +325,7 @@ void addFavorites(menu_s* m)
 			if(n>5 && !strcmp(".3dsx", &favorites[i][n-5]))	{
 				addExecutableToMenu(m, favorites[i]);
 			}else if(n>4 && !strcmp(".xml", &favorites[i][n-4])){
-				addShortcutToMenu(m, favorites[i]);
+				addShortcutToMenu(m, favorites[i], 0);
 			}else {
 				addDirectoryToMenu(m, favorites[i]);
 			}

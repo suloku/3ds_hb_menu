@@ -116,7 +116,7 @@ void drawMenu(menu_s* m)
 void addMenuEntryAt(menu_s* m, menuEntry_s* me, int offset)
 {
 	if(!m || !me)return;
-	if(offset == 0) offset++;
+	if(offset == 0 && !disableRF) offset++;
 
 	// add to the end of the list
 	menuEntry_s* l = m->entries;
