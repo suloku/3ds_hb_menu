@@ -1,3 +1,9 @@
+27 oct 2015 - 23:50 GTM+1
+- Created Hans shortcuts will have author "Hans shortcut"
+- Shortcuts have a different icon frame color
+- Configurable icon frame color for apps and shortcuts
+- Disable args for hans loading since hans uses a file with the low title id by default
+
 27 oct 2015 - 00:00 GTM+1
 - Use Y on title launcher to boot using region four (added since HANS seems unstable for some games)
 

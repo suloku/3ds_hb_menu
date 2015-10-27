@@ -20,6 +20,8 @@ u8 entry_bgcolor[] = {246, 252, 255};
 u8 entry_bgcolor_shadow[] = {23, 92, 113};
 u8 scroll_colorBg[]={132, 224, 255};
 u8 scrollfront_color[]={255, 255, 255};
+u8 colorIcon[]={225, 225, 225};
+u8 colorIconShort[]={132, 224, 255};
 
 #define SCROLLING_SPEED (16) //lower is faster
 
@@ -378,10 +380,14 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, u16 x, u16 y, bool select
 	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x-widthOffset+roundLut[i], y+actualHeight-1-i, actualWidth-roundLut[i]*2, 1);
 
 	//icon frame
-	u8 colorIcon[]={225, 225, 225};
-	for(i=0; i<5; i++)gfxDrawRectangle(screen, GFX_LEFT, colorIcon, x+3+roundLut2[i], y+4+i, 56-roundLut2[i]*2, 1);
-	gfxDrawRectangle(screen, GFX_LEFT, colorIcon, x+3, y+9, 56, 46);
-	for(i=0; i<5; i++)gfxDrawRectangle(screen, GFX_LEFT, colorIcon, x+3+roundLut2[i], y+4+56-1-i, 56-roundLut2[i]*2, 1);
+	u8 tmpcolorIcon[3];
+	memcpy(tmpcolorIcon, colorIcon, 3);
+	if (strlen(me->shortcutPath) > 0){
+		memcpy(tmpcolorIcon, colorIconShort, 3);
+	}
+	for(i=0; i<5; i++)gfxDrawRectangle(screen, GFX_LEFT, tmpcolorIcon, x+3+roundLut2[i], y+4+i, 56-roundLut2[i]*2, 1);
+	gfxDrawRectangle(screen, GFX_LEFT, tmpcolorIcon, x+3, y+9, 56, 46);
+	for(i=0; i<5; i++)gfxDrawRectangle(screen, GFX_LEFT, tmpcolorIcon, x+3+roundLut2[i], y+4+56-1-i, 56-roundLut2[i]*2, 1);
 
 	//app specific stuff
 	//This will make us know we have a favorite entry and also don't print the marker since we have a star icon for now.

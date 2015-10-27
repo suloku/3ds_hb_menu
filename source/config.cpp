@@ -219,6 +219,28 @@ void loadTheme(){
 			subElement->QueryIntAttribute("b", &temp);
 			scrollfront_color[2] = (short)temp;
 		}
+		subElement = pElement->FirstChildElement("ICON_COLOR");
+		if (subElement != nullptr)
+		{
+			//Values
+			subElement->QueryIntAttribute("r", &temp);
+			colorIcon[0] = (short)temp;
+			subElement->QueryIntAttribute("g", &temp);
+			colorIcon[1] = (short)temp;
+			subElement->QueryIntAttribute("b", &temp);
+			colorIcon[2] = (short)temp;
+		}
+		subElement = pElement->FirstChildElement("ICONSHORT_COLOR");
+		if (subElement != nullptr)
+		{
+			//Values
+			subElement->QueryIntAttribute("r", &temp);
+			colorIconShort[0] = (short)temp;
+			subElement->QueryIntAttribute("g", &temp);
+			colorIconShort[1] = (short)temp;
+			subElement->QueryIntAttribute("b", &temp);
+			colorIconShort[2] = (short)temp;
+		}
 		subElement = pElement->FirstChildElement("FONT_DEFAULT");
 		if (subElement != nullptr)
 		{
@@ -458,9 +480,13 @@ void writeShortcut(char* ShortcutPath, char* HansPath, char* iconPath, char* arg
 		subElement = xmlDoc.NewElement("icon");
 		subElement->SetText(iconPath);
 		pElement->InsertEndChild(subElement);//close
-
+/*
 		subElement = xmlDoc.NewElement("arg");
 		subElement->SetText(arg);
+		pElement->InsertEndChild(subElement);//close
+*/
+		subElement = xmlDoc.NewElement("author");
+		subElement->SetText("Hans Shortcut");
 		pElement->InsertEndChild(subElement);//close
 	xmlDoc.LinkEndChild(pElement);//close shortcut
 

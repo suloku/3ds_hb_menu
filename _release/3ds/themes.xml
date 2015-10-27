@@ -11,6 +11,8 @@
 		<BGCOLOR r="0" g="132" b="255"/>
 		<SCROLL_COLOR r="132" g="224" b="255"/>
 		<SCROLLFRONT_COLOR r="255" g="255" b="255"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="255" g="255" b="255"/>
 		<FONT_TITLE r="118" g="118" b="118"/>
 		<FONT_DESCRIPTION r="118" g="118" b="118"/>
@@ -29,6 +31,8 @@
 		<FAV_BGCOLOR r="40" g="40" b="40"/>		
 		<SCROLL_COLOR r="33" g="33" b="33"/>
 		<SCROLLFRONT_COLOR r="200" g="200" b="200"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="50" g="205" b="50"/>
 		<FONT_DEFAULT r="255" g="255" b="255"/>
 		<FONT_TITLE r="255" g="255" b="255"/>
 		<FONT_DESCRIPTION r="255" g="255" b="255"/>
@@ -47,6 +51,8 @@
 		<BGCOLOR r="0" g="0" b="0"/>
 		<SCROLL_COLOR r="0" g="0" b="0"/>
 		<SCROLLFRONT_COLOR r="128" g="255" b="0"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="128" g="255" b="0"/>
 		<FONT_TITLE r="255" g="255" b="255"/>
 		<FONT_DESCRIPTION r="128" g="255" b="0"/>
@@ -65,6 +71,8 @@
 		<BGCOLOR r="40" g="40" b="40"/>
 		<SCROLL_COLOR r="33" g="33" b="33"/>
 		<SCROLLFRONT_COLOR r="255" g="128" b="64"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="255" g="255" b="255"/>
 		<FONT_TITLE r="255" g="128" b="64"/>
 		<FONT_DESCRIPTION r="255" g="255" b="255"/>
@@ -83,6 +91,8 @@
 		<BGCOLOR r="239" g="239" b="255"/>
 		<SCROLL_COLOR r="132" g="224" b="255"/>
 		<SCROLLFRONT_COLOR r="255" g="255" b="255"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="255" g="255" b="255"/>
 		<FONT_TITLE r="118" g="118" b="118"/>
 		<FONT_DESCRIPTION r="118" g="118" b="118"/>
@@ -101,6 +111,8 @@
 		<BGCOLOR r="51" g="150" b="37"/>
 		<SCROLL_COLOR r="51" g="150" b="37"/>
 		<SCROLLFRONT_COLOR r="255" g="255" b="255"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="255" g="0" b="0"/>
 		<FONT_TITLE r="255" g="0" b="0"/>
 		<FONT_DESCRIPTION r="51" g="150" b="37"/>
@@ -119,6 +131,8 @@
 		<BGCOLOR r="255" g="0" b="0"/>
 		<SCROLL_COLOR r="255" g="0" b="0"/>
 		<SCROLLFRONT_COLOR r="255" g="255" b="0"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="255" g="255" b="0"/>
 		<FONT_TITLE r="255" g="255" b="255"/>
 		<FONT_DESCRIPTION r="255" g="255" b="0"/>
@@ -137,6 +151,8 @@
 		<BGCOLOR r="0" g="164" b="0"/>
 		<SCROLL_COLOR r="51" g="150" b="37"/>
 		<SCROLLFRONT_COLOR r="255" g="255" b="0"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="255" g="255" b="0"/>
 		<FONT_TITLE r="255" g="255" b="255"/>
 		<FONT_DESCRIPTION r="255" g="255" b="0"/>
@@ -155,6 +171,8 @@
 		<BGCOLOR r="243" g="203" b="63"/>
 		<SCROLL_COLOR r="128" g="64" b="64"/>
 		<SCROLLFRONT_COLOR r="243" g="203" b="63"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="255" g="0" b="0"/>
 		<FONT_TITLE r="255" g="0" b="0"/>
 		<FONT_DESCRIPTION r="128" g="64" b="64"/>
@@ -173,6 +191,8 @@
 		<BGCOLOR r="243" g="203" b="63"/>
 		<SCROLL_COLOR r="128" g="64" b="64"/>
 		<SCROLLFRONT_COLOR r="243" g="203" b="63"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="255" g="0" b="0"/>
 		<FONT_TITLE r="255" g="0" b="0"/>
 		<FONT_DESCRIPTION r="128" g="64" b="64"/>
@@ -191,6 +211,8 @@
 		<BGCOLOR r="241" g="179" b="61"/>
 		<SCROLL_COLOR r="255" g="128" b="64"/>
 		<SCROLLFRONT_COLOR r="255" g="255" b="255"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="255" g="255" b="255"/>
 		<FONT_TITLE r="255" g="128" b="64"/>
 		<FONT_DESCRIPTION r="0" g="0" b="0"/>
@@ -209,6 +231,8 @@
 		<BGCOLOR r="79" g="9" b="133"/> <!-- Purple/ Above the motion wave-->
 		<SCROLL_COLOR r="242" g="0" b="57"/> <!-- The rounded rect/red -->
 		<SCROLLFRONT_COLOR r="255" g="128" b="64"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="255" g="255" b="255"/>
 		<FONT_TITLE r="255" g="128" b="64"/>
 		<FONT_DESCRIPTION r="201" g="199" b="255"/>
@@ -227,6 +251,8 @@
 		<BGCOLOR r="27" g="139" b="20"/>
 		<SCROLL_COLOR r="128" g="64" b="0"/>
 		<SCROLLFRONT_COLOR r="205" g="183" b="58"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="255" g="255" b="255"/>
 		<FONT_TITLE r="128" g="64" b="0"/>
 		<FONT_DESCRIPTION r="128" g="64" b="0"/>
@@ -245,6 +271,8 @@
 		<BGCOLOR r="192" g="192" b="192"/>
 		<SCROLL_COLOR r="192" g="192" b="192"/>
 		<SCROLLFRONT_COLOR r="102" g="102" b="102"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="255" g="255" b="255"/>
 		<FONT_TITLE r="0" g="0" b="0"/>
 		<FONT_DESCRIPTION r="102" g="102" b="102"/>
@@ -263,6 +291,8 @@
 		<BGCOLOR r="234" g="149" b="181"/>
 		<SCROLL_COLOR r="253" g="242" b="104"/>
 		<SCROLLFRONT_COLOR r="227" g="21" b="27"/>
+		<ICON_COLOR r="225" g="225" b="225"/>
+		<ICONSHORT_COLOR r="132" g="224" b="255"/>
 		<FONT_DEFAULT r="255" g="255" b="255"/>
 		<FONT_TITLE r="227" g="21" b="27"/>
 		<FONT_DESCRIPTION r="0" g="0" b="255"/>

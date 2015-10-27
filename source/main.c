@@ -447,10 +447,10 @@ int main()
 					if(!fileExists(HansPath, &sdmcArchive)){
 						HansPath[0] = '\0';
 					}else{
-						sprintf(HansArg, "-f/3ds/.hans/h/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+						//sprintf(HansArg, "-f/3ds/.hans/h/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
 					}
 				}else{
-					sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+					//sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
 				}
 				break;
 			}
@@ -473,10 +473,10 @@ int main()
 					if(!fileExists(HansPath, &sdmcArchive)){
 						HansPath[0] = '\0';
 					}else{
-						sprintf(HansArg, "-f/3ds/.hans/h/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+						//sprintf(HansArg, "-f/3ds/.hans/h/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
 					}
 				}else{
-					sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+					//sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
 				}
 				char ShortcutPath[ENTRY_PATHLENGTH];
 				sprintf(ShortcutPath, "%s%08lX-%08lX.xml", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
