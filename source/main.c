@@ -465,7 +465,6 @@ int main()
 		}else if(hbmenu_state == HBMENU_REGIONFREE){
 			if(hidKeysDown()&KEY_A && titleBrowser.selected)
 			{
-				if(disableRF) disableRF = 0;
 				targetProcessId = -2;
 				target_title = *titleBrowser.selected;
 				//Create a menu entry for HANS
@@ -481,6 +480,7 @@ int main()
 					//sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
 				}
 				//Make sure region free will be boot
+				if(disableRF) disableRF = 0;
 				menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
 				strcpy(me->executablePath, REGIONFREE_PATH);
 				break;
@@ -555,6 +555,10 @@ int main()
 			else if(hidKeysDown()&KEY_Y){ //Boot with region four
 				targetProcessId = -2;
 				target_title = *titleBrowser.selected;
+				//Make sure region free will be boot
+				if(disableRF) disableRF = 0;
+				menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
+				strcpy(me->executablePath, REGIONFREE_PATH);
 				break;
 			}
 			else if(hidKeysDown()&KEY_B)hbmenu_state = HBMENU_DEFAULT;
@@ -716,13 +720,13 @@ int main()
 				if (favActive) favActive ^= 1;
 				if (flistActive) flistActive ^= 1;
 			}
-			if(hidKeysDown()&KEY_R && !favActive && !flistActive  && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Next folder
+			if( (hidKeysDown()&KEY_R || (hidKeysUp()&KEY_TOUCH && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)> swipesens) && firstTouch.px < previousTouch.px ) && !favActive && !flistActive  && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Next folder
 			{
 				Folders.current++;
 				if (Folders.current > Folders.max) Folders.current = 0;
 				updatefolder = FOLDER_REFRESH;
 			}
-			if(hidKeysDown()&KEY_L && !favActive && !flistActive && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Previous folder
+			if((hidKeysDown()&KEY_L || (hidKeysUp()&KEY_TOUCH && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)> swipesens) && firstTouch.px > previousTouch.px ) && !favActive && !flistActive && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Previous folder
 			{
 				Folders.current--;
 				if (Folders.current < 0) Folders.current = Folders.max;

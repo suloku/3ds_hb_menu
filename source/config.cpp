@@ -22,6 +22,7 @@ int first_theme = 0;
 int rememberRF = 0;
 int RFatboot = 0;
 int config_dir = 0; //0: /3ds/ 1: /3ds/.hbl/
+int swipesens = 40;
 
 int toolbar_pos = 0; //0: horizontal, 1: vertical
 
@@ -358,6 +359,9 @@ void loadConfig(hbfolder* folder){
 
 		subElement = pElement->FirstChildElement("toolbar");
 		if (subElement != nullptr) subElement->QueryIntText(&toolbar_pos);
+
+		subElement = pElement->FirstChildElement("swap_sens");
+		if (subElement != nullptr) subElement->QueryIntText(&swipesens);
 		
 		subElement = pElement->FirstChildElement("case_sensitive");
 		if (subElement != nullptr) subElement->QueryIntText(&caseSetting);
@@ -430,6 +434,10 @@ void writeConfig(hbfolder* folder){
 
 	subElement = xmlDoc.NewElement("toolbar");
 	subElement->SetText(toolbar_pos);
+	pElement->InsertEndChild(subElement);//close
+
+	subElement = xmlDoc.NewElement("swipe_sens");
+	subElement->SetText(swipesens);
 	pElement->InsertEndChild(subElement);//close
 
 	subElement = xmlDoc.NewElement("mix_files");

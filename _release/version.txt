@@ -1,3 +1,9 @@
+29 oct 2015 - 00:50 GTM+1
+- Change folder swiping left/right.
+- Swipe sensitivity can be configured in config.xml (default is 40)
+- Fixed bug preventing launching with region four from toolbar
+- Todo: touch interface for title launcher. Touch interface for start menu configuration toogles.
+
 29 oct 2015 - 00:20 GTM+1
 - Changed buttons to a single toolbar in bottom right corner
 - Toolbar setting in start menu (horizontal/vertical)
