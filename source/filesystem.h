@@ -5,6 +5,7 @@
 #include "shortcut.h"
 
 #define FAVORITE_MARKER "* "
+#define FOLDERMAGIC "@FOLDER"
 
 extern FS_archive sdmcArchive;
 
@@ -27,3 +28,4 @@ void scanHomebrewDirectory(menu_s* m, char* path);
 void createMenuEntryShortcut(menu_s* m, shortcut_s* s, char* shortcutPath, int priority);
 
 void addFavorites(menu_s* m);
+void addFolders(menu_s* m);

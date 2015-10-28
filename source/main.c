@@ -29,6 +29,7 @@ titleBrowser_s titleBrowser;
 hbfolder Folders;
 char updatefolder = 0;
 char favActive = 0;
+char flistActive = 0;
 char confUpdate = 0;
 menu_s lastMenu;
 
@@ -38,6 +39,16 @@ char HansArg[ENTRY_PATHLENGTH+1];
 extern bool regionFreeGamecardIn;
 
 u8 tmpfilterID = 0;
+
+enum
+{
+	FOLDER_STAY = 0,
+	FOLDER_REFRESH,
+	FOLDER_FAVS,
+	FOLDER_REFRESH_MARKEDFAV,
+	FOLDER_REFRESH_DELETEFAV,
+	FOLDER_LIST,
+} FOLDER_states;
 
 #define ERR_WIFI_ALREADY_ON_OR_OFF 0xC8A06C0D
 
@@ -241,7 +252,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 	}else{
 		//got SD
 		drawMenu(&menu);
-		if (Folders.max > 0 && !favActive){
+		if (Folders.max > 0 && !favActive && !flistActive){
 			drawFolders(
 				Folders.dir[Folders.current],
 				(Folders.current-1<0?Folders.dir[Folders.max]:Folders.dir[Folders.current-1]),
@@ -484,7 +495,7 @@ int main()
 				//Reset paths
 				HansPath[0] = '\0';
 				HansArg[0] = '\0';
-				updatefolder = 1;
+				updatefolder = FOLDER_REFRESH;
 				u64 time = osGetTime();
 				while (1){
 					drawError(GFX_BOTTOM,
@@ -507,7 +518,7 @@ int main()
 				//Delete XML
 				sprintf(Path, "%s%08lX-%08lX.xml", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
 				remove(Path);
-				updatefolder = 1;
+				updatefolder = FOLDER_REFRESH;
 				u64 time = osGetTime();
 				while (1){
 					drawError(GFX_BOTTOM,
@@ -638,32 +649,57 @@ int main()
 				if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 				else if(isNinjhax2()) hbmenu_state = HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2;
 			}
+			if(hidKeysDown()&(KEY_ZR|KEY_ZL) && Folders.max>1 && hbmenu_state == HBMENU_DEFAULT)//Toggle Folder list
+			{
+				if (!flistActive){
+					updatefolder = FOLDER_LIST;
+					if (favActive) favActive ^= 1;
+				}else{
+					if(favActive){
+						updatefolder = FOLDER_FAVS;
+					}else{
+						updatefolder = FOLDER_REFRESH;
+					}
+				}
+				flistActive ^= 1;
+			}
 			if(hidKeysDown()&KEY_X && totalfavs >0 && hbmenu_state == HBMENU_DEFAULT)//Toggle Favorites
 			{
 				if (!favActive){
-					updatefolder = 2;
+					updatefolder = FOLDER_FAVS;
+					if (flistActive) flistActive ^= 1;
 				}else{
-					updatefolder = 1;
+					if(flistActive){
+						updatefolder = FOLDER_LIST;
+					}else{
+						updatefolder = FOLDER_REFRESH;
+					}
 				}
 				favActive ^= 1;
 			}
-			if(hidKeysDown()&KEY_R && !favActive && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Next folder
+			if(hidKeysDown()&KEY_B && ((favActive && totalfavs >0) || flistActive) )//Exit favorites and folder list
+			{
+				updatefolder = FOLDER_REFRESH;
+				if (favActive) favActive ^= 1;
+				if (flistActive) flistActive ^= 1;
+			}
+			if(hidKeysDown()&KEY_R && !favActive && !flistActive  && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Next folder
 			{
 				Folders.current++;
 				if (Folders.current > Folders.max) Folders.current = 0;
-				updatefolder = 1;
+				updatefolder = FOLDER_REFRESH;
 			}
-			if(hidKeysDown()&KEY_L && !favActive && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Previous folder
+			if(hidKeysDown()&KEY_L && !favActive && !flistActive && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Previous folder
 			{
 				Folders.current--;
 				if (Folders.current < 0) Folders.current = Folders.max;
-				updatefolder = 1;
+				updatefolder = FOLDER_REFRESH;
 			}
 			if(hidKeysDown()&KEY_SELECT && hbmenu_state == HBMENU_DEFAULT)//Add or remove favorite
 			{
-				if (!disableRF && regionFreeAvailable && !netloader_boot && menu.selectedEntry == 0 && !favActive){
+				if (!disableRF && regionFreeAvailable && !netloader_boot && menu.selectedEntry == 0 && !favActive  && !flistActive){
 					//Do nothing with region free
-				}else if (!favActive && totalfavs < MAX_FAVS)
+				}else if (!favActive && totalfavs < MAX_FAVS && !flistActive)
 				{
 					menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
 					char infavs=0;
@@ -725,7 +761,7 @@ int main()
 							totalfavs--;
 						}
 					}
-					updatefolder = 3;
+					updatefolder = FOLDER_REFRESH_MARKEDFAV;
 					lastEntry = menu.selectedEntry;
 				}else if (favActive){
 					int j;
@@ -737,17 +773,17 @@ int main()
 					favorites[totalfavs][0] = '\0';
 					totalfavs--;
 					if (totalfavs >0){
-						updatefolder = 4;
+						updatefolder = FOLDER_REFRESH_DELETEFAV;
 					}else{
 						favActive ^= 1;
-						updatefolder = 1;
+						updatefolder = FOLDER_REFRESH;
 					}
 				}
 				confUpdate = 1;
 			}
 			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_R  && hbmenu_state == HBMENU_DEFAULT) //toggle region free
 			{
-				if (!favActive){
+				if (!favActive && !flistActive){
 					if (disableRF && menu.numEntries > 0){//We'll enable
 						menu.numEntries++;
 						menu.selectedEntry++;
@@ -757,12 +793,12 @@ int main()
 						menu.selectedEntry--;
 						disableRF ^= 1;
 					}
-					updatefolder = 1;
+					updatefolder = FOLDER_REFRESH;
 					if (rememberRF) confUpdate = 1;
 				}
 			}
 			//if ( ( (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_L) || hidKeysDown()& (KEY_ZL|KEY_ZR) )  && hbmenu_state == HBMENU_DEFAULT) //toggle wifi
-			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_L  && hbmenu_state == HBMENU_DEFAULT) //toggle wifi
+			if (hidKeysHeld()&KEY_UP && hidKeysDown()&KEY_L  && hbmenu_state == HBMENU_DEFAULT) //toggle wifi (currently service is unavailable in ninjhax 2.5)
 			{
 				toggleWifi();
 			}
@@ -779,7 +815,7 @@ int main()
 				menu.scrollLocation=0;
 				closeSDArchive();
 				openSDArchive();
-				if(updatefolder == 1 || updatefolder == 3)
+				if(updatefolder == FOLDER_REFRESH || updatefolder == FOLDER_REFRESH_MARKEDFAV)
 				{
 					scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
 					//Check if there are any entries in the menu, if not, enable refion free to prevent crash
@@ -794,16 +830,16 @@ int main()
 						openSDArchive();
 						scanHomebrewDirectory(&menu, Folders.dir[Folders.current]);
 					}
-					if (updatefolder == 3)//Mark as favorite, we don't change menu, just reload it.
+					if (updatefolder == FOLDER_REFRESH_MARKEDFAV)//Mark as favorite, we don't change menu, just reload it.
 					{
 						menu = lastMenu;
 					}
-				}else if (updatefolder == 2 || updatefolder == 4)
+				}else if (updatefolder == FOLDER_FAVS || updatefolder == FOLDER_REFRESH_DELETEFAV)
 				{
 					addFavorites(&menu);
 					//Disabled because the scrolling is confusing with many entries
 					/*
-					if (updatefolder == 4){//Deleted favorite, restore menu
+					if (updatefolder == FOLDER_REFRESH_DELETEFAV){//Deleted favorite, restore menu
 						if(lastMenu.selectedEntry-1 >=0){
 							menu.selectedEntry = lastMenu.selectedEntry-1;
 							menu.atEquilibrium = false;
@@ -811,7 +847,11 @@ int main()
 					}
 					*/
 				}
-				updatefolder = 0;
+				else if (updatefolder == FOLDER_LIST)
+				{
+					addFolders(&menu);
+				}
+				updatefolder = FOLDER_STAY;
 			}
 			if(secretCode())brewMode = !brewMode;
 			else if(updateMenu(&menu))
@@ -821,7 +861,17 @@ int main()
 				filterID = 0;
 
 				menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
-				if(me && !strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)
+				if (me && !strcmp(me->executablePath, FOLDERMAGIC) && flistActive){
+					int i;
+					for (i=0; i<Folders.max; i++){
+						if (strncmp(me->description, Folders.dir[i], strlen(me->description)) == 0){
+							Folders.current = i;
+							break;
+						}
+					}
+					flistActive ^= 1;
+					updatefolder = FOLDER_REFRESH;
+				}else if(me && !strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot)
 				{
 					hbmenu_state = HBMENU_REGIONFREE;
 					regionFreeUpdate();
@@ -869,7 +919,7 @@ int main()
 		}
 
 		if(brewMode)renderFrame(bgcolor, beerbordercolor, beercolor);
-		else if (favActive){
+		else if (favActive || flistActive){
 			renderFrame(fav_bgcolor, fav_waterbordercolor, fav_watercolor);
 		}else{
 			renderFrame(bgcolor, waterbordercolor, watercolor);

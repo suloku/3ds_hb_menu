@@ -4,10 +4,13 @@
 #include <3ds.h>
 
 #include "installerIcon_bin.h"
+#include "folder_bin.h"
 
 #include "filesystem.h"
 #include "smdh.h"
 #include "utils.h"
+
+extern hbfolder Folders;
 
 FS_archive sdmcArchive;
 
@@ -330,5 +333,37 @@ void addFavorites(menu_s* m)
 				addDirectoryToMenu(m, favorites[i]);
 			}
 		}
+	}
+}
+
+void addFolderToMenu(menu_s* m, char* folderPath)
+{
+	if(!m || !folderPath)return;
+
+	static menuEntry_s tmpEntry;
+
+	//Check if dir exists
+	Handle dirHandle;
+	FS_path dirPath=FS_makePath(PATH_CHAR, folderPath);
+	Result ret = FSUSER_OpenDirectory(NULL, &dirHandle, sdmcArchive, dirPath);
+	FSDIR_Close(dirHandle);
+	if (ret != 0) return;
+	
+	char tmp[ENTRY_PATHLENGTH+1];
+	strcpy(tmp, folderPath);
+
+	if (tmp[strlen(tmp)-1] == '/') tmp[strlen(tmp)-1] = '\0';
+	int i, l=-1; for(i=0; tmp[i]; i++) if(tmp[i]=='/')l=i;
+
+	initMenuEntry(&tmpEntry, FOLDERMAGIC, &tmp[l+1], tmp, "Folder", (u8*)folder_bin);
+
+	addMenuEntryCopy(m, &tmpEntry);
+}
+
+void addFolders(menu_s* m)
+{
+	int i;
+	for (i = 0; i < Folders.max; i++){
+		addFolderToMenu(m, Folders.dir[i]);
 	}
 }
