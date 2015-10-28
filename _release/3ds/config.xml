@@ -4,6 +4,7 @@
         <path>/3ds/Homebrew Games/</path>
         <path>/3ds/Utilities/</path>
 		<path>/3ds/Other/</path>
+		<toolbar>0</toolbar>
         <mix_files>0</mix_files>
         <case_sensitive>0</case_sensitive>
         <disable_RF>1</disable_RF>

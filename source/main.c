@@ -165,11 +165,13 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"  Y  : Toggle remember menu (currently %s%s"
 			"  /\\ : Toggle sorting (currently %s%s"
 			"  \\/ : Toggle mix files (currently %s%s"
-			"  <  : Toogle remember Region Free (currently %s%s",
+			"  <  : Toogle remember Region Free (currently %s%s"
+			"  >  : Toogle toolbar position (currently %s%s",
 			remembermenu?"on) ":"off)", "                                                           \n",
 			caseSetting?"alphabetic)":"filesystem)", "                                                          \n",
 			mixSetting?"on) ":"off)", "                                                              \n",
-			rememberRF?"on) ":"off)", "                                                           \n"
+			rememberRF?"on) ":"off)", "                                                           \n",
+			toolbar_pos?"vertical)   ":"horizontal)", "                                                    "
 			);
 		drawError(GFX_BOTTOM,
 			"Config",
@@ -432,10 +434,6 @@ int main()
 		if(hidKeysHeld()&KEY_TOUCH){
 			touchTimer++;
 		}
-		if(hidKeysUp()&KEY_TOUCH){
-			firstTouch.px = 0;
-			firstTouch.py = 0;
-		}
 
 		if(hbmenu_state == HBMENU_NETLOADER_ACTIVE){
 			if(hidKeysDown()&KEY_B){
@@ -467,6 +465,7 @@ int main()
 		}else if(hbmenu_state == HBMENU_REGIONFREE){
 			if(hidKeysDown()&KEY_A && titleBrowser.selected)
 			{
+				if(disableRF) disableRF = 0;
 				targetProcessId = -2;
 				target_title = *titleBrowser.selected;
 				//Create a menu entry for HANS
@@ -481,6 +480,9 @@ int main()
 				}else{
 					//sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
 				}
+				//Make sure region free will be boot
+				menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
+				strcpy(me->executablePath, REGIONFREE_PATH);
 				break;
 			}
 			else if(hidKeysDown()&KEY_SELECT && titleBrowser.selected) //Create shortcut
@@ -660,6 +662,11 @@ int main()
 				rememberRF ^= 1;
 				confUpdate = 1;
 			}
+			else if(hidKeysDown()&KEY_RIGHT)
+			{
+				toolbar_pos ^= 1;
+				confUpdate = 1;
+			}
 		}else if(rebootCounter==257){
 			if(hidKeysDown()&KEY_START)rebootCounter--;
 			if(hidKeysDown()&KEY_Y)
@@ -667,7 +674,7 @@ int main()
 				if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 				else if(isNinjhax2()) hbmenu_state = HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2;
 			}
-			if (touchInHomeBut(firstTouch) && touchTimer < 30){
+			if (hidKeysUp()&KEY_TOUCH && touchInHomeBut(firstTouch) && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)+abs(firstTouch.py-previousTouch.py)<12){
 				if (hbmenu_state == HBMENU_DEFAULT){
 					hbmenu_state = HBMENU_REGIONFREE;
 					regionFreeUpdate();
@@ -675,7 +682,7 @@ int main()
 					hbmenu_state = HBMENU_DEFAULT;
 				}
 			}
-			if( (hidKeysDown()&(KEY_ZR|KEY_ZL) || (touchInFolderBut(firstTouch) && touchTimer < 30) ) && Folders.max>1 && hbmenu_state == HBMENU_DEFAULT)//Toggle Folder list
+			if( (hidKeysDown()&(KEY_ZR|KEY_ZL) || (hidKeysUp()&KEY_TOUCH && touchInFolderBut(firstTouch) && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)+abs(firstTouch.py-previousTouch.py)<12) ) && Folders.max>1 && hbmenu_state == HBMENU_DEFAULT)//Toggle Folder list
 			{
 				if (!flistActive){
 					updatefolder = FOLDER_LIST;
@@ -689,7 +696,7 @@ int main()
 				}
 				flistActive ^= 1;
 			}
-			if( (hidKeysDown()&KEY_X  || (touchInFavBut(firstTouch) && touchTimer < 30)  ) && totalfavs >0 && hbmenu_state == HBMENU_DEFAULT)//Toggle Favorites
+			if( (hidKeysDown()&KEY_X  || (hidKeysUp()&KEY_TOUCH &&  touchInFavBut(firstTouch) && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)+abs(firstTouch.py-previousTouch.py)<12) ) && totalfavs >0 && hbmenu_state == HBMENU_DEFAULT)//Toggle Favorites
 			{
 				if (!favActive){
 					updatefolder = FOLDER_FAVS;
@@ -958,6 +965,7 @@ int main()
 			gfxFadeScreen(GFX_BOTTOM, GFX_BOTTOM, rebootCounter);
 			if(rebootCounter>0)rebootCounter-=6;
 		}
+		previousTouch=touch;
 
 		gfxFlushBuffers();
 		gfxSwapBuffers();

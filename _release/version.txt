@@ -1,3 +1,10 @@
+29 oct 2015 - 00:20 GTM+1
+- Changed buttons to a single toolbar in bottom right corner
+- Toolbar setting in start menu (horizontal/vertical)
+- Fixed title launching bug
+- Fixed touch handling for buttons
+- Todo: touch interface for title launcher. Touch interface for start menu configuration toogles.
+
 28 oct 2015 - 19:40 GTM+1
 - Buttons! It's still a little bugged, I know.
 

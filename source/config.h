@@ -32,6 +32,7 @@ extern int random_theme;
 extern int totalThemes;
 extern int rememberRF;
 extern int RFatboot;
+extern int toolbar_pos;
 
 typedef struct
 {

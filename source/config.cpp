@@ -23,6 +23,8 @@ int rememberRF = 0;
 int RFatboot = 0;
 int config_dir = 0; //0: /3ds/ 1: /3ds/.hbl/
 
+int toolbar_pos = 0; //0: horizontal, 1: vertical
+
 //Function from K. Biermann (http://stackoverflow.com/questions/2509679/how-to-generate-a-random-number-from-within-a-range)
 uint32_t getRandInterval(uint32_t begin, uint32_t end) {
     uint32_t range = 1 + end - begin;
@@ -353,6 +355,9 @@ void loadConfig(hbfolder* folder){
 		}
 		subElement = pElement->FirstChildElement("mix_files");
 		if (subElement != nullptr) subElement->QueryIntText(&mixSetting);
+
+		subElement = pElement->FirstChildElement("toolbar");
+		if (subElement != nullptr) subElement->QueryIntText(&toolbar_pos);
 		
 		subElement = pElement->FirstChildElement("case_sensitive");
 		if (subElement != nullptr) subElement->QueryIntText(&caseSetting);
@@ -422,6 +427,10 @@ void writeConfig(hbfolder* folder){
 		subElement->SetText(str);
 		pElement->InsertEndChild(subElement);//close each
 	}
+
+	subElement = xmlDoc.NewElement("toolbar");
+	subElement->SetText(toolbar_pos);
+	pElement->InsertEndChild(subElement);//close
 
 	subElement = xmlDoc.NewElement("mix_files");
 	subElement->SetText(mixSetting);

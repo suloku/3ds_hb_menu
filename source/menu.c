@@ -14,6 +14,10 @@
 #include "but_star_bin.h"
 #include "but_home_bin.h"
 #include "but_folder_bin.h"
+#include "toolbar_bin.h"
+#include "toolbar2_bin.h"
+
+extern int toolbar_pos;
 
 u8 roundLut[]={8, 5, 4, 3, 2, 1, 1, 1, 0};
 u8 roundLut2[]={4, 3, 2, 1, 0};
@@ -118,11 +122,16 @@ void drawMenu(menu_s* m)
 
 	drawScrollBar(m);
 	//Buttons
-	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)but_star_bin, 39, 39, 240-39, 320-39); // Top right
-	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)but_home_bin, 39, 39, 0, 0); //Bottom left
+	//gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)but_star_bin, 39, 39, 240-39, 320-39); // Top right
+	//gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)but_home_bin, 39, 39, 0, 0); //Bottom left
 	//gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)but_folder_bin, 39, 39, 240-39, 0);	//Top left
-	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)but_folder_bin, 39, 39, 0, 320-39);	//Bottom right
-
+	//gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)but_folder_bin, 39, 39, 0, 320-39);	//Bottom right
+	
+	if (!toolbar_pos){
+		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)toolbar_bin, 28, 102, 0, 320-102); //Bottom right //horizontal
+	}else{
+		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)toolbar2_bin, 102, 28, 0, 320-28); //Bottom right //vertical
+	}
 }
 
 void addMenuEntryAt(menu_s* m, menuEntry_s* me, int offset)
@@ -280,7 +289,12 @@ bool updateMenu(menu_s* m)
 	m->previousTouch=touch;
 
 	//scrolling code
-	const int maxScroll=240-(m->numEntries)*ENTRY_WIDTH-ENTRY_WIDTH/1.5; //cf getEntryLocation
+	int maxScroll;
+	if (!toolbar_pos){
+		maxScroll=240-(m->numEntries)*ENTRY_WIDTH-ENTRY_WIDTH/1.5; //cf getEntryLocation
+	}else{
+		maxScroll=240-(m->numEntries)*ENTRY_WIDTH; //cf getEntryLocation
+	}
 
 	if(!m->atEquilibrium)
 	{
