@@ -443,11 +443,11 @@ int main()
 				//Create a menu entry for HANS
 				strcpy (HansPath, "/3ds/hans/hans.3dsx");
 				if(!fileExists(HansPath, &sdmcArchive)){
-					strcpy (HansPath, "/3ds/.hans/h/hans.3dsx");
+					strcpy (HansPath, "/3ds/.hbl/hans/hans.3dsx");
 					if(!fileExists(HansPath, &sdmcArchive)){
 						HansPath[0] = '\0';
 					}else{
-						//sprintf(HansArg, "-f/3ds/.hans/h/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+						//sprintf(HansArg, "-f/3ds/.hbl/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
 					}
 				}else{
 					//sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
@@ -469,11 +469,11 @@ int main()
 				//Create a menu entry for HANS
 				strcpy (HansPath, "/3ds/hans/hans.3dsx");
 				if(!fileExists(HansPath, &sdmcArchive)){
-					strcpy (HansPath, "/3ds/.hans/h/hans.3dsx");
+					strcpy (HansPath, "/3ds/.hbl/hans/hans.3dsx");
 					if(!fileExists(HansPath, &sdmcArchive)){
 						HansPath[0] = '\0';
 					}else{
-						//sprintf(HansArg, "-f/3ds/.hans/h/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+						//sprintf(HansArg, "-f/3ds/.hbl/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
 					}
 				}else{
 					//sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));

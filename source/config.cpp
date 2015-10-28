@@ -21,6 +21,7 @@ int totalThemes = 0;
 int first_theme = 0;
 int rememberRF = 0;
 int RFatboot = 0;
+int config_dir = 0; //0: /3ds/ 1: /3ds/.hbl/
 
 //Function from K. Biermann (http://stackoverflow.com/questions/2509679/how-to-generate-a-random-number-from-within-a-range)
 uint32_t getRandInterval(uint32_t begin, uint32_t end) {
@@ -38,7 +39,13 @@ uint32_t getRandInterval(uint32_t begin, uint32_t end) {
 void loadTheme(){
 
     XMLDocument doc;
-    if(doc.LoadFile(THEMES_FILE))return;
+    if(doc.LoadFile(THEMES_FILE)){
+		if(doc.LoadFile(THEMES_FILE2)){
+			return;
+		}else{
+			config_dir = 1;
+		}
+	}
 	
 	XMLNode * pRoot = doc.FirstChild();
 	if (pRoot == nullptr)return;
@@ -312,7 +319,13 @@ void loadConfig(hbfolder* folder){
 	if(!folder)return;
 
     XMLDocument doc;
-    if(doc.LoadFile(FOLDER_FILE))return;
+    if(doc.LoadFile(FOLDER_FILE)){
+		if(doc.LoadFile(FOLDER_FILE2)){
+			return;
+		}else{
+			config_dir = 1;
+		}
+	}
 	
 	XMLNode * pRoot = doc.FirstChild();
 	if (pRoot == nullptr)return;
@@ -461,7 +474,11 @@ void writeConfig(hbfolder* folder){
 	pRoot->InsertEndChild(pElement);//close favorites
 //End favs
 
-	xmlDoc.SaveFile(FOLDER_FILE);
+	if (!config_dir){
+		xmlDoc.SaveFile(FOLDER_FILE);
+	else{
+		xmlDoc.SaveFile(FOLDER_FILE2);
+	}
 }
 
 void writeShortcut(char* ShortcutPath, char* HansPath, char* iconPath, char* arg, u64 title_id, u8 mediatype){
@@ -486,7 +503,7 @@ void writeShortcut(char* ShortcutPath, char* HansPath, char* iconPath, char* arg
 		pElement->InsertEndChild(subElement);//close
 */
 		subElement = xmlDoc.NewElement("author");
-		subElement->SetText("Hans Shortcut");
+		subElement->SetText("HANS Shortcut");
 		pElement->InsertEndChild(subElement);//close
 	xmlDoc.LinkEndChild(pElement);//close shortcut
 
