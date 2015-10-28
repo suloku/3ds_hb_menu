@@ -411,7 +411,6 @@ int main()
 		touchPosition touch;
 		hidTouchRead(&touch);
 		touchPosition previousTouch, firstTouch;
-		char buttonpressed = 0;
 		u16 touchTimer;
 
 		updateBackground();
@@ -668,10 +667,16 @@ int main()
 				if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 				else if(isNinjhax2()) hbmenu_state = HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2;
 			}
+			if (touchInHomeBut(firstTouch) && touchTimer < 30){
+				if (hbmenu_state == HBMENU_DEFAULT){
+					hbmenu_state = HBMENU_REGIONFREE;
+					regionFreeUpdate();
+				}else{
+					hbmenu_state = HBMENU_DEFAULT;
+				}
+			}
 			if( (hidKeysDown()&(KEY_ZR|KEY_ZL) || (touchInFolderBut(firstTouch) && touchTimer < 30) ) && Folders.max>1 && hbmenu_state == HBMENU_DEFAULT)//Toggle Folder list
 			{
-				if (touchInFolderBut(firstTouch))
-					buttonpressed = 1;
 				if (!flistActive){
 					updatefolder = FOLDER_LIST;
 					if (favActive) favActive ^= 1;
@@ -938,8 +943,6 @@ int main()
 				filterID = tmpfilterID;
 			}
 		}
-
-		buttonpressed = 0;
 
 		if(brewMode)renderFrame(bgcolor, beerbordercolor, beercolor);
 		else if (favActive || flistActive){

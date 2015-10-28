@@ -280,7 +280,7 @@ bool updateMenu(menu_s* m)
 	m->previousTouch=touch;
 
 	//scrolling code
-	const int maxScroll=240-(m->numEntries)*ENTRY_WIDTH; //cf getEntryLocation
+	const int maxScroll=240-(m->numEntries)*ENTRY_WIDTH-ENTRY_WIDTH/1.5; //cf getEntryLocation
 
 	if(!m->atEquilibrium)
 	{

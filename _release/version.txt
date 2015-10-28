@@ -1,3 +1,6 @@
+28 oct 2015 - 19:40 GTM+1
+- Buttons! It's still a little bugged, I know.
+
 28 oct 2015 - 16:50 GTM+1
 - Add folder list menu to ZL/ZR (need to think something for o3DS)
 - Load config files also from from /3ds/.hbl/
