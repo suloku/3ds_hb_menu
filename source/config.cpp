@@ -476,7 +476,7 @@ void writeConfig(hbfolder* folder){
 
 	if (!config_dir){
 		xmlDoc.SaveFile(FOLDER_FILE);
-	else{
+	}else{
 		xmlDoc.SaveFile(FOLDER_FILE2);
 	}
 }
