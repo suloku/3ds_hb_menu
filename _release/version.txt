@@ -1,6 +1,5 @@
 28 oct 2015 - 16:50 GTM+1
 - Add folder list menu to ZL/ZR (need to think something for o3DS)
-- Change updatefolder values to enum types for easier reading.
 - Load config files also from from /3ds/.hbl/
 - Moved .hans/h/ to .hbl/hans/
 - hans shortcut text in capitals (HANS)

@@ -8,8 +8,12 @@
 #include "smdh.h"
 #include "regionfree.h"
 #include "regionfree_bin.h"
+#include "touch.h"
 #include "filesystem.h" //for FAVORITE_MARKER
 #include "star_bin.h"
+#include "but_star_bin.h"
+#include "but_home_bin.h"
+#include "but_folder_bin.h"
 
 u8 roundLut[]={8, 5, 4, 3, 2, 1, 1, 1, 0};
 u8 roundLut2[]={4, 3, 2, 1, 0};
@@ -113,6 +117,12 @@ void drawMenu(menu_s* m)
 	}
 
 	drawScrollBar(m);
+	//Buttons
+	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)but_star_bin, 39, 39, 240-39, 320-39); // Top right
+	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)but_home_bin, 39, 39, 0, 0); //Bottom left
+	//gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)but_folder_bin, 39, 39, 240-39, 0);	//Top left
+	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)but_folder_bin, 39, 39, 0, 320-39);	//Bottom right
+
 }
 
 void addMenuEntryAt(menu_s* m, menuEntry_s* me, int offset)
@@ -240,6 +250,7 @@ bool updateMenu(menu_s* m)
 		m->touchTimer=0;
 		m->firstTouch=touch;
 	}else if((hidKeysUp()&KEY_TOUCH) && m->touchTimer<30 && abs(m->firstTouch.px-m->previousTouch.px)+abs(m->firstTouch.py-m->previousTouch.py)<12){
+		if (touchInFavBut(m->previousTouch) || touchInFolderBut(m->previousTouch)  || touchInHomeBut(m->previousTouch)) return false;
 		menuEntry_s* me=m->entries;
 		int i=0;
 		int p=0;
@@ -409,7 +420,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, u16 x, u16 y, bool select
 	}
 	gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->author, ENTRY_AUTHORLENGTH, x+4, y+ENTRY_HEIGHT-getStringLength(&fontDescription, me->author)-10);
 	
-	//Favorite Start marker
+	//Favorite Star marker
 	if (isfav){
 		//gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)star_bin, 16, 16, x+18+(16/2)-2, y+70-(16/2));
 		gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)star_bin, 16, 16, x+38+(16/3), y+70+205);

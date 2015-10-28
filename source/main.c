@@ -15,6 +15,7 @@
 #include "boot.h"
 #include "titles.h"
 #include "config.h"
+#include "touch.h"
 
 bool brewMode = false;
 u8 sdmcCurrent = 0;
@@ -407,6 +408,11 @@ int main()
 		PTMU_GetBatteryLevel(NULL, &batteryLevel);
 		PTMU_GetBatteryChargeState(NULL, &charging);
 		hidScanInput();
+		touchPosition touch;
+		hidTouchRead(&touch);
+		touchPosition previousTouch, firstTouch;
+		char buttonpressed = 0;
+		u16 touchTimer;
 
 		updateBackground();
 
@@ -417,6 +423,19 @@ int main()
 		{
 			debugValues[58] = (me->descriptor.targetTitles[0].tid >> 32) & 0xFFFFFFFF;
 			debugValues[59] = me->descriptor.targetTitles[0].tid & 0xFFFFFFFF;
+		}
+
+		if(hidKeysDown()&KEY_TOUCH)
+		{
+			touchTimer=0;
+			firstTouch=touch;
+		}
+		if(hidKeysHeld()&KEY_TOUCH){
+			touchTimer++;
+		}
+		if(hidKeysUp()&KEY_TOUCH){
+			firstTouch.px = 0;
+			firstTouch.py = 0;
 		}
 
 		if(hbmenu_state == HBMENU_NETLOADER_ACTIVE){
@@ -649,8 +668,10 @@ int main()
 				if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 				else if(isNinjhax2()) hbmenu_state = HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2;
 			}
-			if(hidKeysDown()&(KEY_ZR|KEY_ZL) && Folders.max>1 && hbmenu_state == HBMENU_DEFAULT)//Toggle Folder list
+			if( (hidKeysDown()&(KEY_ZR|KEY_ZL) || (touchInFolderBut(firstTouch) && touchTimer < 30) ) && Folders.max>1 && hbmenu_state == HBMENU_DEFAULT)//Toggle Folder list
 			{
+				if (touchInFolderBut(firstTouch))
+					buttonpressed = 1;
 				if (!flistActive){
 					updatefolder = FOLDER_LIST;
 					if (favActive) favActive ^= 1;
@@ -663,7 +684,7 @@ int main()
 				}
 				flistActive ^= 1;
 			}
-			if(hidKeysDown()&KEY_X && totalfavs >0 && hbmenu_state == HBMENU_DEFAULT)//Toggle Favorites
+			if( (hidKeysDown()&KEY_X  || (touchInFavBut(firstTouch) && touchTimer < 30)  ) && totalfavs >0 && hbmenu_state == HBMENU_DEFAULT)//Toggle Favorites
 			{
 				if (!favActive){
 					updatefolder = FOLDER_FAVS;
@@ -917,6 +938,8 @@ int main()
 				filterID = tmpfilterID;
 			}
 		}
+
+		buttonpressed = 0;
 
 		if(brewMode)renderFrame(bgcolor, beerbordercolor, beercolor);
 		else if (favActive || flistActive){

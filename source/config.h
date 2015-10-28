@@ -1,5 +1,5 @@
-#ifndef FOLDERS_H
-#define FOLDERS_H
+#ifndef CONFIG_H
+#define CONFIG_H
 
 #include <3ds.h>
 
