@@ -271,7 +271,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 				"    The region free launcher is ready to run your out-of-region gamecard !\n\n"
 				"                                                                                                                 A : Play\n"
 				"                                                                                                                 B : Cancel\n",
-				10-drawMenuEntry(&gamecardMenuEntry, GFX_BOTTOM, 240, 9, true));
+				10-drawMenuEntry(&gamecardMenuEntry, GFX_BOTTOM, 240, 6, true));
 		}else{
 			drawError(GFX_BOTTOM,
 				"Region free launcher",

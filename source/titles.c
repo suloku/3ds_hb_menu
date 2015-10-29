@@ -325,7 +325,7 @@ void drawTitleBrowser(titleBrowser_s* tb, bool titlelaunch)
 			"    Press X to show all titles.                                            \n\n"
 			"                                                                                                        A : Select target\n"
 			"                                                                                                        B : Cancel\n",
-			10-drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, 9, true));
+			10-drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, 6, true));
 	}else{
 		drawError(GFX_BOTTOM,
 			mode,
@@ -341,7 +341,7 @@ void drawTitleBrowser(titleBrowser_s* tb, bool titlelaunch)
 		"\nPress Y to launch using region four                                             ",
 		-160);	
 */
-	drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, 9, true);
+	drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, 6, true);
 	//Arrows
 	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowleft_bin, 29, 20, 130, 10);
 	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowright_bin, 29, 20, 130, 320-10-20);

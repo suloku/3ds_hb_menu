@@ -114,7 +114,7 @@ void drawMenu(menu_s* m)
 		int h=0;
 		while(me)
 		{
-			h+=drawMenuEntry(me, GFX_BOTTOM, getEntryLocationPx(m,h), 9, i==m->selectedEntry);
+			h+=drawMenuEntry(me, GFX_BOTTOM, getEntryLocationPx(m,h), 6, i==m->selectedEntry);
 			me=me->next;
 			i++;
 		}
@@ -422,15 +422,15 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, u16 x, u16 y, bool select
 	
 	gfxDrawSprite(screen, GFX_LEFT, me->iconData, ENTRY_ICON_WIDTH, ENTRY_ICON_HEIGHT, x+7, y+8);
 	gfxDrawTextN(screen, GFX_LEFT, &fontTitle, me->name, ENTRY_NAMELENGTH, x+38, y+66);
-	gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description+isfav, 56, x+26, y+70);
-	if(strlen(me->description) > 56 * 1)
+	gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description+isfav, 48, x+26, y+70);
+	if(strlen(me->description) > 48 * 1)
 	{
-		gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description+isfav + 56, 56, x+18, y+70);
+		gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description+isfav + 48, 48, x+18, y+70);
 	}
-	else if(strlen(me->description) > 56 * 2)
+	else if(strlen(me->description) > 48 * 2)
 	{
-		gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description+isfav + 56 * 1, 56, x+18, y+70);
-		gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description+isfav + 56 * 2, 56, x+10, y+70);
+		gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description+isfav + 48 * 1, 48, x+18, y+70);
+		gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->description+isfav + 48 * 2, 48, x+10, y+70);
 	}
 	gfxDrawTextN(screen, GFX_LEFT, &fontDescription, me->author, ENTRY_AUTHORLENGTH, x+4, y+ENTRY_HEIGHT-getStringLength(&fontDescription, me->author)-10);
 	
