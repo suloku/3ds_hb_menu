@@ -121,7 +121,7 @@ void drawButton2(gfxScreen_t screen, Button button)
 
 	int width=numLines*8+32;
 	if (button.body == NULL) width = 32;
-	else if (strlen(button.body) < 1) width = 32;
+	else if (strlen(button.body) < 1) width = button.width;
 
 	//Drop shadow
 	if (button.enabled){

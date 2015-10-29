@@ -18,6 +18,8 @@
 #include "touch.h"
 
 #include "arrowback_bin.h"
+#include "arrowleft_bin.h"
+#include "arrowright_bin.h"
 
 bool brewMode = false;
 u8 sdmcCurrent = 0;
@@ -191,7 +193,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 
 		//Theme controls
 		char bof[1024];
-		sprintf(bof, 
+/*		sprintf(bof, 
 			//"                                                                                                      \n"
 			"  L : Previous theme                                                                                  \n"
 			"  R : Next theme                                                                                      \n"
@@ -201,8 +203,22 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"Themes",
 			bof,
 			-90);
+*/
+		sprintf(bof, "                             Press to toogle randomization (currently %s%s", random_theme?"on) ":"off)", "                                                                  \n");
+		drawError(GFX_BOTTOM,
+			"                             Themes",
+			bof,
+			-80);
+		//drawButton2(GFX_BOTTOM, CNF_themerand);
+		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowleft_bin, 29, 20, CNF_themeprev.x, CNF_themeprev.y);
+		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowright_bin, 29, 20, CNF_themenext.x, CNF_themenext.y);
 		//Config controls
-		sprintf(bof, 
+		drawButton2(GFX_BOTTOM, CNF_remembermenu);
+		drawButton2(GFX_BOTTOM, CNF_sorting);
+		drawButton2(GFX_BOTTOM, CNF_mixfiles);
+		drawButton2(GFX_BOTTOM, CNF_rememberRF);
+		drawButton2(GFX_BOTTOM, CNF_toolbar);
+/*		sprintf(bof, 
 			"  Y  : Toggle remember menu (currently %s%s"
 			"  /\\ : Toggle sorting (currently %s%s"
 			"  \\/ : Toggle mix files (currently %s%s"
@@ -218,6 +234,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"Config",
 			bof,
 			-155);
+*/
 		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
 	}else if(!sdmcCurrent)
 	{
@@ -680,7 +697,7 @@ int main()
 			{
 				rebootCounter++;
 			}
-			else if(hidKeysDown()&KEY_L)
+			else if(hidKeysDown()&KEY_L || button_touched(CNF_themeprev))
 			{
 				if (current_theme != 0){
 					current_theme--;
@@ -689,7 +706,7 @@ int main()
 					confUpdate = 1;
 				}
 			}
-			else if(hidKeysDown()&KEY_R)
+			else if(hidKeysDown()&KEY_R || button_touched(CNF_themenext))
 			{
 				if (current_theme != 0){
 					current_theme++;
@@ -698,35 +715,46 @@ int main()
 					confUpdate = 1;
 				}
 			}
-			else if(hidKeysDown()&KEY_X)
+			else if(hidKeysDown()&KEY_X || button_touched(CNF_themerand))
 			{
 				random_theme ^= 1;
 				confUpdate = 1;
 			}
-			else if(hidKeysDown()&KEY_Y)
+			else if(hidKeysDown()&KEY_Y || button_touched(CNF_remembermenu))
 			{
 				remembermenu ^= 1;
 				confUpdate = 1;
+				sprintf (CNF_remembermenu.body, "%s", remembermenu?"                  On":"                  Off");
+				CNF_remembermenu.enabled ^= true;
 			}
-			else if(hidKeysDown()&KEY_UP)
+			else if(hidKeysDown()&KEY_UP || button_touched(CNF_sorting))
 			{
 				caseSetting ^= 1;
 				confUpdate = 1;
+				sprintf (CNF_sorting.body, "%s", caseSetting?"               Case":"           Filesystem");
+				CNF_sorting.enabled ^= true;
+				updatefolder = FOLDER_REFRESH;
 			}
-			else if(hidKeysDown()&KEY_DOWN)
+			else if(hidKeysDown()&KEY_DOWN || button_touched(CNF_mixfiles))
 			{
 				mixSetting ^= 1;
 				confUpdate = 1;
+				sprintf (CNF_mixfiles.body, "%s", mixSetting?"                  On":"                  Off");
+				CNF_mixfiles.enabled ^= true;
+				updatefolder = FOLDER_REFRESH;
 			}
-			else if(hidKeysDown()&KEY_LEFT)
+			else if(hidKeysDown()&KEY_LEFT || button_touched(CNF_rememberRF))
 			{
 				rememberRF ^= 1;
 				confUpdate = 1;
+				sprintf (CNF_rememberRF.body, "%s", rememberRF?"                  On":"                  Off");
+				CNF_rememberRF.enabled ^= true;
 			}
-			else if(hidKeysDown()&KEY_RIGHT)
+			else if(hidKeysDown()&KEY_RIGHT || button_touched(CNF_toolbar))
 			{
 				toolbar_pos ^= 1;
 				confUpdate = 1;
+				sprintf (CNF_toolbar.body, "%s", toolbar_pos?"              Vertical":"           Horizontal");
 			}
 		}else if(rebootCounter==257){
 			if(hidKeysDown()&KEY_START)rebootCounter--;

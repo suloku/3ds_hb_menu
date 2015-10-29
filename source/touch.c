@@ -1,8 +1,12 @@
 #include <stdlib.h>
 #include <string.h>
+#include <stdio.h>
 #include <3ds.h>
 
 #include "touch.h"
+#include "config.h"
+
+#define CONFIG_BUT_WIDTH 100
 
 extern int toolbar_pos;
 
@@ -30,6 +34,63 @@ Button CNF_toolbar;
 
 void initButtons(){
 
+//Config Screen
+	CNF_themeprev.x = 110;
+	CNF_themeprev.y = 10;
+	CNF_themeprev.width = 29;
+	CNF_themeprev.height = 20;
+
+	CNF_themenext.x = 110;
+	CNF_themenext.y = 320-23-20;
+	CNF_themenext.width = 20;
+	CNF_themenext.height = 29;
+
+	CNF_themerand.x = 100;
+	CNF_themerand.y = 4+CNF_themeprev.width;
+	CNF_themerand.width = 32*3;
+	CNF_themerand.height = CNF_themenext.y-CNF_themenext.height;
+
+	CNF_remembermenu.x = 52;
+	CNF_remembermenu.y = 5;
+	CNF_remembermenu.width = 32;
+	CNF_remembermenu.height = CONFIG_BUT_WIDTH;
+	strcpy(CNF_remembermenu.title, "  Rem. Menu");
+	if (remembermenu) CNF_remembermenu.enabled = true;
+	sprintf (CNF_remembermenu.body, "%s", remembermenu?"                  On":"                  Off");
+
+
+	CNF_sorting.x = 52;
+	CNF_sorting.y = 5+(CONFIG_BUT_WIDTH+4);
+	CNF_sorting.width = 32;
+	CNF_sorting.height = CONFIG_BUT_WIDTH;
+	strcpy(CNF_sorting.title, "     Sorting");
+	if (caseSetting) CNF_sorting.enabled = true;
+	sprintf (CNF_sorting.body, "%s", caseSetting?"               Case":"           Filesystem");
+
+	CNF_mixfiles.x = 52;
+	CNF_mixfiles.y = 5+(CONFIG_BUT_WIDTH+4)*2;
+	CNF_mixfiles.width = 32;
+	CNF_mixfiles.height = CONFIG_BUT_WIDTH;
+	strcpy(CNF_mixfiles.title, "Mix stray 3dsx");
+	if (mixSetting) CNF_mixfiles.enabled = true;
+	sprintf (CNF_mixfiles.body, "%s", mixSetting?"                  On":"                  Off");
+
+	CNF_rememberRF.x = 5;
+	CNF_rememberRF.y = 5;
+	CNF_rememberRF.width = 32;
+	CNF_rememberRF.height = CONFIG_BUT_WIDTH;
+	strcpy(CNF_rememberRF.title, " Rem. R. Free");
+	if (rememberRF) CNF_rememberRF.enabled = true;
+	sprintf (CNF_rememberRF.body, "%s", rememberRF?"                  On":"                  Off");
+
+	CNF_toolbar.x = 5;
+	CNF_toolbar.y = 5+(CONFIG_BUT_WIDTH+4);
+	CNF_toolbar.width = 32;
+	CNF_toolbar.height = CONFIG_BUT_WIDTH;
+	strcpy(CNF_toolbar.title, "     Toolbar");
+	sprintf (CNF_toolbar.body, "%s", toolbar_pos?"              Vertical":"           Horizontal");
+
+//Title launcher
 	TL_entry.x = 240-ENTRY_WIDTH;
 	TL_entry.y = 9;
 	TL_entry.width = ENTRY_WIDTH;
