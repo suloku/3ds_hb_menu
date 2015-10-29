@@ -1,3 +1,13 @@
+29 oct 2015 - 23:00 GTM+1
+- Touch controls for title selector and configuration screens.
+- Added back touch buttons to all screens.
+- Shrinked and moved entries a little to (and fixed some smdh text not correctly wrapping, i.e. FTP-3DS)
+- Scrollbar is resized when toolbar is in vertical position.
+- Bugfixes:
+	* Missing last folder in folder list menu
+	* Fixed bug when added favorites (I hope, maybe cause due to copying touch button state??)
+	* Fixed bug introduced with swiping code
+
 29 oct 2015 - 00:50 GTM+1
 - Change folder swiping left/right.
 - Swipe sensitivity can be configured in config.xml (default is 40)

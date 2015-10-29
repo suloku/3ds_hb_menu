@@ -80,17 +80,29 @@ void drawScrollBar(menu_s* m)
 	int scrollBarTotalSize=m->scrollBarSize+3*2;
 
 	int i;
+	float resize = 0;
+	int offset = 0;
+	int correction = 0;
+	if (toolbar_pos){
+		resize = 1.6;
+		offset = 70;
+		correction = 3;
+	}else{
+		resize = 1;
+		offset = 0;
+		correction = 0;
+	}
 	// background scrollbar thing
 		//35,308 - 200,7
 		//u8 colorBg[]={132, 224, 255};
-		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scroll_colorBg, 38-i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
-		gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scroll_colorBg, 38, 308, 194, 7);
+		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scroll_colorBg, 38-i+offset, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
+		gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scroll_colorBg, 38+offset, 308, 194/resize+correction, 7);
 		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scroll_colorBg, 232+i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
 	// actual scrollbar
 		//u8 color[]={255, 255, 255};
-		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-scrollBarTotalSize-m->scrollBarPos+38-i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
-		gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-scrollBarTotalSize-m->scrollBarPos+38, 308, m->currentScrollBarSize, 7);
-		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-scrollBarTotalSize-m->scrollBarPos+38+m->currentScrollBarSize+i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
+		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-(scrollBarTotalSize/resize)-(m->scrollBarPos/resize)+38-i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
+		gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-(scrollBarTotalSize/resize)-(m->scrollBarPos/resize)+38, 308, (m->currentScrollBarSize/resize), 7);
+		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-(scrollBarTotalSize/resize)-(m->scrollBarPos/resize+1)+38+(m->currentScrollBarSize/resize)+i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
 }
 
 void drawMenu(menu_s* m)
