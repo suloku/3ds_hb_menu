@@ -84,3 +84,58 @@ void drawFolders(char* current, char* previous, char* next, int offset)
 	gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)arrowup_bin, 9, 16, 46, 8);
 	gfxDrawSpriteAlphaBlend(GFX_TOP, GFX_LEFT, (u8*)arrowdown_bin, 9, 16, 6, 8);
 }
+
+void drawButton(gfxScreen_t screen, char* title, char* body, int x, int y, int height)
+{
+	int i;
+
+	int numLines=countLines(body);
+
+	int width=numLines*8+32;
+	if (body == NULL) width = 32;
+	else if (strlen(body) < 1) width = 32;
+
+	//Drop shadow
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-4+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
+	gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-4, y+9, width, height-9*2);
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-4+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
+	//main frame
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
+	gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x, y+9, width, height-9*2);
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
+
+
+	//content
+	gfxDrawText(screen, GFX_LEFT, &fontTitle, title, x+width-6-16, y+6);
+	gfxDrawText(screen, GFX_LEFT, &fontDescription, body, x+width-5-16-13, y+8);
+}
+
+void drawButton2(gfxScreen_t screen, Button button)
+{
+	int i;
+	int x = button.x;
+	int y = button.y;
+	int height = button.height;
+
+	int numLines=countLines(button.body);
+
+	int width=numLines*8+32;
+	if (button.body == NULL) width = 32;
+	else if (strlen(button.body) < 1) width = 32;
+
+	//Drop shadow
+	if (button.enabled){
+		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-4+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
+		gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-4, y+9, width, height-9*2);
+		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-4+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
+	}
+	//main frame
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
+	gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x, y+9, width, height-9*2);
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
+
+
+	//content
+	gfxDrawText(screen, GFX_LEFT, &fontTitle, button.title, x+width-6-16, y+6);
+	gfxDrawText(screen, GFX_LEFT, &fontDescription, button.body, x+width-5-16-13, y+8);
+}

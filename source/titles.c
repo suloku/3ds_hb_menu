@@ -6,9 +6,18 @@
 
 #include "titles.h"
 #include "error.h"
+#include "touch.h"
+#include "arrowleft_bin.h"
+#include "arrowright_bin.h"
+#include "arrowback_bin.h"
 
 extern int debugValues[100];
 extern bool regionFreeGamecardIn;
+
+//Touch buttons
+extern touchPosition previousTouch, firstTouch;
+extern u16 touchTimer;
+extern bool button_touched(Button button);
 
 //0 all, 1 user, 2 demos, 3 system
 int filterID = 0;
@@ -255,8 +264,8 @@ void updateTitleBrowser(titleBrowser_s* tb)
 	u32 padDown = hidKeysDown();
 
 	int move = 0;
-	if(padDown & KEY_LEFT)move--;
-	if(padDown & KEY_RIGHT)move++;
+	if(padDown & KEY_LEFT || button_touched(TL_prev))move--;
+	if(padDown & KEY_RIGHT || button_touched(TL_next))move++;
 
 	tb->selectedId += move;
 
@@ -287,7 +296,7 @@ void updateTitleBrowser(titleBrowser_s* tb)
 	}
 }
 
-void drawTitleBrowser(titleBrowser_s* tb)
+void drawTitleBrowser(titleBrowser_s* tb, bool titlelaunch)
 {
 	if(!tb)return;
 
@@ -306,7 +315,7 @@ void drawTitleBrowser(titleBrowser_s* tb)
 			strcpy (mode, "System titles");
 			break;
 	}
-
+/*
 	if(tb->selected && tb->selected->icon)
 	{
 		drawError(GFX_BOTTOM,
@@ -325,4 +334,36 @@ void drawTitleBrowser(titleBrowser_s* tb)
 			"                                                                                            B : Cancel\n",
 			0);
 	}
+	drawError(GFX_BOTTOM,
+		"                        Title Launcher                                          \n",
+		"\nPress SELECT to create shortcut                                                 "
+		"\nPress START to delete shortcut (if present)                                     "
+		"\nPress Y to launch using region four                                             ",
+		-160);	
+*/
+	drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, 9, true);
+	//Arrows
+	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowleft_bin, 29, 20, 130, 10);
+	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowright_bin, 29, 20, 130, 320-10-20);
+	
+	drawButton2(GFX_BOTTOM, TL_demo);
+	drawButton2(GFX_BOTTOM, TL_apps);
+	drawButton2(GFX_BOTTOM, TL_system);
+	drawButton2(GFX_BOTTOM, TL_all);
+	if (titlelaunch){
+		drawButton2(GFX_BOTTOM, TL_shortcut_create);
+		drawButton2(GFX_BOTTOM, TL_shortcut_delete);
+		drawButton2(GFX_BOTTOM, TL_launchr4);
+	}
+/*	
+	drawButton(GFX_BOTTOM, "   Demo", NULL, 130, 40, 75);
+	drawButton(GFX_BOTTOM, "    Apps", NULL, 130, 120, 75);
+	drawButton(GFX_BOTTOM, "  System", NULL, 130, 200, 75);
+	drawButton(GFX_BOTTOM, "     All", NULL, 90, 200, 75);
+	
+	drawButton(GFX_BOTTOM, "Create Shortcut", NULL, 50, 10, 110);
+	drawButton(GFX_BOTTOM, "Delete Shortcut", NULL, 10, 10, 110);
+	drawButton(GFX_BOTTOM, "Launch with Region 4", NULL, 50, 160, 150);
+*/
+	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
 }

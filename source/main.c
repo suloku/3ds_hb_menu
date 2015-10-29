@@ -17,6 +17,8 @@
 #include "config.h"
 #include "touch.h"
 
+#include "arrowback_bin.h"
+
 bool brewMode = false;
 u8 sdmcCurrent = 0;
 u64 nextSdCheck = 0;
@@ -86,6 +88,45 @@ void toggleWifi()
 
     if (r == ERR_WIFI_ALREADY_ON_OR_OFF)
         NWMEXT_ControlWirelessEnabled(WIFI_DISABLE);
+}
+
+//Touch buttons
+touchPosition touch;
+touchPosition previousTouch, firstTouch;
+u16 touchTimer;
+bool button_touched(Button button){
+
+	if (hidKeysUp()&KEY_TOUCH && touchInButton(button, firstTouch) && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)+abs(firstTouch.py-previousTouch.py)<12)
+		return true;
+	return false;
+}
+
+bool sprite_touched(bool touched){
+
+	if (hidKeysUp()&KEY_TOUCH && touched && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)+abs(firstTouch.py-previousTouch.py)<12)
+		return true;
+	return false;
+}
+
+void updatefilterbuts(){
+	TL_demo.enabled = false;
+	TL_apps.enabled = false;
+	TL_system.enabled = false;
+	TL_all.enabled = false;
+	switch (filterID){
+		case 0:
+			TL_all.enabled = true;
+			break;
+		case 1:
+			TL_apps.enabled = true;
+			break;
+		case 2:
+			TL_demo.enabled = true;
+			break;
+		case 3:
+			TL_system.enabled = true;
+			break;
+	}
 }
 
 static enum
@@ -177,6 +218,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"Config",
 			bof,
 			-155);
+		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
 	}else if(!sdmcCurrent)
 	{
 		//no SD
@@ -185,6 +227,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"    It looks like your 3DS doesn't have an SD inserted into it.\n"
 			"    Please insert an SD card for optimal homebrew launcher performance !\n",
 			0);
+		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
 	}else if(sdmcCurrent<0)
 	{
 		//SD error
@@ -194,6 +237,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"    Try taking it out and putting it back in. If that doesn't work,\n"
 			"please try again with another SD card.",
 			0);
+		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
 	}else if(hbmenu_state == HBMENU_NETLOADER_ACTIVE){
 		char bof[256];
 		u32 ip = gethostid();
@@ -207,6 +251,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"NetLoader",
 			bof,
 			0);
+		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
 	}else if(hbmenu_state == HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2){
 		drawError(GFX_BOTTOM,
 			"NetLoader",
@@ -215,14 +260,9 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"                                                                                            A : Yes\n"
 			"                                                                                            B : No\n",
 			0);
+		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
 	}else if(hbmenu_state == HBMENU_REGIONFREE){
-		drawTitleBrowser(&titleBrowser);
-		drawError(GFX_BOTTOM,
-			"                        Title Launcher                                          \n",
-			"\nPress SELECT to create shortcut                                                 "
-			"\nPress START to delete shortcut (if present)                                     "
-			"\nPress Y to launch using region four                                             ",
-			-160);		
+		drawTitleBrowser(&titleBrowser, true);
 	/*
 		if(regionFreeGamecardIn)
 		{
@@ -242,7 +282,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 		}
 	*/
 	}else if(hbmenu_state == HBMENU_TITLESELECT){
-		drawTitleBrowser(&titleBrowser);
+		drawTitleBrowser(&titleBrowser, false);
 	}else if(hbmenu_state == HBMENU_TITLETARGET_ERROR){
 		drawError(GFX_BOTTOM,
 			"Missing target title",
@@ -250,8 +290,10 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"    Please make sure you have that title !\n\n"
 			"                                                                                            B : Back\n",
 			0);
+			gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
 	}else if(hbmenu_state == HBMENU_NETLOADER_ERROR){
 		netloader_draw_error();
+		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
 	}else{
 		//got SD
 		drawMenu(&menu);
@@ -383,6 +425,8 @@ int main()
 
 	rebootCounter=257;
 	filterID = 1;
+	
+	initButtons();
 
 	while(aptMainLoop())
 	{
@@ -410,10 +454,7 @@ int main()
 		PTMU_GetBatteryLevel(NULL, &batteryLevel);
 		PTMU_GetBatteryChargeState(NULL, &charging);
 		hidScanInput();
-		touchPosition touch;
 		hidTouchRead(&touch);
-		touchPosition previousTouch, firstTouch;
-		u16 touchTimer;
 
 		updateBackground();
 
@@ -436,7 +477,7 @@ int main()
 		}
 
 		if(hbmenu_state == HBMENU_NETLOADER_ACTIVE){
-			if(hidKeysDown()&KEY_B){
+			if( hidKeysDown()&KEY_B || sprite_touched(touchInBackBut(firstTouch)) ){
 				netloader_deactivate();
 				hbmenu_state = HBMENU_DEFAULT;
 			}else{
@@ -450,7 +491,7 @@ int main()
 				}
 			}
 		}else if(hbmenu_state == HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2){
-			if(hidKeysDown()&KEY_B){
+			if( hidKeysDown()&KEY_B || sprite_touched(touchInBackBut(firstTouch)) ){
 				hbmenu_state = HBMENU_DEFAULT;
 			}else if(hidKeysDown()&KEY_A){
 				if(isNinjhax2())
@@ -463,7 +504,7 @@ int main()
 				}
 			}
 		}else if(hbmenu_state == HBMENU_REGIONFREE){
-			if(hidKeysDown()&KEY_A && titleBrowser.selected)
+			if( ( hidKeysDown()&KEY_A || button_touched(TL_entry) ) && titleBrowser.selected)
 			{
 				targetProcessId = -2;
 				target_title = *titleBrowser.selected;
@@ -485,7 +526,7 @@ int main()
 				strcpy(me->executablePath, REGIONFREE_PATH);
 				break;
 			}
-			else if(hidKeysDown()&KEY_SELECT && titleBrowser.selected) //Create shortcut
+			else if( ( hidKeysDown()&KEY_SELECT || button_touched(TL_shortcut_create) ) && titleBrowser.selected) //Create shortcut
 			{
 				//Write SMDH
 				FILE * pFile;
@@ -529,7 +570,7 @@ int main()
 					gspWaitForVBlank();
 				}
 			}
-			else if(hidKeysDown()&KEY_START && titleBrowser.selected) //Delete shortcut
+			else if( ( hidKeysDown()&KEY_START || button_touched(TL_shortcut_delete) ) && titleBrowser.selected) //Delete shortcut
 			{
 				//Delete SMDH
 				char Path[ENTRY_PATHLENGTH];
@@ -552,7 +593,7 @@ int main()
 					gspWaitForVBlank();
 				}
 			}
-			else if(hidKeysDown()&KEY_Y){ //Boot with region four
+			else if(hidKeysDown()&KEY_Y || button_touched(TL_launchr4) ){ //Boot with region four
 				targetProcessId = -2;
 				target_title = *titleBrowser.selected;
 				//Make sure region free will be boot
@@ -561,7 +602,7 @@ int main()
 				strcpy(me->executablePath, REGIONFREE_PATH);
 				break;
 			}
-			else if(hidKeysDown()&KEY_B)hbmenu_state = HBMENU_DEFAULT;
+			else if( hidKeysDown()&KEY_B || sprite_touched(touchInBackBut(firstTouch)) )hbmenu_state = HBMENU_DEFAULT;
 			else if(hidKeysDown()&KEY_L){
 				filterID++;
 				if (filterID > MAX_FILTER) filterID = 1;
@@ -570,12 +611,21 @@ int main()
 				filterID--;
 				if (filterID < 1) filterID = MAX_FILTER;
 			}
-			else if(hidKeysDown()&KEY_X){
+			else if(hidKeysDown()&KEY_X || button_touched(TL_all) ){
 				filterID = 0;
 			}
+			else if(button_touched(TL_apps)){
+				filterID = 1;
+			}else if(button_touched(TL_demo)){
+				filterID = 2;
+			}else if(button_touched(TL_system)){
+				filterID = 3;
+			}
 			else updateTitleBrowser(&titleBrowser);
+			
+			updatefilterbuts();
 		/*
-			if(hidKeysDown()&KEY_B){
+			if( hidKeysDown()&KEY_B || sprite_touched(touchInBackBut(firstTouch)) ){
 				hbmenu_state = HBMENU_DEFAULT;
 			}else if(hidKeysDown()&KEY_A && regionFreeGamecardIn)
 			{
@@ -584,17 +634,17 @@ int main()
 			}
 		*/
 		}else if(hbmenu_state == HBMENU_TITLETARGET_ERROR){
-			if(hidKeysDown()&KEY_B){
+			if(hidKeysDown()&KEY_B || sprite_touched(touchInBackBut(firstTouch))){
 				hbmenu_state = HBMENU_DEFAULT;
 			}
 		}else if(hbmenu_state == HBMENU_TITLESELECT){
-			if(hidKeysDown()&KEY_A && titleBrowser.selected)
+			if( ( hidKeysDown()&KEY_A  || button_touched(TL_entry) ) && titleBrowser.selected)
 			{
 				targetProcessId = -2;
 				target_title = *titleBrowser.selected;
 				break;
 			}
-			else if(hidKeysDown()&KEY_B)hbmenu_state = HBMENU_DEFAULT;
+			else if(hidKeysDown()&KEY_B || sprite_touched(touchInBackBut(firstTouch)))hbmenu_state = HBMENU_DEFAULT;
 			else if(hidKeysDown()&KEY_L){
 				filterID++;
 				if (filterID > MAX_FILTER) filterID = 1;
@@ -603,12 +653,19 @@ int main()
 				filterID--;
 				if (filterID < 1) filterID = MAX_FILTER;
 			}
-			else if(hidKeysDown()&KEY_X){
+			else if(hidKeysDown()&KEY_X || button_touched(TL_all) ){
 				filterID = 0;
+			}
+			else if(button_touched(TL_apps)){
+				filterID = 1;
+			}else if(button_touched(TL_demo)){
+				filterID = 2;
+			}else if(button_touched(TL_system)){
+				filterID = 3;
 			}
 			else updateTitleBrowser(&titleBrowser);
 		}else if(hbmenu_state == HBMENU_NETLOADER_ERROR){
-			if(hidKeysDown()&KEY_B)
+			if( hidKeysDown()&KEY_B || sprite_touched(touchInBackBut(firstTouch)) )
 				hbmenu_state = HBMENU_DEFAULT;
 		}else if(rebootCounter==256){
 			if(hidKeysDown()&KEY_A)
@@ -619,7 +676,7 @@ int main()
 					APT_HardwareResetAsync(NULL);
 				aptCloseSession();
 				rebootCounter--;
-			}else if(hidKeysDown()&KEY_B)
+			}else if( hidKeysDown()&KEY_B || sprite_touched(touchInBackBut(firstTouch)) )
 			{
 				rebootCounter++;
 			}
@@ -678,7 +735,7 @@ int main()
 				if(netloader_activate() == 0) hbmenu_state = HBMENU_NETLOADER_ACTIVE;
 				else if(isNinjhax2()) hbmenu_state = HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2;
 			}
-			if (hidKeysUp()&KEY_TOUCH && touchInHomeBut(firstTouch) && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)+abs(firstTouch.py-previousTouch.py)<12){
+			if (sprite_touched(touchInHomeBut(firstTouch))){
 				if (hbmenu_state == HBMENU_DEFAULT){
 					hbmenu_state = HBMENU_REGIONFREE;
 					regionFreeUpdate();
@@ -686,7 +743,7 @@ int main()
 					hbmenu_state = HBMENU_DEFAULT;
 				}
 			}
-			if( (hidKeysDown()&(KEY_ZR|KEY_ZL) || (hidKeysUp()&KEY_TOUCH && touchInFolderBut(firstTouch) && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)+abs(firstTouch.py-previousTouch.py)<12) ) && Folders.max>1 && hbmenu_state == HBMENU_DEFAULT)//Toggle Folder list
+			if( ( hidKeysDown()&(KEY_ZR|KEY_ZL) || sprite_touched(touchInFolderBut(firstTouch)) ) && Folders.max>1 && hbmenu_state == HBMENU_DEFAULT)//Toggle Folder list
 			{
 				if (!flistActive){
 					updatefolder = FOLDER_LIST;
@@ -700,7 +757,7 @@ int main()
 				}
 				flistActive ^= 1;
 			}
-			if( (hidKeysDown()&KEY_X  || (hidKeysUp()&KEY_TOUCH &&  touchInFavBut(firstTouch) && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)+abs(firstTouch.py-previousTouch.py)<12) ) && totalfavs >0 && hbmenu_state == HBMENU_DEFAULT)//Toggle Favorites
+			if( ( hidKeysDown()&KEY_X  || sprite_touched(touchInFavBut(firstTouch)) ) && totalfavs >0 && hbmenu_state == HBMENU_DEFAULT)//Toggle Favorites
 			{
 				if (!favActive){
 					updatefolder = FOLDER_FAVS;
@@ -720,13 +777,13 @@ int main()
 				if (favActive) favActive ^= 1;
 				if (flistActive) flistActive ^= 1;
 			}
-			if( (hidKeysDown()&KEY_R || (hidKeysUp()&KEY_TOUCH && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)> swipesens) && firstTouch.px < previousTouch.px ) && !favActive && !flistActive  && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Next folder
+			if( ( (hidKeysDown()&KEY_R || (hidKeysUp()&KEY_TOUCH && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)> swipesens) ) && firstTouch.px > previousTouch.px ) && !favActive && !flistActive  && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Next folder
 			{
 				Folders.current++;
 				if (Folders.current > Folders.max) Folders.current = 0;
 				updatefolder = FOLDER_REFRESH;
 			}
-			if((hidKeysDown()&KEY_L || (hidKeysUp()&KEY_TOUCH && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)> swipesens) && firstTouch.px > previousTouch.px ) && !favActive && !flistActive && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Previous folder
+			if( ( (hidKeysDown()&KEY_L || (hidKeysUp()&KEY_TOUCH && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)> swipesens) ) && firstTouch.px < previousTouch.px ) && !favActive && !flistActive && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Previous folder
 			{
 				Folders.current--;
 				if (Folders.current < 0) Folders.current = Folders.max;
