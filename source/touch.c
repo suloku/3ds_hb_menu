@@ -19,6 +19,15 @@ Button TL_launchr4;
 Button TL_left;
 Button TL_right;
 
+Button CNF_themeprev;
+Button CNF_themenext;
+Button CNF_themerand;
+Button CNF_remembermenu;
+Button CNF_sorting;
+Button CNF_mixfiles;
+Button CNF_rememberRF;
+Button CNF_toolbar;
+
 void initButtons(){
 
 	TL_entry.x = 240-ENTRY_WIDTH;

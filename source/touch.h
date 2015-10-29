@@ -26,6 +26,15 @@ extern Button TL_shortcut_create;
 extern Button TL_shortcut_delete;
 extern Button TL_launchr4;
 
+extern Button CNF_themeprev;
+extern Button CNF_themenext;
+extern Button CNF_themerand;
+extern Button CNF_remembermenu;
+extern Button CNF_sorting;
+extern Button CNF_mixfiles;
+extern Button CNF_rememberRF;
+extern Button CNF_toolbar;
+
 void initButtons();
 
 bool touchInBox(int x1, int x2, int y1, int y2, touchPosition touch);

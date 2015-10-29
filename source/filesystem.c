@@ -363,7 +363,7 @@ void addFolderToMenu(menu_s* m, char* folderPath)
 void addFolders(menu_s* m)
 {
 	int i;
-	for (i = 0; i < Folders.max; i++){
+	for (i = 0; i < Folders.max+1; i++){
 		addFolderToMenu(m, Folders.dir[i]);
 	}
 }

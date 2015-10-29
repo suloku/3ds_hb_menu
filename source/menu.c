@@ -293,7 +293,7 @@ bool updateMenu(menu_s* m)
 	if (!toolbar_pos){
 		maxScroll=240-(m->numEntries)*ENTRY_WIDTH-ENTRY_WIDTH/1.5; //cf getEntryLocation
 	}else{
-		maxScroll=240-(m->numEntries)*ENTRY_WIDTH; //cf getEntryLocation
+		maxScroll=240-(m->numEntries)*ENTRY_WIDTH-ENTRY_WIDTH/5; //cf getEntryLocation
 	}
 
 	if(!m->atEquilibrium)
@@ -437,7 +437,7 @@ int drawMenuEntry(menuEntry_s* me, gfxScreen_t screen, u16 x, u16 y, bool select
 	//Favorite Star marker
 	if (isfav){
 		//gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)star_bin, 16, 16, x+18+(16/2)-2, y+70-(16/2));
-		gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)star_bin, 16, 16, x+38+(16/3), y+70+205);
+		gfxDrawSpriteAlphaBlend(screen, GFX_LEFT, (u8*)star_bin, 16, 16, x+38+(16/3), y+70+205-10);
 	}
 
 	return totalWidth;
