@@ -805,13 +805,13 @@ int main()
 				if (favActive) favActive ^= 1;
 				if (flistActive) flistActive ^= 1;
 			}
-			if( ( hidKeysDown()&KEY_R || ( (hidKeysUp()&KEY_TOUCH && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)> swipesens) && firstTouch.px > previousTouch.px ) ) && !favActive && !flistActive  && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Next folder
+			if( ( hidKeysDown()&KEY_R || ( (hidKeysUp()&KEY_TOUCH && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)> swipesens) && firstTouch.px > previousTouch.px && abs(firstTouch.py-previousTouch.py)<12 ) ) && !favActive && !flistActive  && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Next folder
 			{
 				Folders.current++;
 				if (Folders.current > Folders.max) Folders.current = 0;
 				updatefolder = FOLDER_REFRESH;
 			}
-			if( ( hidKeysDown()&KEY_L || ( (hidKeysUp()&KEY_TOUCH && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)> swipesens) && firstTouch.px < previousTouch.px ) ) && !favActive && !flistActive && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Previous folder
+			if( ( hidKeysDown()&KEY_L || ( (hidKeysUp()&KEY_TOUCH && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)> swipesens) && firstTouch.px < previousTouch.px && abs(firstTouch.py-previousTouch.py)<12 ) ) && !favActive && !flistActive && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Previous folder
 			{
 				Folders.current--;
 				if (Folders.current < 0) Folders.current = Folders.max;
