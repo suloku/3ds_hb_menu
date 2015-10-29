@@ -681,6 +681,7 @@ int main()
 				filterID = 3;
 			}
 			else updateTitleBrowser(&titleBrowser);
+			updatefilterbuts();
 		}else if(hbmenu_state == HBMENU_NETLOADER_ERROR){
 			if( hidKeysDown()&KEY_B || sprite_touched(touchInBackBut(firstTouch)) )
 				hbmenu_state = HBMENU_DEFAULT;

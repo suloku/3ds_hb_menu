@@ -1,3 +1,7 @@
+30 oct 2015 - 00:45 GTM+1
+- Rearrange buttons in title selection screen
+- Actually update enabled button in title selecter
+
 29 oct 2015 - 23:00 GTM+1
 - Touch controls for title selector and configuration screens.
 - Added back touch buttons to all screens.

@@ -42,6 +42,21 @@ void drawError(gfxScreen_t screen, char* title, char* body, int offset)
 	gfxDrawText(screen, GFX_LEFT, &fontDescription, body, x+width-5-16-13, y+8);
 }
 
+void drawPanel(gfxScreen_t screen, int x, int y, int width, int height, bool border)
+{
+	int i;
+	if (border){
+		//Border
+		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x+roundLutError[i]-1, y+i-1, width-roundLutError[i]*2+2, 1+2);
+		gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-1, y+9-1, width+2, height-9*2+2);
+		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x+roundLutError[i]-1, y+height-1-i-1, width-roundLutError[i]*2+2, 1+2);
+	}
+	//main frame
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
+	gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x, y+9, width, height-9*2);
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
+}
+
 void drawFolders(char* current, char* previous, char* next, int offset)
 {
 	int i;
@@ -129,6 +144,10 @@ void drawButton2(gfxScreen_t screen, Button button)
 		gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-4, y+9, width, height-9*2);
 		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-4+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
 	}
+	//Border
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x+roundLutError[i]-1, y+i-1, width+2-roundLutError[i]*2, 1+2);
+	gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-1, y+9-1, width+2, height-9*2+2);
+	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x+roundLutError[i]-1, y+height-1-i-1, width+2-roundLutError[i]*2, 1+2);
 	//main frame
 	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
 	gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x, y+9, width, height-9*2);

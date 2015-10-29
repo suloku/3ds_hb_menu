@@ -96,12 +96,12 @@ void initButtons(){
 	TL_entry.width = ENTRY_WIDTH;
 	TL_entry.height = ENTRY_HEIGHT;
 
-	TL_prev.x = 130;
+	TL_prev.x = 130-20;
 	TL_prev.y = 10;
-	TL_prev.width = 29;
-	TL_prev.height = 20;
+	TL_prev.width = 20;
+	TL_prev.height = 29;
 
-	TL_next.x = 130;
+	TL_next.x = 130-20;
 	TL_next.y = 320-10-20;
 	TL_next.width = 20;
 	TL_next.height = 29;
@@ -130,20 +130,20 @@ void initButtons(){
 	TL_all.height = 75;
 	strcpy(TL_all.title, "     All");
 
-	TL_shortcut_create.x = 50;
-	TL_shortcut_create.y = 10;
+	TL_shortcut_create.x = 45;
+	TL_shortcut_create.y = 40+10;
 	TL_shortcut_create.width = 32;
 	TL_shortcut_create.height = 110;
 	strcpy(TL_shortcut_create.title, "Create Shortcut");
 
-	TL_shortcut_delete.x = 10;
-	TL_shortcut_delete.y = 10;
+	TL_shortcut_delete.x = 45;
+	TL_shortcut_delete.y = 40+10+110+10;
 	TL_shortcut_delete.width = 32;
 	TL_shortcut_delete.height = 110;
 	strcpy(TL_shortcut_delete.title, "Delete Shortcut");
 
-	TL_launchr4.x = 50;
-	TL_launchr4.y = 160;
+	TL_launchr4.x = 5;
+	TL_launchr4.y = 320/2-75;
 	TL_launchr4.width = 32;
 	TL_launchr4.height = 150;
 	strcpy(TL_launchr4.title, "Launch with Region 4");
