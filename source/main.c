@@ -576,10 +576,8 @@ int main()
 				updatefolder = FOLDER_REFRESH;
 				u64 time = osGetTime();
 				while (1){
-					drawError(GFX_BOTTOM,
-						"\n                     Shortcut Created!                                          \n",
-						"\n\n\n",
-						-160);
+					drawPanel(GFX_BOTTOM, 84, 4, 84, 320-8, true);
+					gfxDrawText(GFX_BOTTOM, GFX_LEFT, &fontTitle, "Shortcut Created", 84+84/2-16/2, 320/2-50);
 					if (osGetTime() - time > 1000) break;
 					gfxFlushBuffers();
 					gfxSwapBuffers();
@@ -599,10 +597,8 @@ int main()
 				updatefolder = FOLDER_REFRESH;
 				u64 time = osGetTime();
 				while (1){
-					drawError(GFX_BOTTOM,
-						"\n                     Shortcut Deleted!                                          \n",
-						"\n\n\n",
-						-160);
+					drawPanel(GFX_BOTTOM, 84, 4, 84, 320-8, true);
+					gfxDrawText(GFX_BOTTOM, GFX_LEFT, &fontTitle, "Shortcut Deleted", 84+84/2-16/2, 320/2-50);
 					if (osGetTime() - time > 1000) break;
 					gfxFlushBuffers();
 					gfxSwapBuffers();

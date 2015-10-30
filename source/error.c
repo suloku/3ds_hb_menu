@@ -44,17 +44,7 @@ void drawError(gfxScreen_t screen, char* title, char* body, int offset)
 
 void drawPanel(gfxScreen_t screen, int x, int y, int width, int height, bool border)
 {
-	int i;
-	if (border){
-		//Border
-		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x+roundLutError[i]-1, y+i-1, width-roundLutError[i]*2+2, 1+2);
-		gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-1, y+9-1, width+2, height-9*2+2);
-		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x+roundLutError[i]-1, y+height-1-i-1, width-roundLutError[i]*2+2, 1+2);
-	}
-	//main frame
-	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
-	gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x, y+9, width, height-9*2);
-	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
+	drawPanelAlphaBlend(screen, x, y, width, height, border, 255);
 }
 
 void drawPanelAlphaBlend(gfxScreen_t screen, int x, int y, int width, int height, bool border, u8 alpha)
