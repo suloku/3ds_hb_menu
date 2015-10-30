@@ -57,6 +57,26 @@ void drawPanel(gfxScreen_t screen, int x, int y, int width, int height, bool bor
 	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
 }
 
+void drawPanelAlphaBlend(gfxScreen_t screen, int x, int y, int width, int height, bool border, u8 alpha)
+{
+	int i;
+	//main frame
+	for(i=0; i<9; i++)gfxDrawRectangleAlphaBlend(screen, GFX_LEFT, entry_bgcolor, alpha, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
+	gfxDrawRectangleAlphaBlend(screen, GFX_LEFT, entry_bgcolor, alpha, x, y+9, width, height-9*2);
+	for(i=0; i<9; i++)gfxDrawRectangleAlphaBlend(screen, GFX_LEFT, entry_bgcolor, alpha, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
+	if (border){
+		//Border
+		for(i=0; i<9; i++)gfxDrawRectangleAlphaBlend(screen, GFX_LEFT, entry_bgcolor_shadow, alpha, x+roundLutError[i], y+i, 1, 1);
+		for(i=0; i<9; i++)gfxDrawRectangleAlphaBlend(screen, GFX_LEFT, entry_bgcolor_shadow, alpha, x-roundLutError[i]+width, y+i, 1, 1);
+		gfxDrawRectangleAlphaBlend(screen, GFX_LEFT, entry_bgcolor_shadow, alpha, x-1+9-2, y+9-1-9+1, width+2-9*2+4+1, 1);
+		gfxDrawRectangleAlphaBlend(screen, GFX_LEFT, entry_bgcolor_shadow, alpha, x-1+9-2, y+9-1-9+height, width+2-9*2+4+1, 1);
+		gfxDrawRectangleAlphaBlend(screen, GFX_LEFT, entry_bgcolor_shadow, alpha, x, y+9-2, 1, height-9*2+2);
+		gfxDrawRectangleAlphaBlend(screen, GFX_LEFT, entry_bgcolor_shadow, alpha, x+width, y+9-2, 1, height-9*2+2);
+		for(i=0; i<9; i++)gfxDrawRectangleAlphaBlend(screen, GFX_LEFT, entry_bgcolor_shadow, alpha, x+roundLutError[i], y+height-1-i, 1, 1);
+		for(i=0; i<9; i++)gfxDrawRectangleAlphaBlend(screen, GFX_LEFT, entry_bgcolor_shadow, alpha, x-roundLutError[i]+width, y+height-1-i, 1, 1);
+	}
+}
+
 void drawFolders(char* current, char* previous, char* next, int offset)
 {
 	int i;
@@ -137,7 +157,7 @@ void drawButton2(gfxScreen_t screen, Button button)
 	int width=numLines*8+32;
 	if (button.body == NULL) width = 32;
 	else if (strlen(button.body) < 1) width = button.width;
-
+/*
 	//Drop shadow
 	if (button.enabled){
 		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-4+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
@@ -148,11 +168,27 @@ void drawButton2(gfxScreen_t screen, Button button)
 	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x+roundLutError[i]-1, y+i-1, width+2-roundLutError[i]*2, 1+2);
 	gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-1, y+9-1, width+2, height-9*2+2);
 	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x+roundLutError[i]-1, y+height-1-i-1, width+2-roundLutError[i]*2, 1+2);
+*/
 	//main frame
 	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+i, width-roundLutError[i]*2, 1);
 	gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x, y+9, width, height-9*2);
 	for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor, x+roundLutError[i], y+height-1-i, width-roundLutError[i]*2, 1);
 
+		//Border
+		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x+roundLutError[i], y+i, 1, 1);
+		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-roundLutError[i]+width, y+i, 1, 1);
+		gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-1+9-2, y+9-1-9+1, width+2-9*2+4+1, 1);
+		gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-1+9-2, y+9-1-9+height, width+2-9*2+4+1, 1);
+		gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x, y+9-2, 1, height-9*2+2);
+		gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x+width, y+9-2, 1, height-9*2+2);
+		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x+roundLutError[i], y+height-1-i, 1, 1);
+		for(i=0; i<9; i++)gfxDrawRectangle(screen, GFX_LEFT, entry_bgcolor_shadow, x-roundLutError[i]+width, y+height-1-i, 1, 1);
+
+	//Button state indicator
+	u8 color[]={0,255,0};
+	if (button.enabled){
+		gfxDrawRectangleAlphaBlend(screen, GFX_LEFT, color, 175, x+1, y+height/2-(height/6)*2/2, 4, (height/6)*2);
+	}
 
 	//content
 	gfxDrawText(screen, GFX_LEFT, &fontTitle, button.title, x+width-6-16, y+6);

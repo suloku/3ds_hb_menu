@@ -11,9 +11,6 @@
 #include "touch.h"
 #include "filesystem.h" //for FAVORITE_MARKER
 #include "star_bin.h"
-#include "but_star_bin.h"
-#include "but_home_bin.h"
-#include "but_folder_bin.h"
 #include "toolbar_bin.h"
 #include "toolbar2_bin.h"
 
@@ -95,14 +92,16 @@ void drawScrollBar(menu_s* m)
 	// background scrollbar thing
 		//35,308 - 200,7
 		//u8 colorBg[]={132, 224, 255};
-		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scroll_colorBg, 38-i+offset, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
+		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scroll_colorBg, 38-i+offset-1, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
 		gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scroll_colorBg, 38+offset, 308, 194/resize+correction, 7);
 		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scroll_colorBg, 232+i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
 	// actual scrollbar
 		//u8 color[]={255, 255, 255};
-		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-(scrollBarTotalSize/resize)-(m->scrollBarPos/resize)+38-i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
-		gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-(scrollBarTotalSize/resize)-(m->scrollBarPos/resize)+38, 308, (m->currentScrollBarSize/resize), 7);
-		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-(scrollBarTotalSize/resize)-(m->scrollBarPos/resize+1)+38+(m->currentScrollBarSize/resize)+i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
+		if (toolbar_pos) correction = 1;
+		else correction = 0;
+		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-(scrollBarTotalSize/resize)-(m->scrollBarPos/resize)+38-i-1+correction, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
+		gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-(scrollBarTotalSize/resize)-(m->scrollBarPos/resize)+38+correction, 308, (m->currentScrollBarSize/resize), 7);
+		for(i=0; i<3; i++)gfxDrawRectangle(GFX_BOTTOM, GFX_LEFT, scrollfront_color, 200-(scrollBarTotalSize/resize)-(m->scrollBarPos/resize)+38+(m->currentScrollBarSize/resize)+i, 308+roundLut3[i], 1, 7-2*roundLut3[i]);
 }
 
 void drawMenu(menu_s* m)

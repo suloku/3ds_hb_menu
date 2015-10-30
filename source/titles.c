@@ -341,14 +341,15 @@ void drawTitleBrowser(titleBrowser_s* tb, bool titlelaunch)
 		"\nPress Y to launch using region four                                             ",
 		-160);	
 */
-	drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, 6, false);
+	drawMenuEntry(&tb->selectedEntry, GFX_BOTTOM, 240, (320-ENTRY_HEIGHT)/2, false);
 	
 	//Back pannel
-	drawPanel(GFX_BOTTOM, 84, 4, 84, 320-8, true);
+	//drawPanel(GFX_BOTTOM, 84, 4, 84, 320-8, true);
+	drawPanelAlphaBlend(GFX_BOTTOM, 84, 4, 84, 320-8, true, 175);
 	//Arrows
 	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowleft_bin, 29, 20, TL_prev.x, TL_prev.y);
 	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowright_bin, 29, 20, TL_next.x, TL_next.y);
-	
+		
 	drawButton2(GFX_BOTTOM, TL_demo);
 	drawButton2(GFX_BOTTOM, TL_apps);
 	drawButton2(GFX_BOTTOM, TL_system);
