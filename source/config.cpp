@@ -23,6 +23,7 @@ int rememberRF = 0;
 int RFatboot = 0;
 int config_dir = 0; //0: /3ds/ 1: /3ds/.hbl/
 int swipesens = 40;
+int theme_alpha = 255;
 
 int toolbar_pos = 0; //0: horizontal, 1: vertical
 
@@ -73,6 +74,10 @@ void loadTheme(){
 	pElement = pRoot->FirstChildElement(theme);
 	if (pElement != nullptr)
 	{
+		subElement = pElement->FirstChildElement("THEME_ALPHA");
+		if (subElement != nullptr) subElement->QueryIntText(&theme_alpha);
+		else theme_alpha = 255;
+
 		int temp;
 		subElement = pElement->FirstChildElement("ENTRY_BGCOLOR");
 		if (subElement != nullptr)
@@ -110,6 +115,34 @@ void loadTheme(){
 			entry_bgcolor_shadow[1] = (short)temp;
 			subElement->QueryIntAttribute("b", &temp);
 			entry_bgcolor_shadow[2] = (short)temp;
+		}
+		subElement = pElement->FirstChildElement("BUTTON_BORDERCOLOR");
+		if (subElement != nullptr)
+		{
+			//Values
+			subElement->QueryIntAttribute("r", &temp);
+			button_bordercolor[0] = (short)temp;
+			subElement->QueryIntAttribute("g", &temp);
+			button_bordercolor[1] = (short)temp;
+			subElement->QueryIntAttribute("b", &temp);
+			button_bordercolor[2] = (short)temp;
+		}else{
+			button_bordercolor[0] = 0;
+			button_bordercolor[1] = 0;
+			button_bordercolor[2] = 0;
+		}
+		subElement = pElement->FirstChildElement("BUTTON_STATECOLOR");
+		if (subElement != nullptr)
+		{
+			//Values
+			subElement->QueryIntAttribute("r", &temp);
+			colorButtonEnabled[0] = (short)temp;
+			subElement->QueryIntAttribute("g", &temp);
+			colorButtonEnabled[1] = (short)temp;
+			subElement->QueryIntAttribute("b", &temp);
+			colorButtonEnabled[2] = (short)temp;
+		}else{
+			memcpy(colorButtonEnabled, entry_bgcolor_shadow, 3);
 		}
 		subElement = pElement->FirstChildElement("BEERBORDERCOLOR");
 		if (subElement != nullptr)

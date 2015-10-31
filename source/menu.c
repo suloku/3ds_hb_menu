@@ -23,10 +23,12 @@ u8 roundLut3[]={0, 1, 2};
 u8 folder_bgcolor[] = {246, 252, 255};
 u8 entry_bgcolor[] = {246, 252, 255};
 u8 entry_bgcolor_shadow[] = {23, 92, 113};
+u8 button_bordercolor[] = {0, 0, 0};
 u8 scroll_colorBg[]={132, 224, 255};
 u8 scrollfront_color[]={255, 255, 255};
 u8 colorIcon[]={225, 225, 225};
 u8 colorIconShort[]={132, 224, 255};
+u8 colorButtonEnabled[]= {23, 92, 113};
 
 #define SCROLLING_SPEED (16) //lower is faster
 

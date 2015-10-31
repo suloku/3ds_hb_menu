@@ -7,6 +7,7 @@
 #include "font.h"
 #include "text.h"
 #include "costable.h"
+#include "config.h"
 
 void gfxDrawText(gfxScreen_t screen, gfx3dSide_t side, font_s* f, char* str, s16 x, s16 y)
 {
@@ -240,7 +241,7 @@ void gfxFillColorGradient(gfxScreen_t screen, gfx3dSide_t side, u8 rgbColorStart
 
 void gfxDrawRectangle(gfxScreen_t screen, gfx3dSide_t side, u8 rgbColor[3], s16 x, s16 y, u16 width, u16 height)
 {
-	gfxDrawRectangleAlphaBlend(screen, side, rgbColor, 200, x, y, width, height);
+	gfxDrawRectangleAlphaBlend(screen, side, rgbColor, theme_alpha, x, y, width, height);
 }
 
 void _gfxDrawRectangle(gfxScreen_t screen, gfx3dSide_t side, u8 rgbColor[3], s16 x, s16 y, u16 width, u16 height)

@@ -11,7 +11,7 @@
         <disable_RF>1</disable_RF>
 		<remember_RF>0</remember_RF>
  		<current_theme>2</current_theme>
-		<random_theme>1</random_theme>
+		<random_theme>0</random_theme>
 		<menu_pos remember_menu="1" folder="0" entry="0"/>
     </folders>
 	<favorites>

@@ -34,6 +34,7 @@ extern int rememberRF;
 extern int RFatboot;
 extern int toolbar_pos;
 extern int swipesens;
+extern int theme_alpha;
 
 typedef struct
 {

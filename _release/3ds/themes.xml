@@ -20,9 +20,12 @@
 		<FONT_DESCRIPTIONFOLDER r="118" g="118" b="118"/>
 	</theme1>
 	<theme2> <!-- Red purple by suloku -->
+		<THEME_ALPHA>200</THEME_ALPHA>
 		<FOLDER_BGCOLOR r="33" g="33" b="33"/>
 		<ENTRY_BGCOLOR r="33" g="33" b="33"/>
 		<ENTRY_BGCOLOR_SHADOW r="200" g="200" b="200"/>
+		<BUTTON_BORDERCOLOR r="200" g="200" b="200"/>
+		<BUTTON_STATECOLOR r="50" g="205" b="50"/>
 		<WATERBORDERCOLOR r="33" g="33" b="33"/>
 		<WATERCOLOR r="255" g="50" b="40"/>
 		<BGCOLOR r="40" g="40" b="40"/>

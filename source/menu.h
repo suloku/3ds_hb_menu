@@ -27,10 +27,12 @@
 extern u8 folder_bgcolor[];
 extern u8 entry_bgcolor[];
 extern u8 entry_bgcolor_shadow[];
+extern u8 button_bordercolor[];
 extern u8 scroll_colorBg[];
 extern u8 scrollfront_color[];
 extern u8 colorIcon[];
 extern u8 colorIconShort[];
+extern u8 colorButtonEnabled[];
 
 #define fptToInt(v) ((v)>>10)
 #define intToFpt(v) ((v)<<10)

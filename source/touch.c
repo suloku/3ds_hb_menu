@@ -41,7 +41,7 @@ void initButtons(){
 	CNF_themeprev.height = 20;
 
 	CNF_themenext.x = 110;
-	CNF_themenext.y = 320-23-20;
+	CNF_themenext.y = 320-10-20;
 	CNF_themenext.width = 20;
 	CNF_themenext.height = 29;
 
@@ -125,7 +125,7 @@ void initButtons(){
 	strcpy(TL_system.title, "  System");
 
 	TL_all.x = 90;
-	TL_all.y = 200;
+	TL_all.y = 120;
 	TL_all.width = 32;
 	TL_all.height = 75;
 	strcpy(TL_all.title, "     All");

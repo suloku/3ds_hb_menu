@@ -6,6 +6,7 @@
 
 #include "titles.h"
 #include "error.h"
+#include "config.h"
 #include "touch.h"
 #include "arrowleft_bin.h"
 #include "arrowright_bin.h"
@@ -345,7 +346,7 @@ void drawTitleBrowser(titleBrowser_s* tb, bool titlelaunch)
 	
 	//Back pannel
 	//drawPanel(GFX_BOTTOM, 84, 4, 84, 320-8, true);
-	drawPanelAlphaBlend(GFX_BOTTOM, 84, 4, 84, 320-8, true, 175);
+	drawPanelAlphaBlend(GFX_BOTTOM, 84, 4, 84, 320-8, false, theme_alpha);
 	//Arrows
 	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowleft_bin, 29, 20, TL_prev.x, TL_prev.y);
 	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowright_bin, 29, 20, TL_next.x, TL_next.y);
