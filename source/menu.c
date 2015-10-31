@@ -143,7 +143,7 @@ void drawMenu(menu_s* m)
 	if (!toolbar_pos){
 		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)toolbar_bin, 28, 102, 0, 320-102); //Bottom right //horizontal
 	}else{
-		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)toolbar2_bin, 102, 28, 0, 320-28); //Bottom right //vertical
+		gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)toolbar2_bin, 102, 28, 0, 320-28, theme_alpha); //Bottom right //vertical
 	}
 }
 

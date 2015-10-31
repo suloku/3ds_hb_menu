@@ -19,6 +19,7 @@ extern bool regionFreeGamecardIn;
 extern touchPosition previousTouch, firstTouch;
 extern u16 touchTimer;
 extern bool button_touched(Button button);
+extern int backbutton_fade;
 
 //0 all, 1 user, 2 demos, 3 system
 int filterID = 0;
@@ -370,5 +371,5 @@ void drawTitleBrowser(titleBrowser_s* tb, bool titlelaunch)
 	drawButton(GFX_BOTTOM, "Delete Shortcut", NULL, 10, 10, 110);
 	drawButton(GFX_BOTTOM, "Launch with Region 4", NULL, 50, 160, 150);
 */
-	gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
+	gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33, backbutton_fade);
 }

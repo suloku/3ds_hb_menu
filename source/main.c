@@ -40,6 +40,7 @@ menu_s lastMenu;
 
 char HansPath[ENTRY_PATHLENGTH+1];
 char HansArg[ENTRY_PATHLENGTH+1];
+u8 backbutton_fade = 255;
 
 extern bool regionFreeGamecardIn;
 
@@ -235,7 +236,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			bof,
 			-155);
 */
-		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
+		gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33, backbutton_fade);
 	}else if(!sdmcCurrent)
 	{
 		//no SD
@@ -244,7 +245,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"    It looks like your 3DS doesn't have an SD inserted into it.\n"
 			"    Please insert an SD card for optimal homebrew launcher performance !\n",
 			0);
-		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
+		gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33, backbutton_fade);
 	}else if(sdmcCurrent<0)
 	{
 		//SD error
@@ -254,7 +255,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"    Try taking it out and putting it back in. If that doesn't work,\n"
 			"please try again with another SD card.",
 			0);
-		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
+		gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33, backbutton_fade);
 	}else if(hbmenu_state == HBMENU_NETLOADER_ACTIVE){
 		char bof[256];
 		u32 ip = gethostid();
@@ -268,7 +269,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"NetLoader",
 			bof,
 			0);
-		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
+		gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33, backbutton_fade);
 	}else if(hbmenu_state == HBMENU_NETLOADER_UNAVAILABLE_NINJHAX2){
 		drawError(GFX_BOTTOM,
 			"NetLoader",
@@ -277,7 +278,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"                                                                                            A : Yes\n"
 			"                                                                                            B : No\n",
 			0);
-		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
+		gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33, backbutton_fade);
 	}else if(hbmenu_state == HBMENU_REGIONFREE){
 		drawTitleBrowser(&titleBrowser, true);
 	/*
@@ -307,10 +308,10 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"    Please make sure you have that title !\n\n"
 			"                                                                                            B : Back\n",
 			0);
-			gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
+			gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33, theme_alpha);
 	}else if(hbmenu_state == HBMENU_NETLOADER_ERROR){
 		netloader_draw_error();
-		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33);
+		gfxDrawSpriteAlphaBlendFade(GFX_BOTTOM, GFX_LEFT, (u8*)arrowback_bin, 28, 33, 0, 320-33, theme_alpha);
 	}else{
 		//got SD
 		drawMenu(&menu);
@@ -752,6 +753,8 @@ int main()
 				toolbar_pos ^= 1;
 				confUpdate = 1;
 				sprintf (CNF_toolbar.body, "%s", toolbar_pos?"              Vertical":"           Horizontal");
+				if (toolbar_pos) backbutton_fade = theme_alpha;
+				else backbutton_fade = 255;
 			}
 		}else if(rebootCounter==257){
 			if(hidKeysDown()&KEY_START)rebootCounter--;
