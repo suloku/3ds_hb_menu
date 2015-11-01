@@ -1,3 +1,13 @@
+01 nov 2015 - 11:15 GTM+1
+- Press start in config menu to shutdown (config will not be saved)
+- Added option to change default title booting method (HANS/R4)
+- If boot method is R4, created shortcuts will boot R4
+Note: unlike hans shortcuts, R4 shortcuts will only work with this mod, they won't show on any other.
+
+31 oct 2015 - 10:00 GTM+1
+- Changed toolbar sprites, thanks fiese_nase for concept art!
+- Toolbar now fades with theme alpha setting, but only for vertical position since horizontal looks weird due to overlaying with entries.
+
 31 oct 2015 - 01:05 GTM+1
 - Add alpha, button border color and button state color to themes.
 - Centered config screen panels, show all titles button and shortcut buttons

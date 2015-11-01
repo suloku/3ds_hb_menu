@@ -35,6 +35,7 @@ extern int RFatboot;
 extern int toolbar_pos;
 extern int swipesens;
 extern int theme_alpha;
+extern int title_boot;
 
 typedef struct
 {

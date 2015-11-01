@@ -7,6 +7,8 @@
 
 using namespace tinyxml2;
 
+extern u8 backbutton_fade;
+
 int caseSetting = 0;
 int mixSetting = 0;
 int totalfavs = 0;
@@ -18,12 +20,12 @@ char favorites[MAX_FAVS][1024];
 int current_theme = 0;
 int random_theme = 0;
 int totalThemes = 0;
-int first_theme = 0;
 int rememberRF = 0;
 int RFatboot = 0;
 int config_dir = 0; //0: /3ds/ 1: /3ds/.hbl/
 int swipesens = 40;
 int theme_alpha = 255;
+int title_boot = 0; // 0: HANS, 1: R4
 
 int toolbar_pos = 0; //0: horizontal, 1: vertical
 
@@ -387,14 +389,17 @@ void loadConfig(hbfolder* folder){
 			}
 			subElement = subElement->NextSiblingElement("path");
 		}
-		subElement = pElement->FirstChildElement("mix_files");
-		if (subElement != nullptr) subElement->QueryIntText(&mixSetting);
+		subElement = pElement->FirstChildElement("title_boot");
+		if (subElement != nullptr) subElement->QueryIntText(&title_boot);
 
 		subElement = pElement->FirstChildElement("toolbar");
 		if (subElement != nullptr) subElement->QueryIntText(&toolbar_pos);
 
-		subElement = pElement->FirstChildElement("swap_sens");
+		subElement = pElement->FirstChildElement("swipe_sens");
 		if (subElement != nullptr) subElement->QueryIntText(&swipesens);
+
+		subElement = pElement->FirstChildElement("mix_files");
+		if (subElement != nullptr) subElement->QueryIntText(&mixSetting);
 		
 		subElement = pElement->FirstChildElement("case_sensitive");
 		if (subElement != nullptr) subElement->QueryIntText(&caseSetting);
@@ -410,7 +415,6 @@ void loadConfig(hbfolder* folder){
 
 		subElement = pElement->FirstChildElement("current_theme");
 		if (subElement != nullptr) subElement->QueryIntText(&current_theme);
-		first_theme = 1;
 
 		srand (time(NULL)); //We only call loadConfig() once, so let's put this here
 		subElement = pElement->FirstChildElement("random_theme");
@@ -464,6 +468,10 @@ void writeConfig(hbfolder* folder){
 		subElement->SetText(str);
 		pElement->InsertEndChild(subElement);//close each
 	}
+
+	subElement = xmlDoc.NewElement("title_boot");
+	subElement->SetText(title_boot);
+	pElement->InsertEndChild(subElement);//close
 
 	subElement = xmlDoc.NewElement("toolbar");
 	subElement->SetText(toolbar_pos);
@@ -553,7 +561,11 @@ void writeShortcut(char* ShortcutPath, char* HansPath, char* iconPath, char* arg
 		pElement->InsertEndChild(subElement);//close
 */
 		subElement = xmlDoc.NewElement("author");
-		subElement->SetText("HANS Shortcut");
+		if(title_boot){
+			subElement->SetText("R4 Shortcut");
+		}else{
+			subElement->SetText("HANS Shortcut");
+		}
 		pElement->InsertEndChild(subElement);//close
 	xmlDoc.LinkEndChild(pElement);//close shortcut
 

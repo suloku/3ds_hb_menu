@@ -31,6 +31,7 @@ Button CNF_sorting;
 Button CNF_mixfiles;
 Button CNF_rememberRF;
 Button CNF_toolbar;
+Button CNF_title_boot;
 
 void initButtons(){
 
@@ -90,6 +91,13 @@ void initButtons(){
 	strcpy(CNF_toolbar.title, "     Toolbar");
 	sprintf (CNF_toolbar.body, "%s", toolbar_pos?"              Vertical":"           Horizontal");
 
+	CNF_title_boot.x = 5;
+	CNF_title_boot.y = 5+(CONFIG_BUT_WIDTH+4)*2;
+	CNF_title_boot.width = 32;
+	CNF_title_boot.height = CONFIG_BUT_WIDTH-30;
+	strcpy(CNF_title_boot.title, "Title Boot");
+	sprintf (CNF_title_boot.body, "%s", title_boot?"           R4":"         HANS");
+
 //Title launcher
 	TL_entry.x = 240-ENTRY_WIDTH;
 	TL_entry.y = 9;
@@ -146,7 +154,7 @@ void initButtons(){
 	TL_launchr4.y = 320/2-75;
 	TL_launchr4.width = 32;
 	TL_launchr4.height = 150;
-	strcpy(TL_launchr4.title, "Launch with Region 4");
+	sprintf (TL_launchr4.title, "%s", title_boot?"   Launch with HANS":" Launch with Region 4");
 
 }
 

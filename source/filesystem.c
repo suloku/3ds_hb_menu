@@ -187,7 +187,7 @@ void createMenuEntryShortcut(menu_s* m, shortcut_s* s, char* shortcutPath, int p
 
 	char* execPath = s->executable;
 
-	if(!fileExists(execPath, &sdmcArchive))return;
+	if(!fileExists(execPath, &sdmcArchive) && strcmp(execPath, "REGION_FOUR") != 0)return;
 
 	int i, l=-1; for(i=0; execPath[i]; i++) if(execPath[i]=='/') l=i;
 

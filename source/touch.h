@@ -34,6 +34,7 @@ extern Button CNF_sorting;
 extern Button CNF_mixfiles;
 extern Button CNF_rememberRF;
 extern Button CNF_toolbar;
+extern Button CNF_title_boot;
 
 void initButtons();
 

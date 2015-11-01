@@ -56,6 +56,25 @@ enum
 	FOLDER_LIST,
 } FOLDER_states;
 
+/*
+ Shutdown code contributed by daxtsu from gbatemp
+ */
+void shutdown3DS()
+{
+    Handle ptmSysmHandle = 0;
+    Result result = srvGetServiceHandle(&ptmSysmHandle, "ns:s");
+    if (result != 0)
+        return;
+    
+    // http://3dbrew.org/wiki/NSS:ShutdownAsync
+    
+    u32 *commandBuffer = getThreadCommandBuffer();
+    commandBuffer[0] = 0x000E0000;
+    
+    svcSendSyncRequest(ptmSysmHandle);
+    svcCloseHandle(ptmSysmHandle);
+}
+
 #define ERR_WIFI_ALREADY_ON_OR_OFF 0xC8A06C0D
 
 enum
@@ -189,7 +208,8 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			"Reboot",
 			"    You're about to reboot your console into home menu.\n\n"
 			"                                                                                            A : Proceed\n"
-			"                                                                                            B : Cancel\n",
+			"                                                                                            B : Cancel\n"
+			"                                                                                  START : Shutdown",
 			0);
 
 		//Theme controls
@@ -219,6 +239,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 		drawButton2(GFX_BOTTOM, CNF_mixfiles);
 		drawButton2(GFX_BOTTOM, CNF_rememberRF);
 		drawButton2(GFX_BOTTOM, CNF_toolbar);
+		drawButton2(GFX_BOTTOM, CNF_title_boot);
 /*		sprintf(bof, 
 			"  Y  : Toggle remember menu (currently %s%s"
 			"  /\\ : Toggle sorting (currently %s%s"
@@ -409,6 +430,8 @@ int main()
 	loadConfig(&Folders); //Needs to be before initMenu to disable regionfree entry if configured. Let's hope there's a sd card inserted, well, boot.3dsx should be in sdcard
 	RFatboot = disableRF;
 	loadTheme();
+	//Set some variables
+	if (toolbar_pos) backbutton_fade = theme_alpha;
 	brewMode = rememberbrew;
 	if (Folders.max >= MAX_FOLDER) Folders.max = MAX_FOLDER-1;
 
@@ -526,18 +549,21 @@ int main()
 			{
 				targetProcessId = -2;
 				target_title = *titleBrowser.selected;
-				//Create a menu entry for HANS
-				strcpy (HansPath, "/3ds/hans/hans.3dsx");
-				if(!fileExists(HansPath, &sdmcArchive)){
-					strcpy (HansPath, "/3ds/.hbl/hans/hans.3dsx");
+				if (!title_boot){
+					//Create a menu entry for HANS
+					strcpy (HansPath, "/3ds/hans/hans.3dsx");
 					if(!fileExists(HansPath, &sdmcArchive)){
-						HansPath[0] = '\0';
+						strcpy (HansPath, "/3ds/.hbl/hans/hans.3dsx");
+						if(!fileExists(HansPath, &sdmcArchive)){
+							HansPath[0] = '\0';
+						}else{
+							//sprintf(HansArg, "-f/3ds/.hbl/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+						}
 					}else{
-						//sprintf(HansArg, "-f/3ds/.hbl/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+						//sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
 					}
-				}else{
-					//sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
-				}
+				}//If HansPath is empty, region4 will be used
+
 				//Make sure region free will be boot
 				if(disableRF) disableRF = 0;
 				menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
@@ -556,18 +582,23 @@ int main()
 				}
 				fclose (pFile);
 				//Write XML
-				//Create a menu entry for HANS
-				strcpy (HansPath, "/3ds/hans/hans.3dsx");
-				if(!fileExists(HansPath, &sdmcArchive)){
-					strcpy (HansPath, "/3ds/.hbl/hans/hans.3dsx");
+				if (!title_boot){
+					//Create a menu entry for HANS
+					strcpy (HansPath, "/3ds/hans/hans.3dsx");
 					if(!fileExists(HansPath, &sdmcArchive)){
-						HansPath[0] = '\0';
+						strcpy (HansPath, "/3ds/.hbl/hans/hans.3dsx");
+						if(!fileExists(HansPath, &sdmcArchive)){
+							HansPath[0] = '\0';
+						}else{
+							//sprintf(HansArg, "-f/3ds/.hbl/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+						}
 					}else{
-						//sprintf(HansArg, "-f/3ds/.hbl/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+						//sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
 					}
 				}else{
-					//sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+					strcpy (HansPath, "REGION_FOUR");
 				}
+
 				char ShortcutPath[ENTRY_PATHLENGTH];
 				sprintf(ShortcutPath, "%s%08lX-%08lX.xml", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
 				writeShortcut(ShortcutPath, HansPath, iconPath, HansArg, titleBrowser.selected->title_id, titleBrowser.selected->mediatype);
@@ -610,6 +641,22 @@ int main()
 			else if(hidKeysDown()&KEY_Y || button_touched(TL_launchr4) ){ //Boot with region four
 				targetProcessId = -2;
 				target_title = *titleBrowser.selected;
+
+				if (title_boot){//Hans boot
+					//Create a menu entry for HANS
+					strcpy (HansPath, "/3ds/hans/hans.3dsx");
+					if(!fileExists(HansPath, &sdmcArchive)){
+						strcpy (HansPath, "/3ds/.hbl/hans/hans.3dsx");
+						if(!fileExists(HansPath, &sdmcArchive)){
+							HansPath[0] = '\0';
+						}else{
+							//sprintf(HansArg, "-f/3ds/.hbl/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+						}
+					}else{
+						//sprintf(HansArg, "-f/3ds/hans/titles/%08lX.txt", (u32)(target_title.title_id & 0xffffffff));
+					}
+				}//If HansPath is empty, region4 will be used
+
 				//Make sure region free will be boot
 				if(disableRF) disableRF = 0;
 				menuEntry_s* me = getMenuEntry(&menu, menu.selectedEntry);
@@ -691,6 +738,9 @@ int main()
 					APT_HardwareResetAsync(NULL);
 				aptCloseSession();
 				rebootCounter--;
+			}else if(hidKeysDown()&KEY_START)
+			{
+				shutdown3DS();
 			}else if( hidKeysDown()&KEY_B || sprite_touched(touchInBackBut(firstTouch)) )
 			{
 				rebootCounter++;
@@ -755,6 +805,13 @@ int main()
 				sprintf (CNF_toolbar.body, "%s", toolbar_pos?"              Vertical":"           Horizontal");
 				if (toolbar_pos) backbutton_fade = theme_alpha;
 				else backbutton_fade = 255;
+			}
+			else if(button_touched(CNF_title_boot))
+			{
+				title_boot ^= 1;
+				confUpdate = 1;
+				sprintf (CNF_title_boot.body, "%s", title_boot?"           R4":"         HANS");
+				sprintf (TL_launchr4.title, "%s", title_boot?"   Launch with HANS":" Launch with Region 4");
 			}
 		}else if(rebootCounter==257){
 			if(hidKeysDown()&KEY_START)rebootCounter--;
@@ -1003,6 +1060,15 @@ int main()
 				{
 					hbmenu_state = HBMENU_REGIONFREE;
 					regionFreeUpdate();
+				}else if (me && !strcmp(me->executablePath, "REGION_FOUR") && regionFreeAvailable && !netloader_boot)
+				{
+					targetProcessId = -2;
+					target_title.title_id = me->descriptor.targetTitles[0].tid;
+					target_title.mediatype = me->descriptor.targetTitles[0].mediatype;
+					//Make sure region free will be boot
+					if(disableRF) disableRF = 0;
+					strcpy(me->executablePath, REGIONFREE_PATH);
+					break;
 				}else
 				{
 					// if appropriate, look for specified titles in list
@@ -1088,8 +1154,6 @@ int main()
 		initMenuEntry(me, netloadedPath, "netloaded app", "", "", NULL);
 	}
 
-	scanMenuEntry(me);
-
 	// cleanup whatever we have to cleanup
 	netloader_exit();
 	titlesExit();
@@ -1104,7 +1168,7 @@ int main()
 
 	//Title launching
 	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot){
-		if (strlen(HansPath) > 0){
+		if (strlen(HansPath) > 0 && strcmp(HansPath, "REGION_FOUR") != 0){
 			regionFreeExit();
 			return bootApp(HansPath, NULL, HansArg);
 		}else{

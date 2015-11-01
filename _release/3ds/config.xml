@@ -4,6 +4,7 @@
         <path>/3ds/Homebrew Games/</path>
         <path>/3ds/Utilities/</path>
 		<path>/3ds/Other/</path>
+		<title_boot>0</title_boot>
 		<toolbar>0</toolbar>
 		<swipe_sens>40</swipe_sens>
         <mix_files>0</mix_files>
