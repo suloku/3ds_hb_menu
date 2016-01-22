@@ -350,6 +350,8 @@ void loadTheme(){
 			fontDescriptionFolder.color[2] = fontDescription.color[2];
 		}
 	}
+	//For now disable alpha
+	theme_alpha = 255;
 }
 
 void loadConfig(hbfolder* folder){

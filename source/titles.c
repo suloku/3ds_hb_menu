@@ -62,7 +62,7 @@ Result loadTitleInfoIcon(titleInfo_s* ti)
 	Handle fileHandle;
 	u32 archivePath[] = {ti->title_id & 0xFFFFFFFF, (ti->title_id >> 32) & 0xFFFFFFFF, ti->mediatype, 0x00000000};
 	static const u32 filePath[] = {0x00000000, 0x00000000, 0x00000002, 0x6E6F6369, 0x00000000};	
-	Result ret = FSUSER_OpenFileDirectly(NULL, &fileHandle, (FS_archive){0x2345678a, (FS_path){PATH_BINARY, 0x10, (u8*)archivePath}}, (FS_path){PATH_BINARY, 0x14, (u8*)filePath}, FS_OPEN_READ, FS_ATTRIBUTE_NONE);
+	Result ret = FSUSER_OpenFileDirectly(&fileHandle, (FS_Archive){ARCHIVE_SAVEDATA_AND_CONTENT, (FS_Path){PATH_BINARY, 0x10, (u8*)archivePath}}, (FS_Path){PATH_BINARY, 0x14, (u8*)filePath}, FS_OPEN_READ, 0);
 
 	if(ret)
 	{
@@ -98,8 +98,9 @@ bool application_filter(u64 tid)
 		case 3:
 			return (tid_high == 0x00040010);
 			break;
+		default:
+			return (tid_high == 0x00040010 || tid_high == 0x00040000 || tid_high == 0x00040002);
 	}
-	return (tid_high == 0x00040010 || tid_high == 0x00040000 || tid_high == 0x00040002);
 }
 
 void initTitleList(titleList_s* tl, titleFilter_callback filter, u8 mediatype)
@@ -213,7 +214,7 @@ titleInfo_s* findTitleBrowser(titleBrowser_s* tb, u8 mediatype, u64 tid)
 {
 	if(!tb || mediatype > 2)return NULL;
 
-	return findTitleList(&tb->lists[mediatype], tid);
+	return findTitleList(&tb->lists[2-mediatype], tid);
 }
 
 void initTitleBrowser(titleBrowser_s* tb, titleFilter_callback filter)
@@ -223,7 +224,7 @@ void initTitleBrowser(titleBrowser_s* tb, titleFilter_callback filter)
 	int i;
 	for(i=0; i<3; i++)
 	{
-		initTitleList(&tb->lists[i], filter, (u8)i);
+		initTitleList(&tb->lists[i], filter, (u8)2-i);
 	}
 
 	tb->total = 0;
@@ -231,15 +232,20 @@ void initTitleBrowser(titleBrowser_s* tb, titleFilter_callback filter)
 	tb->selectedId = 0;
 	tb->selected = NULL;
 }
-
+bool card_stat = false;
+bool firstupdate = true;
 void updateTitleBrowser(titleBrowser_s* tb)
 {
 	if(!tb)return;
 
-	int i;
+	int i, j;
+	j=0;
+	u32 padDown = hidKeysDown();
 
-	if (osGetTime() > tb->nextCheck)
+	//if (osGetTime() > tb->nextCheck)
+	if(padDown & KEY_LEFT || button_touched(TL_prev) || padDown & KEY_RIGHT || button_touched(TL_next) || (card_stat != regionFreeGamecardIn) || firstupdate)
 	{
+		firstupdate = false;
 		bool updated = false;
 
 		tb->total = 0;
@@ -253,48 +259,55 @@ void updateTitleBrowser(titleBrowser_s* tb)
 		if(updated)
 		{
 			tb->selectedId = 0;
-			if(regionFreeGamecardIn) tb->selectedId -= 1;
+			//if(regionFreeGamecardIn) tb->selectedId -= 1;
 		}
 
-		tb->nextCheck = osGetTime() + 250;
+		//tb->nextCheck = osGetTime() + 250;
+		if (card_stat != regionFreeGamecardIn && !regionFreeGamecardIn) tb->selectedId =0;
+		card_stat = regionFreeGamecardIn;
 	}
 
 	tb->selected = NULL;
 
 	if(!tb->total)return;
 
-	u32 padDown = hidKeysDown();
-
 	int move = 0;
+	int movesense = 0;
 	if(padDown & KEY_LEFT || button_touched(TL_prev))move--;
 	if(padDown & KEY_RIGHT || button_touched(TL_next))move++;
+	if (move != 0) movesense = move;
 
 	tb->selectedId += move;
-
-	while(tb->selectedId < 0) tb->selectedId += tb->total;
-	while(tb->selectedId >= tb->total) tb->selectedId -= tb->total;
-
-	int id = tb->selectedId;
-	for(i=0; i<3; i++)
+	
+	while(tb->selected == NULL && j < 10)
 	{
-		const titleList_s* tl = &tb->lists[i];
-		if(id >= 0 && id < tl->num)
-		{
-			tb->selected = &tl->titles[id];
-			break;
-		}else id -= tl->num;
-	}
+		while(tb->selectedId < 0) tb->selectedId += tb->total;
+		while(tb->selectedId >= tb->total) tb->selectedId -= tb->total;
 
-	if(tb->selected)
-	{
-		if(!tb->selected->icon)loadTitleInfoIcon(tb->selected);
-		if(tb->selected->icon)extractSmdhData(tb->selected->icon, tb->selectedEntry.name, tb->selectedEntry.description, tb->selectedEntry.author, tb->selectedEntry.iconData);
-		else
+		int id = tb->selectedId;
+		for(i=0; i<3; i++)
 		{
-			tb->selected = NULL;
-			if(!move)tb->selectedId++;
-			else tb->selectedId += move;
+			const titleList_s* tl = &tb->lists[i];
+			if(id >= 0 && id < tl->num)
+			{
+				tb->selected = &tl->titles[id];
+				break;
+			}else id -= tl->num;
 		}
+
+		if(tb->selected)
+		{
+			if(!tb->selected->icon)loadTitleInfoIcon(tb->selected);
+			if(tb->selected->icon)extractSmdhData(tb->selected->icon, tb->selectedEntry.name, tb->selectedEntry.description, tb->selectedEntry.author, tb->selectedEntry.iconData);
+			else
+			{
+				tb->selected = NULL;
+				if(!move && movesense !=0){tb->selectedId += movesense;
+				}else if(!move && !movesense){tb->selectedId ++;
+				}else{ tb->selectedId += move;}
+			}
+		}
+		j++;
 	}
 }
 

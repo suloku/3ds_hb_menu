@@ -7,7 +7,7 @@
 #define FAVORITE_MARKER "* "
 #define FOLDERMAGIC "@FOLDER"
 
-extern FS_archive sdmcArchive;
+extern FS_Archive sdmcArchive;
 
 //system stuff
 void initFilesystem(void);
@@ -17,8 +17,8 @@ void openSDArchive();
 void closeSDArchive();
 
 //general fs stuff
-int loadFile(char* path, void* dst, FS_archive* archive, u64 maxSize);
-bool fileExists(char* path, FS_archive* archive);
+int loadFile(char* path, void* dst, FS_Archive* archive, u64 maxSize);
+bool fileExists(char* path, FS_Archive* archive);
 
 //menu fs stuff
 void addDirectoryToMenu(menu_s* m, char* path);

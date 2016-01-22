@@ -238,10 +238,12 @@ void gfxFillColorGradient(gfxScreen_t screen, gfx3dSide_t side, u8 rgbColorStart
 		fbAdr+=fbWidth*3;
 	}
 }
+void _gfxDrawRectangle(gfxScreen_t screen, gfx3dSide_t side, u8 rgbColor[3], s16 x, s16 y, u16 width, u16 height);
 
 void gfxDrawRectangle(gfxScreen_t screen, gfx3dSide_t side, u8 rgbColor[3], s16 x, s16 y, u16 width, u16 height)
 {
-	gfxDrawRectangleAlphaBlend(screen, side, rgbColor, theme_alpha, x, y, width, height);
+	//gfxDrawRectangleAlphaBlend(screen, side, rgbColor, theme_alpha, x, y, width, height);
+	_gfxDrawRectangle(screen, side, rgbColor, x, y, width, height);
 }
 
 void _gfxDrawRectangle(gfxScreen_t screen, gfx3dSide_t side, u8 rgbColor[3], s16 x, s16 y, u16 width, u16 height)
@@ -277,18 +279,25 @@ void _gfxDrawRectangle(gfxScreen_t screen, gfx3dSide_t side, u8 rgbColor[3], s16
 
 void gfxDrawRectangleAlphaBlend(gfxScreen_t screen, gfx3dSide_t side, u8 rgbColor[3], u8 alpha, s16 x, s16 y, u16 width, u16 height)
 {
-	u8 data[height*4];
+	_gfxDrawRectangle(screen, side, rgbColor, x, y, width, height);
+}
+
+void _gfxDrawRectangleAlphaBlend(gfxScreen_t screen, gfx3dSide_t side, u8 rgbColor[3], u8 alpha, s16 x, s16 y, u16 width, u16 height)
+{
+	u8* data;
+	data = (u8*)malloc(width*height*4);
 	int j;
-	for(j=0; j<height; j++)
+	for(j=0; j<height*width; j++)
 	{
 		data[j*4+0]=rgbColor[2];
 		data[j*4+1]=rgbColor[1];
 		data[j*4+2]=rgbColor[0];
 		data[j*4+3]=alpha;
 	}
-	for (j=0;j<width;j++){
-		gfxDrawSpriteAlphaBlend(screen, side, data, 1, height, x+j, y);
-	}
+	//for (j=0;j<width;j++){
+		gfxDrawSpriteAlphaBlend(screen, side, data, width, height, x, y);
+	//}
+	if (data != NULL) free(data);
 }
 void gfxFadeScreen(gfxScreen_t screen, gfx3dSide_t side, u32 f)
 {

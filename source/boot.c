@@ -10,7 +10,7 @@
 extern void (*__system_retAddr)(void);
 
 static Handle hbFileHandle;
-static u32 argbuffer[0x200];
+static u32 argbuffer[0x100];
 static u32 argbuffer_length = 0;
 
 // ninjhax 1.x
@@ -58,28 +58,71 @@ bool isNinjhax2(void)
 
 int bootApp(char* executablePath, executableMetadata_s* em, char* arg)
 {
-	// open file that we're going to boot up
-	fsInit();
-	FSUSER_OpenFileDirectly(NULL, &hbFileHandle, sdmcArchive, FS_makePath(PATH_CHAR, executablePath), FS_OPEN_READ, FS_ATTRIBUTE_NONE);
-	fsExit();
-
 	// set argv/argc
 	argbuffer[0] = 0;
-	argbuffer_length = 0x200*4;
+	argbuffer_length = sizeof(argbuffer);
 
-	argbuffer[0] = 1;
-	snprintf((char*)&argbuffer[1], 0x200*4 - 4, "sdmc:%s", executablePath);
+	if (!netloader_boot)
+	{
+		argbuffer[0] = 1;
+		snprintf((char*)&argbuffer[1], sizeof(argbuffer) - 4, "sdmc:%s", executablePath);
+	}
 
 	{
 		char *ptr = netloaded_commandline;
 		char *dst = (char*)&argbuffer[1];
-		dst += strlen(dst) + 1; // skip first argument
+		if (!netloader_boot)
+			dst += strlen(dst) + 1; // skip first argument
 
-		if(arg)
+		if(arg && *arg)
 		{
-			strcpy(dst, arg);
-			dst += strlen(arg) + 1;
-			argbuffer[0]++;
+
+			char c, *pstr, *str=arg, *endarg = arg+strlen(arg);
+
+			do
+			{
+				do
+				{
+					c = *str++;
+				} while ((c == ' ' || c == '\t') && str < endarg);
+
+				pstr = str-1;
+
+				if (c == '\"')
+				{
+					pstr++;
+					while(*str++ != '\"' && str < endarg);
+				}
+				else
+				if (c == '\'')
+				{
+					pstr++;
+					while(*str++ != '\'' && str < endarg);
+				}
+				else
+				{
+					do
+					{
+						c = *str++;
+					} while (c != ' ' && c != '\t' && str < endarg);
+				}
+
+				str--;
+
+				if (str == (endarg - 1))
+				{
+					if(*str == '\"' || *str == '\'') *(str++) = 0;
+				}
+				else
+				{
+					*(str++) = '\0';
+				}
+				strcpy(dst, pstr);
+				dst += strlen(dst) + 1;
+				argbuffer[0]++;
+
+			} while(str<endarg);
+
 		}
 		
 		if(netloader_boot)
@@ -97,6 +140,11 @@ int bootApp(char* executablePath, executableMetadata_s* em, char* arg)
 		argbuffer_length = (int)((void*)dst - (void*)argbuffer);
 	}
 
+	// open file that we're going to boot up
+	fsInit();
+	FSUSER_OpenFileDirectly(&hbFileHandle, sdmcArchive, fsMakePath(PATH_ASCII, executablePath), FS_OPEN_READ, 0);
+	fsExit();
+
 	// figure out the preferred way of running the 3dsx
 	if(!hbInit())
 	{
@@ -106,7 +154,7 @@ int bootApp(char* executablePath, executableMetadata_s* em, char* arg)
 		hbExit();
 
 		// set argv
-		setArgs_1x(argbuffer, 0x200*4);
+		setArgs_1x(argbuffer, sizeof(argbuffer));
 
 		// override return address to homebrew booting code
 		__system_retAddr = launchFile_1x;

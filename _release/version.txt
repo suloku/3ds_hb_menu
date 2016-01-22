@@ -1,3 +1,10 @@
+22 jan 2016 - 22:00 GTM+1
+- Restored "scanMenuEntry(me);" in main.c which caused some boot problems in previous build (don't know why I removed it, probably removed by mistake).
+- Updated to latest HBL 1.1.0 changes (except file browsing), including latest ctrulib.
+- Tweaked title browser, it should be now lag free, keys properly work and inserting/extracting the game cartridge is also properly recognized.
+- Disabled alpha channel for now since rendering with transparency produces lag (and has been reported as much worse on o3ds).
+- Compiled with latest ctrulib.
+
 01 nov 2015 - 11:15 GTM+1
 - Press start in config menu to shutdown (config will not be saved)
 - Added option to change default title booting method (HANS/R4)

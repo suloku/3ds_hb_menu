@@ -21,14 +21,14 @@
 #include "arrowleft_bin.h"
 #include "arrowright_bin.h"
 
-bool brewMode = false;
-u8 sdmcCurrent = 0;
-u64 nextSdCheck = 0;
+bool brewMode;
+bool sdmcCurrent;
+u64 nextSdCheck;
 
 menu_s menu;
-u32 wifiStatus = 0;
+u32 wifiStatus;
 u8 batteryLevel = 5;
-u8 charging = 0;
+u8 charging;
 int rebootCounter;
 titleBrowser_s titleBrowser;
 hbfolder Folders;
@@ -406,9 +406,9 @@ int main()
 	gfxInitDefault();
 	initFilesystem();
 	openSDArchive();
-	hidInit(NULL);
+	hidInit();
 	acInit();
-	ptmInit();
+	ptmuInit();
 	titlesInit();
 	regionFreeInit();
 	netloader_init();
@@ -417,7 +417,7 @@ int main()
 
 	// offset potential issues caused by homebrew that just ran
 	aptOpenSession();
-	APT_SetAppCpuTimeLimit(NULL, 0);
+	APT_SetAppCpuTimeLimit(0);
 	aptCloseSession();
 
 	initBackground();
@@ -438,10 +438,10 @@ int main()
 	initMenu(&menu);
 	initTitleBrowser(&titleBrowser, NULL);
 	regionFreeUpdate();
-	if(regionFreeGamecardIn) titleBrowser.selectedId -= 1;
+	//if(regionFreeGamecardIn) titleBrowser.selectedId -= 1;
 	
-	u8 sdmcPrevious = 0;
-	FSUSER_IsSdmcDetected(NULL, &sdmcCurrent);
+	bool sdmcPrevious = false;
+	FSUSER_IsSdmcDetected(&sdmcCurrent);
 	if(sdmcCurrent == 1)
 	{
 		if(remembermenu){
@@ -475,7 +475,7 @@ int main()
 		{
 			regionFreeUpdate();
 
-			FSUSER_IsSdmcDetected(NULL, &sdmcCurrent);
+			FSUSER_IsSdmcDetected(&sdmcCurrent);
 
 			if(sdmcCurrent == 1 && (sdmcPrevious == 0 || sdmcPrevious < 0))
 			{
@@ -491,9 +491,9 @@ int main()
 			nextSdCheck = osGetTime()+250;
 		}
 
-		ACU_GetWifiStatus(NULL, &wifiStatus);
-		PTMU_GetBatteryLevel(NULL, &batteryLevel);
-		PTMU_GetBatteryChargeState(NULL, &charging);
+		ACU_GetWifiStatus(&wifiStatus);
+		PTMU_GetBatteryLevel(&batteryLevel);
+		PTMU_GetBatteryChargeState(&charging);
 		hidScanInput();
 		hidTouchRead(&touch);
 
@@ -735,7 +735,7 @@ int main()
 				//reboot
 				if (confUpdate) writeConfig(&Folders);
 				aptOpenSession();
-					APT_HardwareResetAsync(NULL);
+					APT_HardwareResetAsync();
 				aptCloseSession();
 				rebootCounter--;
 			}else if(hidKeysDown()&KEY_START)
@@ -1154,10 +1154,12 @@ int main()
 		initMenuEntry(me, netloadedPath, "netloaded app", "", "", NULL);
 	}
 
+	scanMenuEntry(me);
+
 	// cleanup whatever we have to cleanup
 	netloader_exit();
 	titlesExit();
-	ptmExit();
+	ptmuExit();
 	acExit();
 	hidExit();
 	gfxExit();
