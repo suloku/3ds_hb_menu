@@ -11,6 +11,7 @@ extern u8 backbutton_fade;
 
 int caseSetting = 0;
 int mixSetting = 0;
+int shortcutNaming = 1; //1=filenames, 0=title_id
 int totalfavs = 0;
 int remembermenu = 0;
 int rememberbrew = 0;
@@ -406,6 +407,9 @@ void loadConfig(hbfolder* folder){
 		subElement = pElement->FirstChildElement("case_sensitive");
 		if (subElement != nullptr) subElement->QueryIntText(&caseSetting);
 
+		subElement = pElement->FirstChildElement("shortcut_naming");
+		if (subElement != nullptr) subElement->QueryIntText(&shortcutNaming);		
+
 		subElement = pElement->FirstChildElement("disable_RF");
 		if (subElement != nullptr) subElement->QueryIntText(&disableRF);
 
@@ -489,6 +493,10 @@ void writeConfig(hbfolder* folder){
 	
 	subElement = xmlDoc.NewElement("case_sensitive");
 	subElement->SetText(caseSetting);
+	pElement->InsertEndChild(subElement);//close
+
+	subElement = xmlDoc.NewElement("shortcut_naming");
+	subElement->SetText(shortcutNaming);
 	pElement->InsertEndChild(subElement);//close
 
 	subElement = xmlDoc.NewElement("disable_RF");

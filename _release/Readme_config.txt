@@ -18,16 +18,19 @@ to the /3ds/ directory won't work on other directories
 Config values:
 --------------
  - mix_files:
-	· 0 = OFF Stray .3dsx files are sorted after homebrew with folder and icon
-	· 1 = ON all homebrew is sorted alphabetically
+	· 0 = OFF : Stray .3dsx files are sorted after homebrew with folder and icon
+	· 1 = ON  : all homebrew is sorted alphabetically
 	· Note: this can be toogled on/off at the Reboot screen (press start)., so there's really no need to manually edit it.
  - case_sensitive (see example)
 	· 0 = OFF : capital and lower case letters alike
-	· 1 = ON : Capital letters before lower case
-	· Note: this can be toogled on/off at the Reboot screen (press start)., so there's really no need to manually edit it.	
+	· 1 = ON  : Capital letters before lower case
+	· Note: this can be toogled on/off at the Reboot screen (press start)., so there's really no need to manually edit it.
+ - shortcut_naming
+ 	· 0 = OFF : created shortcuts will have title ID as filename
+	· 1 = ON  : created shortcuts will have smdh title as filename
  - disable_RF
 	· 0 = OFF : region free entry will appear
-	· 1 = ON : disables the region free entry
+	· 1 = ON  : disables the region free entry
 
 note: the region free entry can be toogled with DPad UP + R.
 note2: when the config file is saved, region free setting will be saved as well.

@@ -20,6 +20,7 @@ extern "C" {
 
 extern int caseSetting;
 extern int mixSetting;
+extern int shortcutNaming;
 extern int totalfavs;
 extern int remembermenu;
 extern int rememberbrew;

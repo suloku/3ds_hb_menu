@@ -1,3 +1,10 @@
+03 feb 2016 - 17:45 GTM+1
+- Correctly handle shortcut alphabetic sorting
+- Added config option to create title shortcuts with smdh title as filename instead of title ID (default is smdh title). This option has to be manually edited in config.xml for now.
+- Shortcuts can be deleted pressing B button over them (a confirmation prompt will appear)
+- Creating a shortcut for a gamecard will generate a standard shortcut for all gamecards
+- Prevent launching gamecard via Region4 trough shortcut if there's no gamecard (notification prompt appears)
+
 22 jan 2016 - 22:00 GTM+1
 - Restored "scanMenuEntry(me);" in main.c which caused some boot problems in previous build (don't know why I removed it, probably removed by mistake).
 - Updated to latest HBL 1.1.0 changes (except file browsing), including latest ctrulib.

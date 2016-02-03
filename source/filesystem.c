@@ -287,27 +287,27 @@ void scanHomebrewDirectory(menu_s* m, char* path)
 
     int i, j;
     qsort (fullPath, totalentries, 1024, cmp);
-	for (j=0; j<2; j++){
+	for (j=0; j<3; j++){
 		for (i = 0; i < totalentries; i++) {
 			int n=strlen(fullPath[i]);
 			if(n>5 && !strcmp(".3dsx", &fullPath[i][n-5])){
-				if (!j && !mixSetting){
-					//skip stray files in first pass
-				}else {
+				if (j < 2 && !mixSetting){
+					//skip stray files in first and second pass
+				}else if (j > 0){
 					addExecutableToMenu(m, fullPath[i]);
 				}
 			}else if(n>4 && !strcmp(".xml", &fullPath[i][n-4])){
 				if (!j){
-					addShortcutToMenu(m, fullPath[i], 1);
+					addShortcutToMenu(m, fullPath[i], 0);
 				}else{
-					//Skip shortcuts in second pass
+					//Skip shortcuts in second and third pass
 				}
 			}else{
 				if (strncmp(".", fullPath[i], 1) != 0){
-					if (!j){
+					if (j == 1){
 						addDirectoryToMenu(m, fullPath[i]);
 					}else{
-						//Skip dirs in second pass
+						//Skip dirs in second and third pass
 					}
 				}
 			}

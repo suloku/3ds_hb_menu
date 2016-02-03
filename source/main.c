@@ -21,6 +21,8 @@
 #include "arrowleft_bin.h"
 #include "arrowright_bin.h"
 
+#include "gamecard_bin.h"
+
 bool brewMode;
 bool sdmcCurrent;
 u64 nextSdCheck;
@@ -574,11 +576,52 @@ int main()
 			{
 				//Write SMDH
 				FILE * pFile;
-				char iconPath[ENTRY_PATHLENGTH];
-				sprintf(iconPath, "%s%08lX-%08lX.smdh", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
+				char iconPath[ENTRY_PATHLENGTH-32];
+				char ShortcutName[32];
+				//sprintf(iconPath, "%s%08lX-%08lX.smdh", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
+				if (shortcutNaming){
+					snprintf(ShortcutName, 30, "%s", titleBrowser.selectedEntry.name);
+						// following code adapted from meladroit's svdt
+						// excise special characters from name
+						// (necessary because we just use this string for directory names)
+						// (thanks Blazingflare on GBAtemp)
+						char* forbiddenChar;
+						while ((forbiddenChar = strpbrk(ShortcutName,"<>:\"\\/|?*. ")))
+						{
+							ShortcutName[forbiddenChar-ShortcutName] = '_';
+						}
+						if (ShortcutName[strlen(ShortcutName)-1] == '_') ShortcutName[strlen(ShortcutName)-1] = '\0';
+						
+						//Change other chars
+							forbiddenChar = ShortcutName;
+							while ( (*forbiddenChar)!=0 ) {
+								const char*
+								//   "_________________________________________________________________ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
+								tr = "_________________________________________________________________AAAAAAECEEEEIIIIDNOOOOOx0UUUUYPsaaaaaaeceeeeiiiiOnooooo_0uuuuypy";
+								unsigned char ch = (*forbiddenChar);
+								if ( ch >=126 ) {
+									(*forbiddenChar) = tr[ ch-126 ];
+								}
+								++forbiddenChar; // http://stackoverflow.com/questions/14094621/
+							}
+						//Get rid of any unknown chars
+				}else{ //Use title_id
+					sprintf(ShortcutName, "%08lX-%08lX", (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
+				}
+				
+				if(titleBrowser.selected->mediatype == 2){
+					sprintf(iconPath, "%s%s.smdh", Folders.dir[Folders.current], "0_GameCard");
+				}else{
+					sprintf(iconPath, "%s%s.smdh", Folders.dir[Folders.current], ShortcutName);
+				}
+
 				pFile = fopen (iconPath,"wb");
 				if (pFile){
-					fwrite(titleBrowser.selected->icon, sizeof(u8), sizeof(smdh_s), pFile);
+					if(titleBrowser.selected->mediatype == 2){
+						fwrite((smdh_s*)gamecard_bin, sizeof(u8), sizeof(smdh_s), pFile);
+					}else{
+						fwrite(titleBrowser.selected->icon, sizeof(u8), sizeof(smdh_s), pFile);
+					}
 				}
 				fclose (pFile);
 				//Write XML
@@ -599,18 +642,27 @@ int main()
 					strcpy (HansPath, "REGION_FOUR");
 				}
 
-				char ShortcutPath[ENTRY_PATHLENGTH];
-				sprintf(ShortcutPath, "%s%08lX-%08lX.xml", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
-				writeShortcut(ShortcutPath, HansPath, iconPath, HansArg, titleBrowser.selected->title_id, titleBrowser.selected->mediatype);
+				char ShortcutPath[ENTRY_PATHLENGTH-32];
+				//sprintf(ShortcutPath, "%s%08lX-%08lX.xml", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
+				sprintf(ShortcutPath, "%s%s.xml", Folders.dir[Folders.current], ShortcutName);
+				
+				if(titleBrowser.selected->mediatype == 2){
+					sprintf(ShortcutPath, "%s%s.xml", Folders.dir[Folders.current], "0_GameCard");
+					writeShortcut(ShortcutPath, HansPath, iconPath, HansArg, 0000000000000000, 2);
+				}else{
+					writeShortcut(ShortcutPath, HansPath, iconPath, HansArg, titleBrowser.selected->title_id, titleBrowser.selected->mediatype);
+				}
 				//Reset paths
 				HansPath[0] = '\0';
 				HansArg[0] = '\0';
 				updatefolder = FOLDER_REFRESH;
 				u64 time = osGetTime();
 				while (1){
+					if (osGetTime() - time > 1000) break;
 					drawPanel(GFX_BOTTOM, 84, 4, 84, 320-8, true);
 					gfxDrawText(GFX_BOTTOM, GFX_LEFT, &fontTitle, "Shortcut Created", 84+84/2-16/2, 320/2-50);
-					if (osGetTime() - time > 1000) break;
+					//gfxDrawText(GFX_BOTTOM, GFX_LEFT, &fontTitle, ShortcutPath, 84+84/2-16/2, 320/2-50);
+					//gfxDrawText(GFX_BOTTOM, GFX_LEFT, &fontTitle, iconPath, 84+84/2-16/2, 10);
 					gfxFlushBuffers();
 					gfxSwapBuffers();
 
@@ -619,19 +671,53 @@ int main()
 			}
 			else if( ( hidKeysDown()&KEY_START || button_touched(TL_shortcut_delete) ) && titleBrowser.selected) //Delete shortcut
 			{
+				char Path[ENTRY_PATHLENGTH-32];
+				char ShortcutName[32];
+				//Generate filename
+				if (shortcutNaming && titleBrowser.selected->mediatype != 2){
+					snprintf(ShortcutName, 30, "%s", titleBrowser.selectedEntry.name);
+						// following code adapted from meladroit's svdt
+						// excise special characters from name
+						// (necessary because we just use this string for directory names)
+						// (thanks Blazingflare on GBAtemp)
+						char* forbiddenChar;
+						while ((forbiddenChar = strpbrk(ShortcutName,"<>:\"\\/|?*. ")))
+						{
+							ShortcutName[forbiddenChar-ShortcutName] = '_';
+						}
+						if (ShortcutName[strlen(ShortcutName)-1] == '_') ShortcutName[strlen(ShortcutName)-1] = '\0';
+						
+						//Change other chars
+							forbiddenChar = ShortcutName;
+							while ( (*forbiddenChar)!=0 ) {
+								const char*
+								//   "_________________________________________________________________ÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖ×ØÙÚÛÜÝÞßàáâãäåæçèéêëìíîïðñòóôõö÷øùúûüýþÿ"
+								tr = "_________________________________________________________________AAAAAAECEEEEIIIIDNOOOOOx0UUUUYPsaaaaaaeceeeeiiiiOnooooo_0uuuuypy";
+								unsigned char ch = (*forbiddenChar);
+								if ( ch >=126 ) {
+									(*forbiddenChar) = tr[ ch-126 ];
+								}
+								++forbiddenChar; // http://stackoverflow.com/questions/14094621/
+							}
+						//Get rid of any unknown chars
+				}else if(titleBrowser.selected->mediatype == 2){ //Gamecard
+					sprintf(ShortcutName, "0_GameCard");
+				}else{ //Use title_id
+					sprintf(ShortcutName, "%08lX-%08lX", (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
+				}
 				//Delete SMDH
-				char Path[ENTRY_PATHLENGTH];
-				sprintf(Path, "%s%08lX-%08lX.smdh", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
+				sprintf(Path, "%s%s.smdh", Folders.dir[Folders.current], ShortcutName);
 				remove(Path);
 				//Delete XML
-				sprintf(Path, "%s%08lX-%08lX.xml", Folders.dir[Folders.current], (u32)((titleBrowser.selected->title_id >> 32) & 0xffffffff), (u32)(titleBrowser.selected->title_id & 0xffffffff));
+				sprintf(Path, "%s%s.xml", Folders.dir[Folders.current], ShortcutName);
 				remove(Path);
+
 				updatefolder = FOLDER_REFRESH;
 				u64 time = osGetTime();
 				while (1){
+					if (osGetTime() - time > 1000) break;
 					drawPanel(GFX_BOTTOM, 84, 4, 84, 320-8, true);
 					gfxDrawText(GFX_BOTTOM, GFX_LEFT, &fontTitle, "Shortcut Deleted", 84+84/2-16/2, 320/2-50);
-					if (osGetTime() - time > 1000) break;
 					gfxFlushBuffers();
 					gfxSwapBuffers();
 
@@ -861,6 +947,44 @@ int main()
 				updatefolder = FOLDER_REFRESH;
 				if (favActive) favActive ^= 1;
 				if (flistActive) flistActive ^= 1;
+			}else if (hidKeysDown()&KEY_B && hbmenu_state == HBMENU_DEFAULT	&& (strlen (me->shortcutPath) > 0) ) //Press B over xml shortcut
+			{ 
+			
+				while (1){
+					//drawPanel(GFX_BOTTOM, 84, 4, 84, 320-8, true);
+					drawPanel(GFX_BOTTOM, 84, 4+32, 84, 320-8-64, true);
+					gfxDrawText(GFX_BOTTOM, GFX_LEFT, &fontTitle, "Delete Shortcut?", 84+84/2, 320/2-100);
+					gfxDrawText(GFX_BOTTOM, GFX_LEFT, &fontTitle, "A: Confirm", 84+84/2-16/2, 320/2+10);
+					gfxDrawText(GFX_BOTTOM, GFX_LEFT, &fontTitle, "B: Cancel", 84+84/2-24, 320/2+10);
+					hidScanInput();
+					if (hidKeysDown()&KEY_A){
+						//Delete XML
+						remove(me->shortcutPath);
+						//Delete SMDH
+						me->shortcutPath[strlen(me->shortcutPath)-3] = '\0';
+						strcat(me->shortcutPath, "smdh");
+						remove(me->shortcutPath);
+						
+						updatefolder = FOLDER_REFRESH;
+						//wait for release
+						while (hidKeysDown()&KEY_A){
+							hidScanInput();
+						}
+						break;
+					}
+					
+					if (hidKeysDown()&KEY_B){
+						//wait for release
+						while (hidKeysDown()&KEY_B){
+							hidScanInput();
+						}
+						break;
+					}
+					gfxFlushBuffers();
+					gfxSwapBuffers();
+
+					gspWaitForVBlank();
+				}
 			}
 			if( ( hidKeysDown()&KEY_R || ( (hidKeysUp()&KEY_TOUCH && touchTimer < 30 && abs(firstTouch.px-previousTouch.px)> swipesens) && firstTouch.px > previousTouch.px && abs(firstTouch.py-previousTouch.py)<12 ) ) && !favActive && !flistActive  && !(hidKeysHeld()&KEY_UP) && hbmenu_state == HBMENU_DEFAULT)//Next folder
 			{
@@ -1062,13 +1186,27 @@ int main()
 					regionFreeUpdate();
 				}else if (me && !strcmp(me->executablePath, "REGION_FOUR") && regionFreeAvailable && !netloader_boot)
 				{
-					targetProcessId = -2;
-					target_title.title_id = me->descriptor.targetTitles[0].tid;
-					target_title.mediatype = me->descriptor.targetTitles[0].mediatype;
-					//Make sure region free will be boot
-					if(disableRF) disableRF = 0;
-					strcpy(me->executablePath, REGIONFREE_PATH);
-					break;
+					//Only boot if there's no cartridge and it's gamecard shortcut
+					if (me->descriptor.targetTitles[0].mediatype == 2 && !regionFreeGamecardIn){
+						u64 time = osGetTime();
+						while (1){
+							if (osGetTime() - time > 1000) break;
+							drawPanel(GFX_BOTTOM, 84, 4+32, 84, 320-8-64, true);
+							gfxDrawText(GFX_BOTTOM, GFX_LEFT, &fontTitle, "No Gamecard inserted!", 84+84/2-16/2, 320/2-65);
+							gfxFlushBuffers();
+							gfxSwapBuffers();
+
+							gspWaitForVBlank();
+						}
+					}else{
+						targetProcessId = -2;
+						target_title.title_id = me->descriptor.targetTitles[0].tid;
+						target_title.mediatype = me->descriptor.targetTitles[0].mediatype;
+						//Make sure region free will be boot
+						if(disableRF) disableRF = 0;
+						strcpy(me->executablePath, REGIONFREE_PATH);
+						break;
+					}
 				}else
 				{
 					// if appropriate, look for specified titles in list
