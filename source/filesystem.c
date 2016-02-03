@@ -312,7 +312,7 @@ void scanHomebrewDirectory(menu_s* m, char* path)
 				}
 			}
 		}
-		if (mixSetting) break;
+		if (mixSetting && j > 0 ) break;
 	}
 
 	FSDIR_Close(dirHandle);

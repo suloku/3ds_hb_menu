@@ -1,3 +1,6 @@
+03 feb 2016 - 23:35 GTM+1
+- Fixed bug that didn't load homebrew if mix stray 3dsx files setting was ON
+
 03 feb 2016 - 17:45 GTM+1
 - Correctly handle shortcut alphabetic sorting
 - Added config option to create title shortcuts with smdh title as filename instead of title ID (default is smdh title). This option has to be manually edited in config.xml for now.
