@@ -1,3 +1,7 @@
+24 feb 2016 - 16:35 GTM+1
+- Updated to support ninjhax's 2.6 return to home menu.
+- Theme randomization is now toogle with "SELECT" (X is used to return to home menu)
+
 03 feb 2016 - 23:35 GTM+1
 - Fixed bug that didn't load homebrew if mix stray 3dsx files setting was ON
 

@@ -33,6 +33,9 @@ u8 batteryLevel = 5;
 u8 charging;
 int rebootCounter;
 titleBrowser_s titleBrowser;
+
+u32 menuret_enabled = 0;
+
 hbfolder Folders;
 char updatefolder = 0;
 char favActive = 0;
@@ -206,13 +209,27 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 	if(rebootCounter<257)
 	{
 		//about to reboot
-		drawError(GFX_BOTTOM,
-			"Reboot",
-			"    You're about to reboot your console into home menu.\n\n"
-			"                                                                                            A : Proceed\n"
-			"                                                                                            B : Cancel\n"
-			"                                                                                  START : Shutdown",
-			0);
+		if(!menuret_enabled)
+		{
+			drawError(GFX_BOTTOM,
+				"Reboot",
+				"    You're about to reboot your console into home menu.\n\n"
+				"                                                                                            A : Proceed\n"
+				"                                                                                            B : Cancel\n"
+				"                                                                                  START : Shutdown",
+				0);
+		}
+		else
+		{
+			drawError(GFX_BOTTOM,
+				"Reboot",
+				"    You're about to reboot your console into home menu.\n\n"
+				"                                                               A : Proceed\n"
+				"                                                               B : Cancel\n"
+				"                                                               X : Return to Home Menu without reboot.\n"
+				"                                                     START : Shutdown",
+				0);
+		}
 
 		//Theme controls
 		char bof[1024];
@@ -220,7 +237,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 			//"                                                                                                      \n"
 			"  L : Previous theme                                                                                  \n"
 			"  R : Next theme                                                                                      \n"
-			"  X : Toggle randomize (currently %s%s", random_theme?"on) ":"off)", "                                                                  \n"
+			"  SELECT : Toggle randomize (currently %s%s", random_theme?"on) ":"off)", "                                                                  \n"
 			);
 		drawError(GFX_BOTTOM,
 			"Themes",
@@ -231,7 +248,7 @@ void renderFrame(u8 bgColor[3], u8 waterBorderColor[3], u8 waterColor[3])
 		drawError(GFX_BOTTOM,
 			"                             Themes",
 			bof,
-			-80);
+			-83);
 		//drawButton2(GFX_BOTTOM, CNF_themerand);
 		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowleft_bin, 29, 20, CNF_themeprev.x, CNF_themeprev.y);
 		gfxDrawSpriteAlphaBlend(GFX_BOTTOM, GFX_LEFT, (u8*)arrowright_bin, 29, 20, CNF_themenext.x, CNF_themenext.y);
@@ -394,16 +411,20 @@ bool secretCode(void)
 // doing it in main is preferred because execution ends in launching another 3dsx
 void __appInit()
 {
+	srvInit();
 }
 
 // same
 void __appExit()
 {
+	srvExit();
 }
 
 int main()
 {
-	srvInit();
+	u32 menuret = 0;
+	Handle kill=0;
+
 	aptInit();
 	gfxInitDefault();
 	initFilesystem();
@@ -465,6 +486,8 @@ int main()
 	nextSdCheck = osGetTime()+250;
 
 	srand(svcGetSystemTick());
+	
+	if(srvGetServiceHandle(&kill, "hb:kill")==0)menuret_enabled = 1;
 
 	rebootCounter=257;
 	filterID = 1;
@@ -821,12 +844,19 @@ int main()
 				//reboot
 				if (confUpdate) writeConfig(&Folders);
 				aptOpenSession();
-					APT_HardwareResetAsync();
+				APT_HardwareResetAsync();
 				aptCloseSession();
 				rebootCounter--;
 			}else if(hidKeysDown()&KEY_START)
 			{
 				shutdown3DS();
+			}else if(hidKeysDown()&KEY_X)
+			{
+				if(menuret_enabled)
+				{
+					menuret = 1;
+					break;
+				}
 			}else if( hidKeysDown()&KEY_B || sprite_touched(touchInBackBut(firstTouch)) )
 			{
 				rebootCounter++;
@@ -849,7 +879,7 @@ int main()
 					confUpdate = 1;
 				}
 			}
-			else if(hidKeysDown()&KEY_X || button_touched(CNF_themerand))
+			else if(hidKeysDown()&KEY_SELECT || button_touched(CNF_themerand))
 			{
 				random_theme ^= 1;
 				confUpdate = 1;
@@ -1304,7 +1334,14 @@ int main()
 	closeSDArchive();
 	exitFilesystem();
 	aptExit();
-	srvExit();
+
+	if(menuret)
+	{
+		srvExit();
+
+		svcSignalEvent(kill);
+		svcExitProcess();
+	}
 
 	//Title launching
 	if(!strcmp(me->executablePath, REGIONFREE_PATH) && regionFreeAvailable && !netloader_boot){
